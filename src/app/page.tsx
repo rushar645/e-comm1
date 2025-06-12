@@ -1,103 +1,295 @@
-import Image from "next/image";
+import Image from "next/image"
+import Link from "next/link"
+import { HeroCarousel } from "@/components/hero-carousel"
+import { Carousel3D } from "@/components/carousel-3d"
+import { ScrollableProductSection } from "@/components/scrollable-product-section"
+import { TestimonialCard } from "@/components/testimonial-card"
+import { ContactForm } from "@/components/contact-form"
+import { Navbar } from "@/components/navbar"
+import { heroBannersData } from "@/app/data/products"
+
+import img1 from "@/images/homepage/1.png"
+import img2 from "@/images/homepage/2.png"
+import img3 from "@/images/homepage/3.png"
+import img4 from "@/images/homepage/4.png"
+
+export const dynamic = "force-dynamic" // Using the new dynamic directive for fresh data
+
+// Sample new arrivals data
+const newArrivals = [
+  {
+    id: 1,
+    name: "Floral Summer Dress",
+    price: "$89.99",
+    imageSrc: "/placeholder.svg?height=300&width=240",
+    category: "short-dress",
+  },
+  {
+    id: 2,
+    name: "Elegant Evening Gown",
+    price: "$129.99",
+    imageSrc: "/placeholder.svg?height=300&width=240",
+    category: "long-dress",
+  },
+  {
+    id: 3,
+    name: "Casual Denim Jumpsuit",
+    price: "$79.99",
+    imageSrc: "/placeholder.svg?height=300&width=240",
+    category: "jumpsuit",
+  },
+  {
+    id: 4,
+    name: "Bohemian Maxi Dress",
+    price: "$99.99",
+    imageSrc: "/placeholder.svg?height=300&width=240",
+    category: "long-dress",
+  },
+  {
+    id: 5,
+    name: "Classic Black Dress",
+    price: "$69.99",
+    imageSrc: "/placeholder.svg?height=300&width=240",
+    category: "short-dress",
+  },
+  {
+    id: 6,
+    name: "Printed Wrap Dress",
+    price: "$59.99",
+    imageSrc: "/placeholder.svg?height=300&width=240",
+    category: "short-dress",
+  },
+  {
+    id: 7,
+    name: "Linen Summer Suit",
+    price: "$149.99",
+    imageSrc: "/placeholder.svg?height=300&width=240",
+    category: "suit",
+  },
+]
+
+// Sample category products data
+const lehengaProducts = [1, 2, 3, 4, 5, 6].map((id) => ({
+  id,
+  name: "Lehenga Product",
+  price: "$199.99",
+  imageSrc: "/placeholder.svg?height=300&width=240",
+  category: "lehenga",
+}))
+
+const suitProducts = [1, 2, 3, 4, 5, 6].map((id) => ({
+  id,
+  name: "Suit Product",
+  price: "$149.99",
+  imageSrc: "/placeholder.svg?height=300&width=240",
+  category: "suit",
+}))
+
+const jumpsuitProducts = [1, 2, 3, 4, 5, 6].map((id) => ({
+  id,
+  name: "Jumpsuit Product",
+  price: "$89.99",
+  imageSrc: "/placeholder.svg?height=300&width=240",
+  category: "jumpsuit",
+}))
+
+const longDressProducts = [1, 2, 3, 4, 5, 6].map((id) => ({
+  id,
+  name: "Long Dress Product",
+  price: "$119.99",
+  imageSrc: "/placeholder.svg?height=300&width=240",
+  category: "long-dress",
+}))
+
+const shortDressProducts = [1, 2, 3, 4, 5, 6].map((id) => ({
+  id,
+  name: "Short Dress Product",
+  price: "$79.99",
+  imageSrc: "/placeholder.svg?height=300&width=240",
+  category: "short-dress",
+}))
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <Navbar />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <main>
+        {/* Hero Carousel Section */}
+        <section className="bg-[#FFF2E6] py-8">
+          <HeroCarousel banners={heroBannersData} autoSlideInterval={6000} />
+        </section>
+
+        {/* Features Section */}
+        <section className="container mx-auto py-8 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-16 h-16 bg-[#FFF2E6] rounded-full flex items-center justify-center overflow-hidden">
+                <Image
+                  src={img1}
+                  width={48}
+                  height={48}
+                  alt="Women of New Look"
+                  className="object-contain"
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="font-medium text-[#3A3A3A]">Women & Men Led</h3>
+                <p className="text-xs text-[#5A5A5A]">Fashion crafted by leaders, driven by creativity</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                <Image src={img2} width={48} height={48} alt="Icon" />
+              </div>
+              <div>
+                <h3 className="font-medium text-[#3A3A3A]">Customizable Sizes</h3>
+                <p className="text-xs text-[#5A5A5A]">Perfect fit, tailored just for you</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                <Image src={img3} width={48} height={48} alt="Icon" />
+              </div>
+              <div>
+                <h3 className="font-medium text-[#3A3A3A]">Handcrafted Elegance</h3>
+                <p className="text-xs text-[#5A5A5A]">Uniquely made with care and precision</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                <Image src={img4} width={48} height={48} alt="Icon" />
+              </div>
+              <div>
+                <h3 className="font-medium text-[#3A3A3A]">Premium Quality</h3>
+                <p className="text-xs text-[#5A5A5A]">Excellence in every stich</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* New Arrivals with 3D Carousel */}
+        <section className="container mx-auto py-12 px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-serif text-[#3A3A3A]">New Arrivals</h2>
+            <p className="text-[#5A5A5A]">Explore Our Latest Collection in 3D</p>
+          </div>
+
+          <Carousel3D products={newArrivals} />
+        </section>
+
+        {/* Shop by Style */}
+        <section className="container mx-auto py-12 px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-serif text-[#3A3A3A]">Shop by Style</h2>
+            <p className="text-[#5A5A5A]">Find the perfect outfit for every occasion</p>
+          </div>
+
+          {/* Lehenga */}
+          <div id="lehenga" className="mb-12">
+            <div className="flex items-center mb-4">
+              <h3 className="text-xl font-serif text-[#3A3A3A]">Lehenga</h3>
+              <div className="grow ml-4 border-t border-gray-300"></div>
+            </div>
+            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
+              <ScrollableProductSection products={lehengaProducts} showRating={true} category="lehenga" />
+            </div>
+          </div>
+
+          {/* Suit */}
+          <div id="suit" className="mb-12">
+            <div className="flex items-center mb-4">
+              <h3 className="text-xl font-serif text-[#3A3A3A]">Suit</h3>
+              <div className="grow ml-4 border-t border-gray-300"></div>
+            </div>
+            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
+              <ScrollableProductSection products={suitProducts} showRating={true} category="suit" />
+            </div>
+          </div>
+
+          {/* Jumpsuit */}
+          <div id="jumpsuit" className="mb-12">
+            <div className="flex items-center mb-4">
+              <h3 className="text-xl font-serif text-[#3A3A3A]">Jumpsuit</h3>
+              <div className="grow ml-4 border-t border-gray-300"></div>
+            </div>
+            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
+              <ScrollableProductSection products={jumpsuitProducts} showRating={true} category="jumpsuit" />
+            </div>
+          </div>
+
+          {/* Long Dress */}
+          <div id="long-dress" className="mb-12">
+            <div className="flex items-center mb-4">
+              <h3 className="text-xl font-serif text-[#3A3A3A]">Long Dress</h3>
+              <div className="grow ml-4 border-t border-gray-300"></div>
+            </div>
+            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
+              <ScrollableProductSection products={longDressProducts} showRating={true} category="long-dress" />
+            </div>
+          </div>
+
+          {/* Short Dress */}
+          <div id="short-dress" className="mb-12">
+            <div className="flex items-center mb-4">
+              <h3 className="text-xl font-serif text-[#3A3A3A]">Short Dress</h3>
+              <div className="grow ml-4 border-t border-gray-300"></div>
+            </div>
+            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
+              <ScrollableProductSection products={shortDressProducts} showRating={true} category="short-dress" />
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="container mx-auto py-12 px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-serif text-[#3A3A3A]">Grace Woven in Words</h2>
+            <p className="text-[#5A5A5A]">Style, comfort, and confidence—loved by our customers</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <TestimonialCard
+              name="Rohan Malhotra"
+              imageSrc="/placeholder.svg?height=40&width=40"
+              testimonial="Love this sustainable approach to fashion. The quality is amazing and the designs are timeless."
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+            <TestimonialCard
+              name="Aisha Verma"
+              imageSrc="/placeholder.svg?height=40&width=40"
+              testimonial="Absolutely love the sustainable designs! The fabric quality is amazing and the styles are so versatile."
+            />
+            <TestimonialCard
+              name="Meera Iyer"
+              imageSrc="/placeholder.svg?height=40&width=40"
+              testimonial="The dresses are stunning! Perfect for special occasions and everyday wear. Will definitely shop again."
+            />
+          </div>
+
+          <div className="flex justify-center mt-8">
+            <div className="flex space-x-2">
+              {[1, 2, 3].map((dot) => (
+                <div key={dot} className={`w-2 h-2 rounded-full ${dot === 1 ? "bg-[#8B4513]" : "bg-[#D0B090]"}`}></div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Form */}
+        <section className="container mx-auto py-12 px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-serif text-[#3A3A3A]">Let&apos;s Connect & Create Magic!</h2>
+            <p className="text-[#5A5A5A]">Drop us a message, and we&apos;ll weave the perfect solution for you!</p>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <p className="text-center mb-4 text-[#5A5A5A]">From more enquire please connect to us ?</p>
+            <ContactForm />
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
     </div>
-  );
+  )
 }

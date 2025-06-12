@@ -3,3 +3,6 @@ const config = {
 };
 
 export default config;
+
+//LOGOS in header
+//
