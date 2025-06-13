@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import connectToDB from '@/lib/mongodb';
-import User from '@/models/user';
+import User from '@/models/User'; // Ensure this path is correct
 
 export async function POST(req: Request) {
   try {
-    await connectToDB();
+    const db = await connectToDB();
+
+    const User  = (await import('@/models/User')).default;
 
     const contentType = req.headers.get('content-type') || '';
     if (!contentType.includes('application/json')) {
@@ -30,24 +32,17 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = {
+    const newUser = new User({
       name,
       email,
       phone,
       password: hashedPassword,
-      wishlist: [],
-      cart: [],
-      orders: [],
-      address: [],
-      isAdmin: false,
-      isActive: true,
-      createdAt: new Date(),
-    };
+    });
 
     const result = await db.collection('users').insertOne(newUser);
 
     return NextResponse.json(
-      { message: 'User registered successfully', userId: result.insertedId },
+      { message: 'User registered successfully', user: {userId: newUser._id, name: newUser.name, isAdmin:newUser.isAdmin} },
       { status: 200 }
     );
   } catch (error) {

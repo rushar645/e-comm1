@@ -92,21 +92,22 @@ export default function SignUpPage() {
         name: formData.name,
         phone: formData.phone,
       });
-      if (res.status === 200) {
-        // You can store token/session here if returned
-        router.push("/"); // redirect after login
-      }
-      const signInResponse = await signIn("credentials", {
-        redirect: false,
-        email: formData.email,
-        password: formData.password,
-      });
 
-      if (signInResponse?.error) {
-        setErrors(signInResponse.error);
-      } else {
-        router.push("/");
+      if (res.status === 200) {
+
+        const signInResponse = await signIn("Credentials", {
+          redirect: false,
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (signInResponse?.error) {
+          setErrors(signInResponse.error);
+        } else {
+          router.push("/");
+        }
       }
+
     } catch (err: any) {
       setErrors(err?.response?.data?.message || "Login failed");
     } finally {

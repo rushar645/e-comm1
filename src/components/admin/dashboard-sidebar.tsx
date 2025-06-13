@@ -77,7 +77,7 @@ const menuItems = [
   },
 ]
 
-export function DashboardSidebar({ isMobile }: DashboardSidebarProps) {
+export function DashboardSidebar({ isMobile = false }: DashboardSidebarProps) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
@@ -106,7 +106,7 @@ export function DashboardSidebar({ isMobile }: DashboardSidebarProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   {item.submenu.map((subitem) => (
-                    <DropdownMenuItem key={subitem.title}>
+                    <DropdownMenuItem key={subitem.title} className={'bg-white'}>
                       <Link href={subitem.href}>{subitem.title}</Link>
                     </DropdownMenuItem>
                   ))}

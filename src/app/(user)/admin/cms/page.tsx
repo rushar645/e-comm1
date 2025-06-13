@@ -129,7 +129,7 @@ export default function CMSPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold">Static Pages</h2>
-              <p className="text-gray-600">Manage your website&apos;s static content pages</p>
+              <p className="text-grey-600">Manage your website&apos;s static content pages</p>
             </div>
             <Button onClick={() => setEditingPage("new")} className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
@@ -203,6 +203,8 @@ export default function CMSPage() {
                       <Image
                         src={banner.image || "/placeholder.svg"}
                         alt={banner.title}
+                        height={400}
+                        width={800}
                         className="w-full h-full object-cover"
                       />
                     </div>

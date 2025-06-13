@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import connectToDB  from '@/lib/mongodb'
 import bcrypt from 'bcryptjs';
+import User from '@/models/User';
 
 export async function POST(req: Request) {
   try {
@@ -15,11 +16,8 @@ export async function POST(req: Request) {
 
     const {email, password} = await req.json();
 
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
-    }
 
-    const user = await db.collection('users').findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -29,8 +27,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
     }
 
-    const { password: _, ...userWithoutPassword } = user;
-    return NextResponse.json({ message: 'Login successful', user: userWithoutPassword });
+    const userObj = JSON.parse(JSON.stringify(user));
+    delete userObj.password;
+    return NextResponse.json({ message: 'Login successful', user: userObj });
+
 
   } catch (error) {
     console.error('Login error:',  error);

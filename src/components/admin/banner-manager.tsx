@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { Heading } from "@/components/ui/heading"
+import Image from "next/image"
 
 interface BannerManagerProps {
   bannerId: string
@@ -133,11 +134,11 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
         title: "Success",
         description: "Image uploaded successfully.",
       })
-    } catch (error) {
+    } catch (e) {
       toast({
         title: "Error",
         description: "Failed to upload image. Please try again.",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setUploading(false)
@@ -194,9 +195,11 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
                 style={{ backgroundColor: bannerData.backgroundColor }}
               >
                 {bannerData.image && (
-                  <img
+                  <Image
                     src={bannerData.image || "/placeholder.svg"}
                     alt={bannerData.title}
+                    height={256}
+                    width={800}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 )}
@@ -285,9 +288,11 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                 {bannerData.image ? (
                   <div className="relative">
-                    <img
+                    <Image
                       src={bannerData.image || "/placeholder.svg"}
                       alt="Banner"
+                      height={256}
+                      width={800}
                       className="w-full h-32 object-cover rounded-lg"
                     />
                     <Button
