@@ -203,12 +203,12 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Image */}
-      <div className="none md:flex-1 relative bg-gradient-to-br from-gray-300 to-gray-400 h-screen">
+      <div className="none md:flex-1 relative bg-white h-screen">
         <Image
           src={loginImage}
           alt="Fashion Model"
-          fit
-          className="object-cover"
+          fill
+          className="object-contain"
           priority
         />
       </div>
