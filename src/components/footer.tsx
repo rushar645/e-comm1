@@ -47,32 +47,28 @@ const footer = () => {
               <h3 className="font-bold md:text-lg text-[#3A3A3A] mb-4">Services</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="#" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
+                  <Link href="/faq" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
                     F&Q
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
+                  <Link href="/track" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
                     Track
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
+                  <Link href="/about" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
                     About Us
                   </Link>
                 </li>
+            
                 <li>
-                  <Link href="#" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
-                    My Order
+                  <Link href="/privacy" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
+                    Privacy 
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
-                    7-Day Delivery
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
+                  <Link href="/returns" className="text-sm text-[#5A5A5A] hover:text-[#8B4513]">
                     Return & Refund Policy
                   </Link>
                 </li>

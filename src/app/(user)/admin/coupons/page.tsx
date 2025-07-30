@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect} from "react"
 import { useRouter } from "next/navigation"
 import { useAdmin } from "@/contexts/admin-context"
 import { DashboardHeader } from "@/components/admin/dashboard-header"
@@ -16,9 +16,10 @@ import { useToast } from "@/components/ui/use-toast"
 import { Plus, Edit, Trash2, Copy, Calendar, Percent, Tag, Users } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Coupon } from "@/contexts/admin-context"
+import api from "@/lib/axios"
 
 export default function CouponsPage() {
-  const { coupons, addCoupon, updateCoupon, deleteCoupon, loading } = useAdmin()
+  const {  addCoupon, updateCoupon } = useAdmin()
   const { toast } = useToast()
   const router = useRouter()
 
@@ -28,12 +29,34 @@ export default function CouponsPage() {
     code: "",
     type: "percentage" as "percentage" | "fixed" | "free_shipping",
     value: 0,
-    minOrderValue: 0,
-    maxDiscount: 0,
-    expiryDate: "",
-    usageLimit: 0,
-    isActive: true,
+    min_order_value: 0,
+    max_discount: 0,
+    expiry_date: "",
+    usage_limit: 0,
+    is_active: true,
   })
+
+  const [coupons, setCoupons] = useState<Coupon[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchCoupons = async () => {
+      try {
+        setLoading(true)
+        const res = await api.get("api/coupons") // Add filters like `?is_active=true` if needed
+        setCoupons(res.data.data || [])
+      } catch (err:unknown) {
+        setError( "Failed to fetch coupons")
+        console.log(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCoupons()
+  }, [])
+
 
   const handleEdit = (coupon: Coupon) => {
     setEditingCoupon(coupon)
@@ -41,49 +64,78 @@ export default function CouponsPage() {
       code: coupon.code,
       type: coupon.type,
       value: coupon.value,
-      minOrderValue: coupon.minOrderValue,
-      maxDiscount: coupon.maxDiscount || 0,
-      expiryDate: coupon.expiryDate,
-      usageLimit: coupon.usageLimit,
-      isActive: coupon.isActive,
+      min_order_value: coupon.min_order_value,
+      max_discount: coupon.max_discount || 0,
+      expiry_date: coupon.expiry_date,
+      usage_limit: coupon.usage_limit,
+      is_active: coupon.is_active,
     })
     setIsModalOpen(true)
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this coupon?")) {
-      await deleteCoupon(id)
+    const confirmed = confirm("Are you sure you want to delete this coupon? ");
+    if (!confirmed) return;
+  
+    try {
+      await api.delete("api/coupons", {
+        data: { id }
+      });
+  
+      // Remove the deleted coupon from the state
+      setCoupons((prevCoupons) => prevCoupons.filter((coupon:Coupon) => coupon.id !== id));
+  
+      alert("Coupon deleted successfully");
+    } catch (error) {
+      console.error("Error deleting coupon:", error);
+      alert("Failed to delete coupon");
     }
-  }
+  };
+  
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
+    e.preventDefault();
+  
     if (editingCoupon) {
-      await updateCoupon(editingCoupon.id, formData)
-    } else {
-      await addCoupon(formData)
+      try {
+        
+        const res = await api.put(`api/coupons/`, {...formData, id:editingCoupon.id});
+        const updatedCoupon:Coupon = res.data.data;
+  
+        setCoupons((prevCoupons: Coupon[]) =>
+          prevCoupons.map((coupon) =>
+            coupon.id === editingCoupon.id ? updatedCoupon : coupon
+          )
+        );
+        
+  
+        // Reset modal and form state
+        setIsModalOpen(false);
+        setEditingCoupon(null);
+        setFormData({
+          code: "",
+          type: "percentage",
+          value: 0,
+          min_order_value: 0,
+          max_discount: 0,
+          expiry_date: "",
+          usage_limit: 0,
+          is_active: true,
+        });
+      } catch (error) {
+        console.error("Error updating coupon:", error);
+        alert("Failed to update coupon");
+      }
     }
-
-    setIsModalOpen(false)
-    setEditingCoupon(null)
-    setFormData({
-      code: "",
-      type: "percentage",
-      value: 0,
-      minOrderValue: 0,
-      maxDiscount: 0,
-      expiryDate: "",
-      usageLimit: 0,
-      isActive: true,
-    })
-  }
+  };
+  
 
   const stats = {
     total: coupons.length,
-    active: coupons.filter((c) => c.isActive).length,
-    expired: coupons.filter((c) => new Date(c.expiryDate) < new Date()).length,
-    totalUsage: coupons.reduce((sum, c) => sum + c.usedCount, 0),
+    active: coupons.filter((c:Coupon) => c.is_active).length,
+    expired: coupons.filter((c:Coupon) => new Date(c.expiry_date) < new Date()).length,
+    totalUsage: coupons.reduce((sum, c:Coupon) => sum + c.used_count, 0),
   }
 
   const columns: ColumnDef<Coupon>[] = [
@@ -91,20 +143,9 @@ export default function CouponsPage() {
       accessorKey: "code",
       header: "Coupon Code",
       cell: ({ row }) => (
-        <div className="flex items-center space-x-2">
-          <Tag className="h-4 w-4 text-[#3A2723]" />
-          <span className="font-mono font-medium">{row.original.code}</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              navigator.clipboard.writeText(row.original.code)
-              toast({ title: "Copied!", description: "Coupon code copied to clipboard" })
-            }}
-          >
-            <Copy className="h-3 w-3" />
-          </Button>
-        </div>
+        /* ... */
+        <span className="font-mono font-medium">{row.original.code}</span>
+        /* ... */
       ),
     },
     {
@@ -133,20 +174,21 @@ export default function CouponsPage() {
         return "Free Shipping"
       },
     },
+    // FIXED BELOW
     {
-      accessorKey: "minOrderValue",
+      accessorKey: "min_order_value",
       header: "Min Order",
-      cell: ({ row }) => `₹${row.original.minOrderValue}`,
+      cell: ({ row }) => `₹${row.original.min_order_value}`,
     },
     {
-      accessorKey: "usageLimit",
+      accessorKey: "usage_limit",
       header: "Usage",
       cell: ({ row }) => {
-        const { usageLimit, usedCount } = row.original
-        const percent = Math.min((usedCount / usageLimit) * 100, 100)
+        const { usage_limit, used_count } = row.original
+        const percent = Math.min((used_count / usage_limit) * 100, 100)
         return (
           <div className="text-center">
-            <div className="text-sm font-medium">{usedCount} / {usageLimit}</div>
+            <div className="text-sm font-medium">{used_count} / {usage_limit}</div>
             <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
               <div className="bg-[#3A2723] h-1.5 rounded-full" style={{ width: `${percent}%` }} />
             </div>
@@ -155,10 +197,10 @@ export default function CouponsPage() {
       },
     },
     {
-      accessorKey: "expiryDate",
+      accessorKey: "expiry_date",
       header: "Expires",
       cell: ({ row }) => {
-        const expiryDate = new Date(row.original.expiryDate)
+        const expiryDate = new Date(row.original.expiry_date)
         const isExpired = expiryDate < new Date()
         return (
           <div className={`flex items-center space-x-1 ${isExpired ? "text-red-600" : ""}`}>
@@ -169,11 +211,11 @@ export default function CouponsPage() {
       },
     },
     {
-      accessorKey: "isActive",
+      accessorKey: "is_active",
       header: "Status",
       cell: ({ row }) => (
-        <Badge variant={row.original.isActive ? "default" : "secondary"}>
-          {row.original.isActive ? "Active" : "Inactive"}
+        <Badge variant={row.original.is_active ? "default" : "secondary"}>
+          {row.original.is_active ? "Active" : "Inactive"}
         </Badge>
       ),
     },
@@ -192,6 +234,7 @@ export default function CouponsPage() {
       ),
     },
   ]
+  
 
   return (
     <div className="space-y-6">
@@ -204,9 +247,9 @@ export default function CouponsPage() {
               <Plus className="h-4 w-4 mr-2" />
               Create New Coupon
             </Button>
-            <Button onClick={() => setIsModalOpen(true)} variant="outline">
+            {/* <Button onClick={() => setIsModalOpen(true)} variant="outline">
               Quick Add
-            </Button>
+            </Button> */}
           </div>
         }
       />
@@ -248,7 +291,7 @@ export default function CouponsPage() {
           <CardTitle>All Coupons</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={coupons} searchKey="code" searchPlaceholder="Search coupons..." />
+          <DataTable columns={columns} data={coupons} searchKey="code" searchPlaceholder="Search coupons..." loading={loading} />
         </CardContent>
       </Card>
 
@@ -308,8 +351,8 @@ export default function CouponsPage() {
               <Input
                 id="minOrderValue"
                 type="number"
-                value={formData.minOrderValue}
-                onChange={(e) => setFormData({ ...formData, minOrderValue: Number(e.target.value) })}
+                value={formData.min_order_value}
+                onChange={(e) => setFormData({ ...formData, min_order_value: Number(e.target.value) })}
                 placeholder="500"
                 required
               />
@@ -321,8 +364,8 @@ export default function CouponsPage() {
                 <Input
                   id="maxDiscount"
                   type="number"
-                  value={formData.maxDiscount}
-                  onChange={(e) => setFormData({ ...formData, maxDiscount: Number(e.target.value) })}
+                  value={formData.max_discount}
+                  onChange={(e) => setFormData({ ...formData, max_discount: Number(e.target.value) })}
                   placeholder="200"
                 />
               </div>
@@ -333,8 +376,8 @@ export default function CouponsPage() {
               <Input
                 id="expiryDate"
                 type="date"
-                value={formData.expiryDate}
-                onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                value={formData.expiry_date}
+                onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
                 required
               />
             </div>
@@ -344,8 +387,8 @@ export default function CouponsPage() {
               <Input
                 id="usageLimit"
                 type="number"
-                value={formData.usageLimit}
-                onChange={(e) => setFormData({ ...formData, usageLimit: Number(e.target.value) })}
+                value={formData.usage_limit}
+                onChange={(e) => setFormData({ ...formData, usage_limit: Number(e.target.value) })}
                 placeholder="100"
                 required
               />
@@ -354,8 +397,8 @@ export default function CouponsPage() {
             <div className="space-y-2">
               <Label htmlFor="isActive">Status</Label>
               <Select
-                value={formData.isActive ? "active" : "inactive"}
-                onValueChange={(value) => setFormData({ ...formData, isActive: value === "active" })}
+                value={formData.is_active ? "active" : "inactive"}
+                onValueChange={(value) => setFormData({ ...formData, is_active: value === "active" })}
               >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -367,7 +410,7 @@ export default function CouponsPage() {
           </div>
 
           <div className="flex space-x-2 pt-4">
-            <Button type="submit" className="flex-1" disabled={loading.coupons}>
+            <Button type="submit" className="flex-1" disabled={loading}>
               {editingCoupon ? "Update Coupon" : "Create Coupon"}
             </Button>
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="flex-1">

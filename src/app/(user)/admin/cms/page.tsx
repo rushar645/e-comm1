@@ -1,21 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, Edit, Eye, ImageIcon, FileText, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useAdmin } from "@/contexts/admin-context"
 import { StaticPageEditor } from "@/components/admin/static-page-editor"
 import { BannerManager } from "@/components/admin/banner-manager"
 import Image  from "next/image"
+import { HomepageBanner } from "@/types"
 
+import api from "@/lib/axios"
 export default function CMSPage() {
-  const { cmsContent, loading } = useAdmin()
   const [activeTab, setActiveTab] = useState("pages")
   const [editingPage, setEditingPage] = useState<string | null>(null)
   const [editingBanner, setEditingBanner] = useState<string | null>(null)
+  const [homepageBanners, setHomepageBanner] = useState<HomepageBanner[] | null>([])
+
+  useEffect(()=>{
+    async function fetchHomepage(){
+      try{
+        const res = await api.get('api/admin/banners')
+        setHomepageBanner(res.data.data)
+        console.log("Home Page Banner", res)
+      }  
+      catch(e){
+        console.log("Cannot fetch banner", e)
+      }
+
+    }
+
+    fetchHomepage()
+  },[])
 
   const staticPages = [
     {
@@ -60,41 +77,6 @@ export default function CMSPage() {
     },
   ]
 
-  const homepageBanners = [
-    {
-      id: "banner-1",
-      title: "Summer Collection 2024",
-      subtitle: "Discover vibrant styles for the season",
-      image: "/placeholder.svg?height=400&width=800",
-      buttonText: "Shop Now",
-      buttonLink: "/category/summer",
-      position: 1,
-      isActive: true,
-      lastModified: "2024-01-15",
-    },
-    {
-      id: "banner-2",
-      title: "Wedding Special",
-      subtitle: "Elegant lehengas for your special day",
-      image: "/placeholder.svg?height=400&width=800",
-      buttonText: "Explore",
-      buttonLink: "/category/lehenga",
-      position: 2,
-      isActive: true,
-      lastModified: "2024-01-12",
-    },
-    {
-      id: "banner-3",
-      title: "Festive Offers",
-      subtitle: "Up to 50% off on selected items",
-      image: "/placeholder.svg?height=400&width=800",
-      buttonText: "Shop Sale",
-      buttonLink: "/category/sale",
-      position: 3,
-      isActive: false,
-      lastModified: "2024-01-08",
-    },
-  ]
 
   if (editingPage) {
     return <StaticPageEditor pageId={editingPage} onBack={() => setEditingPage(null)} />
@@ -195,7 +177,7 @@ export default function CMSPage() {
           </div>
 
           <div className="grid gap-4">
-            {homepageBanners.map((banner) => (
+          {homepageBanners.map((banner) => (
               <Card key={banner.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex gap-4">

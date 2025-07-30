@@ -4,6 +4,7 @@ import { DashboardSidebar } from "@/components/admin/dashboard-sidebar"
 import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Toaster } from "@/components/ui/use-toast";
 
+
 export default function AdminLayout({
   children,
 }: {
@@ -13,7 +14,7 @@ export default function AdminLayout({
     <AdminProvider>
       <div className="min-h-screen bg-gray-50">
         <div className="flex">
-          <DashboardSidebar />
+          <DashboardSidebar isMobile={false} />
           <div className="flex-1 flex flex-col">
             <DashboardHeader />
             <main className="flex-1 p-6">{children}</main>
@@ -24,3 +25,4 @@ export default function AdminLayout({
     </AdminProvider>
   )
 }
+

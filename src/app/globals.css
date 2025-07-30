@@ -83,12 +83,13 @@
     --chart-5: 340 75% 55%;
   }
 
-  /* *{
-    @apply border-border;
-  } */
-
+  html{
+    /* background: var(--background); */
+    /* @apply bg-background */
+  }
   body {
     /* @apply bg-background text-foreground; */
+    /* background: var(--background); */
     font-family: "Poppins";
   }
 

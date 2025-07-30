@@ -1,78 +1,121 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
+import { createServerClient } from "./supabase"
 
-export const authOptions: NextAuthOptions = {
-  providers: [
-    CredentialsProvider({
-        name: "Credentials",
-        credentials: {
-            email:{label: "Email", type: "text"},
-            password: {label: "Password", type: "password"} 
-        },
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
+const JWT_EXPIRES_IN = "7d"
 
-        async authorize(credentials) {
-            if (!credentials?.email || !credentials?.password) {
-                throw new Error("Email and password are required");
-            }
+export interface AuthUser {
+  id: string
+  name: string
+  email: string
+  role?: "customer" | "admin"
+}
 
-            try{
-                const db = await connectToDB();
-                const user = await db.collection('users').findOne({email: credentials.email});
-                if (!user) {    
-                    throw new Error("User not found");
-                }       
+export interface SessionData {
+  user: AuthUser
+  token: string
+  expiresAt: Date
+}
 
-                const validPassword = await bcrypt.compare(credentials.password, user.password)
+// Hash password
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, 12)
+}
 
-                if (!validPassword) {
-                    throw new Error("Invalid password");
-                }
+// Verify password
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+  return bcrypt.compare(password, hashedPassword)
+}
 
-                return {
-                    id: user._id.toString(),
-                    email: user.email,
-                    name: user.name,
-                    isAdmin: user.isAdmin
-                };
-            }
-            catch (error) {
-                Nex
-            }
+// Generate JWT token
+export function generateToken(payload: any): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+}
 
-        },
-        callbacks:{
-            async jwt({token, user}){
-                if (user) {
-                    return {
-                        id: user.id,
-                        email: user.email,
-                        name: user.name,
-                        isAdmin: user.isAdmin
-                    };
-                }
-                return token;
-            },
+// Verify JWT token
+export function verifyToken(token: string): any {
+  try {
+    return jwt.verify(token, JWT_SECRET)
+  } catch (error) {
+    return null
+  }
+}
 
-            async session({ session, token }){
+// Create session
+export async function createSession(userId: string, userType: "customer" | "admin"): Promise<string> {
+  const supabase = createServerClient()
+  const sessionToken = generateToken({ userId, userType })
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
 
-                if(session.user) {
-                    session.user.id = token.id as string;
-                    session.user.isAdmin = token.isAdmin;
-                } 
+  const tableName = userType === "customer" ? "customer_sessions" : "admin_sessions"
+  const columnName = userType === "customer" ? "customer_id" : "admin_id"
 
-                return session; 
-            }
-        },
-        pages: {
-            signIn: "/login",
-            error: "/login"
-        },
-        session: {
-            strategy: "jwt", 
-            maxAge: 30 * 24 * 60 * 60, // 30 days
-        },
-        secret: process.env.NEXTAUTH_SECRET
-            
-    })
-  ]
+  await supabase.from(tableName).insert({
+    [columnName]: userId,
+    session_token: sessionToken,
+    expires_at: expiresAt.toISOString(),
+  })
+
+  return sessionToken
+}
+
+// Validate session
+export async function validateSession(token: string, userType: "customer" | "admin"): Promise<AuthUser | null> {
+  try {
+    const decoded = verifyToken(token)
+    if (!decoded) return null
+
+    const supabase = createServerClient()
+    const tableName = userType === "customer" ? "customer_sessions" : "admin_sessions"
+    const userTable = userType === "customer" ? "customers" : "admin_users"
+    const columnName = userType === "customer" ? "customer_id" : "admin_id"
+
+    // Check if session exists and is not expired
+    const { data: session } = await supabase
+      .from(tableName)
+      .select("*")
+      .eq("session_token", token)
+      .gt("expires_at", new Date().toISOString())
+      .single()
+
+    if (!session) return null
+
+    // Get user data
+    const { data: user } = await supabase
+      .from(userTable)
+      .select("id, name, email")
+      .eq("id", session[columnName])
+      .single()
+
+    if (!user) return null
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: userType,
+    }
+  } catch (error) {
+    return null
+  }
+}
+
+// Delete session (logout)
+export async function deleteSession(token: string, userType: "customer" | "admin"): Promise<void> {
+  const supabase = createServerClient()
+  const tableName = userType === "customer" ? "customer_sessions" : "admin_sessions"
+
+  await supabase.from(tableName).delete().eq("session_token", token)
+}
+
+// Clean expired sessions
+export async function cleanExpiredSessions(): Promise<void> {
+  const supabase = createServerClient()
+  const now = new Date().toISOString()
+
+  await Promise.all([
+    supabase.from("customer_sessions").delete().lt("expires_at", now),
+    supabase.from("admin_sessions").delete().lt("expires_at", now),
+  ])
 }

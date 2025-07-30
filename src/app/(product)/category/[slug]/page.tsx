@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
@@ -10,6 +10,7 @@ import { FilterSidebar, type FilterState } from "@/components/filter-sidebar"
 import { SortDropdown } from "@/components/sort-dropdown"
 import { capitalizeFirstLetter } from "@/lib/utils"
 import { ProductGridSkeleton } from "@/components/ui/skeleton"
+import api from "@/lib/axios"
 
 interface Product {
   id: number | string
@@ -19,75 +20,71 @@ interface Product {
   imageSrc: string
   colors?: string[]
   fabric?: string
+  sku?:string
 }
 
-
-export default function CategoryPage({ params }: {params: Promise<{ slug: string }>}) {
+export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   // Get the category from the URL
-  
   const category = use(params)
-  const formattedCategory = category.slug.split("-")
-    .map((word) => capitalizeFirstLetter(word))
+  const formattedCategory = category.slug
+    .split("-")
     .join(" ")
 
-  // Sample products data with additional properties for filtering
-  const allProducts: Product[] = Array.from({ length: 24 }, (_, i) => {
-    // Generate random price between 20 and 300
-    const numericPrice = Math.floor(Math.random() * 280) + 20
+  // --- NEW: State for loaded allProducts from API ---
+  const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-    // Assign random colors
-    const colorOptions = [
-      { name: "Red", value: "#FF5733" },
-      { name: "Blue", value: "#3498DB" },
-      { name: "Green", value: "#2ECC71" },
-      { name: "Purple", value: "#9B59B6" },
-      { name: "Yellow", value: "#F1C40F" },
-      { name: "Black", value: "#000000" },
-      { name: "White", value: "#FFFFFF" },
-      { name: "Pink", value: "#FF69B4" },
-    ]
+  // 🟡 Fetch products from your API on mount/category change
+  useEffect(() => {
+    async function fetchProducts() {
+      setLoading(true)
+      setError(null) 
+      try {
+        
+        const res = await api.get(`/api/products?category=${encodeURIComponent(category.slug)}`)
+        console.log("result of products fetch", res)
+        
+        const data = res.data.data
+        console.log("Fetched Images :",data[0].images[0])
+        setAllProducts(
+          data.map((p: any, i: number) => ({
+            id: p.id,
+            name: p.name,
+            price: typeof p.price === "string" ? p.price : `\$${p.price}`,
+            numericPrice: typeof p.price === "number" ? p.price : Number(p.price.replace(/[^0-9.]/g, "")),
+            imageSrc: p.images[0] || "/placeholder.svg?height=300&width=240",
+            colors: p.colors || [],
+            fabric: p.fabric || "",
+            sku:p.sku
+          }))
+        )
 
-    // Randomly select 1-2 colors
-    const productColors = []
-    const numColors = Math.floor(Math.random() * 2) + 1
-    for (let j = 0; j < numColors; j++) {
-      const randomColor = colorOptions[Math.floor(Math.random() * colorOptions.length)]
-      if (!productColors.includes(randomColor.value)) {
-        productColors.push(randomColor.value)
+        // setAllProducts(data);
+
+      } catch (err) {
+        setError(err.message || "Could not load products")
+      } finally {
+        setLoading(false)
       }
     }
 
-    // Assign random fabric
-    const fabricOptions = ["Cotton", "Silk", "Linen", "Polyester", "Denim", "Wool", "Chiffon", "Satin"]
-    const fabric = fabricOptions[Math.floor(Math.random() * fabricOptions.length)]
+    fetchProducts()
+  }, [category.slug])
+  // ----------------------------------------------------
 
-    return {
-      id: i + 1,
-      name: `${formattedCategory} Product ${i + 1}`,
-      price: `$${numericPrice}`,
-      numericPrice,
-      imageSrc: "/placeholder.svg?height=300&width=240",
-      colors: productColors,
-      fabric,
-    }
-  })
-
-  // State for filters
+  // Filter/Sort States (no change)
   const [filters, setFilters] = useState<FilterState>({
-    priceRange: { min: 0, max: 300 },
+    priceRange: { min: 0, max: 10000 },
     colors: [],
     fabrics: [],
   })
-
-  // State for filtered products
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(allProducts)
-
-  // State for active filter count
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [activeFilterCount, setActiveFilterCount] = useState(0)
 
-  // Available filters
   const availableFilters = {
-    priceRange: { min: 0, max: 300 },
+    priceRange: { min: 0, max: 10000 },
+    // ... rest as before ...
     colors: [
       { name: "Red", value: "#FF5733" },
       { name: "Blue", value: "#3498DB" },
@@ -98,45 +95,33 @@ export default function CategoryPage({ params }: {params: Promise<{ slug: string
       { name: "White", value: "#FFFFFF" },
       { name: "Pink", value: "#FF69B4" },
     ],
-    fabrics: ["Cotton", "Silk", "Linen", "Polyester", "Denim", "Wool", "Chiffon", "Satin"],
+    fabrics: ["Cotton", "Linen", "Polyester", "Denim", "Chiffon", "Satin", "GGT", "Cotto Slub","Chanderi","Butter Cotton","Poplin", "Cotton Voil", "Poly Crepe", "Organza", "Poly Spendex", "Modal", "Reyon", "Nylon", "Net", "Dobby", "Velvet", "Taffta", "Viscose", "Polysaint"],
   }
 
-  // Handle filter changes
-  const handleFilterChange = (newFilters: FilterState) => {
-    setFilters(newFilters)
-  }
-
-  // Clear all filters
-  const clearFilters = () => {
+  const handleFilterChange = (newFilters: FilterState) => setFilters(newFilters)
+  const clearFilters = () =>
     setFilters({
       priceRange: { min: 0, max: 300 },
       colors: [],
       fabrics: [],
     })
-  }
 
-  // Apply filters to products
+  // ✔️ Filter logic updates on allProducts change
   useEffect(() => {
     let filtered = allProducts
-
-    // Filter by price
     filtered = filtered.filter(
-      (product) => product.numericPrice >= filters.priceRange.min && product.numericPrice <= filters.priceRange.max,
+      (product) =>
+        product.numericPrice >= filters.priceRange.min &&
+        product.numericPrice <= filters.priceRange.max
     )
-
-    // Filter by colors
     if (filters.colors.length > 0) {
       filtered = filtered.filter((product) => product.colors?.some((color) => filters.colors.includes(color)))
     }
-
-    // Filter by fabrics
     if (filters.fabrics.length > 0) {
       filtered = filtered.filter((product) => product.fabric && filters.fabrics.includes(product.fabric))
     }
-
     setFilteredProducts(filtered)
 
-    // Calculate active filter count
     let count = 0
     if (
       filters.priceRange.min !== availableFilters.priceRange.min ||
@@ -147,12 +132,11 @@ export default function CategoryPage({ params }: {params: Promise<{ slug: string
     count += filters.colors.length
     count += filters.fabrics.length
     setActiveFilterCount(count)
-  }, [filters])
+  }, [filters, allProducts,availableFilters.priceRange.min,  availableFilters.priceRange.max])
 
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="flex items-center text-sm mb-8">
@@ -162,7 +146,6 @@ export default function CategoryPage({ params }: {params: Promise<{ slug: string
           <span className="mx-2 text-[#5A5A5A]">/</span>
           <span className="text-[#3A3A3A] capitalize">{formattedCategory}</span>
         </div>
-
         <div className="flex flex-col md:flex-row gap-8">
           {/* Filters Sidebar */}
           <div className="w-full md:w-1/4">
@@ -174,19 +157,21 @@ export default function CategoryPage({ params }: {params: Promise<{ slug: string
               onClearFilters={clearFilters}
             />
           </div>
-
           {/* Main Content */}
           <div className="w-full md:w-3/4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
               <h1 className="text-2xl md:text-3xl font-serif text-[#3A3A3A] mb-4 md:mb-0">
                 Explore Our Collection <span className="text-[#8B4513]">Available Piece</span>
               </h1>
-
               {/* Sort Dropdown */}
               <SortDropdown />
             </div>
-
-            {filteredProducts.length === 0 ? (
+            {/* Loading & Error */}
+            {loading ? (
+              <ProductGridSkeleton count={12} />
+            ) : error ? (
+              <div className="text-center py-8 text-destructive">{error}</div>
+            ) : filteredProducts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-lg text-[#5A5A5A]">No products match your selected filters.</p>
                 <button onClick={clearFilters} className="mt-4 text-[#8B4513] hover:underline">
@@ -206,7 +191,6 @@ export default function CategoryPage({ params }: {params: Promise<{ slug: string
           </div>
         </div>
       </div>
-
     </div>
   )
 }

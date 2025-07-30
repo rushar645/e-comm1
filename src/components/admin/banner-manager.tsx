@@ -1,9 +1,6 @@
 "use client"
-
-import type React from "react"
-
 import { useState, useEffect } from "react"
-import { ArrowLeft, Save, Eye, Upload, X } from "lucide-react"
+import { ArrowLeft, Save, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -14,7 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { Heading } from "@/components/ui/heading"
+import { SingleImageUpload } from "@/components/ui/single-image-upload"
 import Image from "next/image"
+
+import api from '@/lib/axios'
 
 interface BannerManagerProps {
   bannerId: string
@@ -25,7 +25,12 @@ interface BannerData {
   id: string
   title: string
   subtitle: string
-  image: string
+  image: {
+    url: string
+    publicId: string
+    width: number
+    height: number
+  } | null
   buttonText: string
   buttonLink: string
   position: number
@@ -40,12 +45,11 @@ interface BannerData {
 export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [uploading, setUploading] = useState(false)
   const [bannerData, setBannerData] = useState<BannerData>({
     id: bannerId,
     title: "",
     subtitle: "",
-    image: "",
+    image: null,
     buttonText: "Shop Now",
     buttonLink: "/category",
     position: 1,
@@ -57,92 +61,68 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
     lastModified: new Date().toISOString().split("T")[0],
   })
 
-  useEffect(() => {
-    if (bannerId !== "new") {
-      // Load existing banner data
-      const existingBanners: Record<string, Partial<BannerData>> = {
-        "banner-1": {
-          title: "Summer Collection 2024",
-          subtitle: "Discover vibrant styles for the season",
-          image: "/placeholder.svg?height=400&width=800",
-          buttonText: "Shop Now",
-          buttonLink: "/category/summer",
-          position: 1,
-          isActive: true,
-          backgroundColor: "#FFF2E6",
-          textColor: "#3A3A3A",
-          buttonColor: "#FF6B35",
-          alignment: "left",
-        },
-        "banner-2": {
-          title: "Wedding Special",
-          subtitle: "Elegant lehengas for your special day",
-          image: "/placeholder.svg?height=400&width=800",
-          buttonText: "Explore",
-          buttonLink: "/category/lehenga",
-          position: 2,
-          isActive: true,
-          backgroundColor: "#F0F8FF",
-          textColor: "#2C3E50",
-          buttonColor: "#3498DB",
-          alignment: "center",
-        },
-      }
-
-      const existingData = existingBanners[bannerId]
-      if (existingData) {
-        setBannerData((prev) => ({ ...prev, ...existingData }))
-      }
-    }
-  }, [bannerId])
-
   const handleSave = async () => {
     setLoading(true)
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Validate required fields
+      if (!bannerData.title.trim()) {
+        toast({
+          title: "Validation Error",
+          description: "Banner title is required.",
+          variant: "warning",
+        })
+        return
+      }
+
+      if (!bannerData.image) {
+        toast({
+          title: "Validation Error",
+          description: "Banner image is required.",
+          variant: "warning",
+        })
+        return
+      }
+
+      // Simulate API call to save banner
+      const payload = {
+        ...bannerData,
+        id: bannerId === "new" ? undefined : bannerId,
+      };
+      
+      const response = bannerId === "new"
+        ? await api.post("api/admin/banners", payload)
+        : await api.put("api/admin/banners", payload);
+
+      if (response.status !=200) {
+        throw new Error("Failed to save banner")
+      }
 
       toast({
         title: "Success",
         description: `Banner "${bannerData.title}" has been saved successfully.`,
       })
+
+      // Redirect back to CMS after successful save
+      setTimeout(() => {
+        onBack()
+      }, 1000)
     } catch (error) {
+      console.error("Save error:", error)
       toast({
         title: "Error",
         description: "Failed to save banner. Please try again.",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading(false)
     }
   }
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    setUploading(true)
-    try {
-      // Simulate image upload
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // In real implementation, upload to your storage service
-      const imageUrl = URL.createObjectURL(file)
-      setBannerData((prev) => ({ ...prev, image: imageUrl }))
-
-      toast({
-        title: "Success",
-        description: "Image uploaded successfully.",
-      })
-    } catch (e) {
-      toast({
-        title: "Error",
-        description: "Failed to upload image. Please try again.",
-        variant: "warning",
-      })
-    } finally {
-      setUploading(false)
-    }
+  const handleImageChange = (image: any) => {
+    setBannerData((prev) => ({
+      ...prev,
+      image: image,
+    }))
   }
 
   const handlePreview = () => {
@@ -154,7 +134,7 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+          <Button variant="outline" onClick={onBack} className="flex items-center gap-2 bg-transparent">
             <ArrowLeft className="h-4 w-4" />
             Back to CMS
           </Button>
@@ -170,7 +150,7 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handlePreview} className="flex items-center gap-2">
+          <Button variant="outline" onClick={handlePreview} className="flex items-center gap-2 bg-transparent">
             <Eye className="h-4 w-4" />
             Preview
           </Button>
@@ -196,10 +176,11 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
               >
                 {bannerData.image && (
                   <Image
-                    src={bannerData.image || "/placeholder.svg"}
+                    src={bannerData.image.url || "/placeholder.svg"}
                     alt={bannerData.title}
-                    height={256}
                     width={800}
+                    height={400}
+
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 )}
@@ -240,12 +221,13 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="title">Title</Label>
+                <Label htmlFor="title">Title *</Label>
                 <Input
                   id="title"
                   value={bannerData.title}
                   onChange={(e) => setBannerData((prev) => ({ ...prev, title: e.target.value }))}
                   placeholder="Enter banner title"
+                  required
                 />
               </div>
               <div>
@@ -282,45 +264,18 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
           {/* Image Upload */}
           <Card>
             <CardHeader>
-              <CardTitle>Banner Image</CardTitle>
+              <CardTitle>Banner Image *</CardTitle>
+              <CardDescription>Upload a high-quality banner image (recommended: 450x400px)</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                {bannerData.image ? (
-                  <div className="relative">
-                    <Image
-                      src={bannerData.image || "/placeholder.svg"}
-                      alt="Banner"
-                      height={256}
-                      width={800}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="absolute top-2 right-2"
-                      onClick={() => setBannerData((prev) => ({ ...prev, image: "" }))}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div>
-                    <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-2">Upload banner image</p>
-                    <p className="text-sm text-gray-500">Recommended: 1200x400px, JPG or PNG</p>
-                  </div>
-                )}
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" id="image-upload" />
-                <Button
-                  variant="outline"
-                  className="mt-4"
-                  onClick={() => document.getElementById("image-upload")?.click()}
-                  disabled={uploading}
-                >
-                  {uploading ? "Uploading..." : "Choose Image"}
-                </Button>
-              </div>
+            <CardContent>
+              <SingleImageUpload
+                onImageChange={handleImageChange}
+                folder="banners"
+                existingImage={bannerData.image}
+                width={442}
+                height={450}
+                className="w-full"
+              />
             </CardContent>
           </Card>
 

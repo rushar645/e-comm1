@@ -1,24 +1,49 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { playfairDisplay } from "@/app/layout"
+import { lightenHexColor } from "@/lib/utils"
+
+import { Button } from "@/components/ui/button"
+
+import Image from "next/image"
+import Link from 'next/link';
+import api from "@/lib/axios"
+
 
 interface HeroBanner {
   title: string
   subtitle: string
-  buttonText: string
-  imageSrc: string
+  button_text: string
+  image_url: string
+}
+
+interface Banner {
+  id: string,
+  title: string,
+  subtitle: string,
+  button_text: string,
+  button_link: string,
+  position: number,
+  is_active: boolean,
+  background_color: string,
+  text_color: string,
+  button_color: string,
+  alignment: 'left' | 'center' | 'right',
+  created_at: string,
+  updated_at: string,
+  image_public_id: string,
+  image_url: string,
 }
 
 interface HeroCarouselProps {
-  banners: HeroBanner[]
   autoSlideInterval?: number
 }
 
-export function HeroCarousel({ banners, autoSlideInterval = 5000 }: HeroCarouselProps) {
+export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
+  
+  const [banners, setBanners] = useState<Banner[]>([{}])
   const [currentSlide, setCurrentSlide] = useState(0)
 
   const nextSlide = useCallback(() => {
@@ -29,6 +54,35 @@ export function HeroCarousel({ banners, autoSlideInterval = 5000 }: HeroCarousel
     setCurrentSlide((prev) => (prev === 0 ? banners.length - 1 : prev - 1))
   }, [banners.length])
 
+
+  //Fetch Call
+  useEffect(()=> {
+    const fetchBanners = async () =>{
+      try{
+        const res = await api.get('api/admin/banners')
+
+        if (res.status != 200){
+          alert("Something went wrong!!")
+        }
+
+        setBanners(
+          res.data.data
+            .filter((banner: any) => banner.is_active)            // ✅ Only active banners
+            .sort((a: any, b: any) => a.position - b.position)    // ✅ Sort by position (duplicates allowed)
+        );
+        
+        console.log("Banners:",res)
+      }
+      catch(e){
+        console.log("Errors fetching banners in client side home page::", e)
+      }
+    } 
+
+    fetchBanners()
+  },[])
+
+
+  //Slide Call
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide()
@@ -37,25 +91,42 @@ export function HeroCarousel({ banners, autoSlideInterval = 5000 }: HeroCarousel
     return () => clearInterval(interval)
   }, [nextSlide, autoSlideInterval])
 
+
+
   return (
     <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
       <div
-        className="flex transition-transform duration-500 ease-in-out"
+        className="flex transition-transform duration-800 ease-in-out"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {banners.map((banner, index) => (
-          <div key={index} className="w-full shrink-0 bg-[#FFF2E6] h-[80vh]">
-            <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
-              <div className="md:w-1/2 space-y-6 z-10">
-                <h1 className={`text-3xl md:text-6xl lg:text-7xl font-playfair-display text-[#3A3A3A]`}>{banner.title}</h1>
-                <p className="text-[#5A5A5A] text-lg">{banner.subtitle}</p>
-                <Button className="bg-[#3A2723] hover:bg-[#5A3A33] text-white rounded px-6 py-2">
-                  {banner.buttonText}
-                </Button>
+          <div key={index} className={`w-full shrink-0 h-[80vh]`} style={{backgroundColor:banner.background_color}}>
+            <div className={`container mx-auto px-4 flex flex-col ${banner.alignment == "left"?"md:flex-row":"md:flex-row-reverse"} items-center`}>
+              <div className={`md:w-1/2 space-y-6 z-10 ${banner.alignment == "left"?"":"md:pl-28"}`}>
+                <h1 className={`text-3xl md:text-6xl lg:text-7xl font-playfair-display`} style={{color:banner.text_color}}>{banner.title}</h1>
+                <p className="text-lg" style={{color:banner.text_color}}>{banner.subtitle}</p>
+
+                <Link href={`${banner.button_link}`}>
+                  <Button
+                    className="rounded px-6 py-2 text-white transition-colors duration-300"
+                    style={{
+                      backgroundColor: banner.button_color,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = lightenHexColor(banner.button_color, 0.15);
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = banner.button_color;
+                    }}
+                  >
+                    {banner.button_text}
+                  </Button>
+                </Link>
+
               </div>
               <div className="md:w-1/2 mt-6 md:mt-0">
                 <Image
-                  src={banner.imageSrc || "/placeholder.svg"}
+                  src={banner.image_url || "/placeholder.svg"}
                   width={441.5}
                   height={450}
                   alt="Hero banner"

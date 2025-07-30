@@ -14,7 +14,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
     <div className="flex flex-col md:flex-row gap-4">
       {/* Thumbnails */}
       <div className="flex md:flex-col order-2 md:order-1 gap-2 overflow-x-auto md:overflow-y-auto md:max-h-[500px]">
-        {images.slice(1).map((image, index) => (
+        {images.map((image, index) => (
           <button
             key={index}
             className={`relative w-20 h-20 border-2 ${

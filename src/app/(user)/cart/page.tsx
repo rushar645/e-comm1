@@ -17,7 +17,7 @@ export default function CartPage() {
   const {
     items: cartItems,
     savedItems,
-    updateQuantity,
+    updateQuantity, 
     removeItem,
     saveForLater,
     moveToCart,

@@ -110,6 +110,7 @@ const shortDressProducts = [1, 2, 3, 4, 5, 6].map((id) => ({
 }))
 
 export default function Home() {
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -117,8 +118,8 @@ export default function Home() {
 
       <main>
         {/* Hero Carousel Section */}
-        <section className="bg-[#FFF2E6] py-8">
-          <HeroCarousel banners={heroBannersData} autoSlideInterval={6000} />
+        <section className="py-8">
+          <HeroCarousel autoSlideInterval={6000} />
         </section>
 
         {/* Features Section */}

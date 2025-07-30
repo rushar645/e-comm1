@@ -17,6 +17,8 @@ import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+import api from "@/lib/axios"
+
 export default function NewCouponPage() {
   const router = useRouter()
   const [couponType, setCouponType] = useState("percentage")
@@ -28,6 +30,8 @@ export default function NewCouponPage() {
   const [usageLimit, setUsageLimit] = useState("")
   const [isActive, setIsActive] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
+
+  const [activeTab, setActiveTab] = useState("templates")
 
   const generateRandomCode = () => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -42,11 +46,34 @@ export default function NewCouponPage() {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/admin/coupons")
-    }, 1000)
+    try{
+      const couponData = {
+        code: couponCode,
+        type: couponType,
+        value: Number(discountValue),
+        min_order_value: Number(minOrderValue),
+        max_discount: Number(maxDiscount),
+        expiry_date: expiryDate,
+        usage_limit: Number(usageLimit),
+        is_active: isActive,
+      };
+      
+      console.log("Submitting coupon data:", JSON.stringify(couponData, null, 2));
+      
+      const res = await api.post('api/coupons', couponData);
+      
+
+      if(res.status == 200) {
+        console.log("Created Coupon")
+        router.push("/admin/coupons")
+      }
+    }
+    catch(e){
+      console.log(e)
+    }
+    finally{
+      setIsLoading(false);
+    }
   }
 
   const applyTemplate = (template: string) => {
@@ -59,6 +86,7 @@ export default function NewCouponPage() {
         setMaxDiscount("500")
         setExpiryDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0])
         setUsageLimit("1")
+        setActiveTab("form")
         break
       case "seasonal":
         setCouponType("percentage")
@@ -68,6 +96,7 @@ export default function NewCouponPage() {
         setMaxDiscount("1000")
         setExpiryDate(new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split("T")[0])
         setUsageLimit("100")
+        setActiveTab("form")
         break
       case "shipping":
         setCouponType("shipping")
@@ -77,6 +106,7 @@ export default function NewCouponPage() {
         setMaxDiscount("0")
         setExpiryDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0])
         setUsageLimit("50")
+        setActiveTab("form")
         break
     }
   }
@@ -94,18 +124,16 @@ export default function NewCouponPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="form" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="form">Coupon Form</TabsTrigger>
           <TabsTrigger value="templates">Templates</TabsTrigger>
         </TabsList>
 
         <TabsContent value="templates" className="space-y-4">
+          {/* <TabsTrigger value="form"> */}
           <div className="grid gap-4 md:grid-cols-3">
-            <Card
-              className="cursor-pointer hover:border-[#3A2723] transition-colors"
-              onClick={() => applyTemplate("welcome")}
-            >
+            <Card className="hover:border-[#3A2723] transition-colors">
               <CardHeader className="bg-gradient-to-r from-amber-100 to-amber-200 rounded-t-lg">
                 <CardTitle className="flex items-center">
                   <Tag className="mr-2 h-5 w-5" />
@@ -117,16 +145,13 @@ export default function NewCouponPage() {
                 <p className="text-2xl font-bold text-center">10% OFF</p>
                 <p className="text-sm text-gray-500 text-center mt-2">Min. order ₹1000</p>
                 <p className="text-sm text-gray-500 text-center">Single use per customer</p>
-                <Button className="w-full mt-4" variant="outline">
+                <Button onClick={() => applyTemplate("welcome")} className="w-full cursor-pointer mt-4"  variant="outline">
                   Use Template
                 </Button>
               </CardContent>
             </Card>
 
-            <Card
-              className="cursor-pointer hover:border-[#3A2723] transition-colors"
-              onClick={() => applyTemplate("seasonal")}
-            >
+            <Card className="hover:border-[#3A2723] transition-colors" >
               <CardHeader className="bg-gradient-to-r from-rose-100 to-rose-200 rounded-t-lg">
                 <CardTitle className="flex items-center">
                   <Percent className="mr-2 h-5 w-5" />
@@ -138,16 +163,13 @@ export default function NewCouponPage() {
                 <p className="text-2xl font-bold text-center">25% OFF</p>
                 <p className="text-sm text-gray-500 text-center mt-2">Min. order ₹2500</p>
                 <p className="text-sm text-gray-500 text-center">Max discount ₹1000</p>
-                <Button className="w-full mt-4" variant="outline">
+                <Button onClick={() => applyTemplate("seasonal")} className="cursor-pointer w-full mt-4" variant="outline">
                   Use Template
                 </Button>
               </CardContent>
             </Card>
 
-            <Card
-              className="cursor-pointer hover:border-[#3A2723] transition-colors"
-              onClick={() => applyTemplate("shipping")}
-            >
+            <Card className="cursor-pointer hover:border-[#3A2723] transition-colors">
               <CardHeader className="bg-gradient-to-r from-blue-100 to-blue-200 rounded-t-lg">
                 <CardTitle className="flex items-center">
                   <Truck className="mr-2 h-5 w-5" />
@@ -159,12 +181,13 @@ export default function NewCouponPage() {
                 <p className="text-2xl font-bold text-center">FREE SHIPPING</p>
                 <p className="text-sm text-gray-500 text-center mt-2">Min. order ₹3000</p>
                 <p className="text-sm text-gray-500 text-center">Limited time offer</p>
-                <Button className="w-full mt-4" variant="outline">
+                <Button onClick={() => applyTemplate("shipping")} className="cursor-pointer w-full mt-4" variant="outline">
                   Use Template
                 </Button>
               </CardContent>
             </Card>
           </div>
+          {/* </TabsTrigger> */}
         </TabsContent>
 
         <TabsContent value="form">

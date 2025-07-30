@@ -33,7 +33,7 @@ interface FilterSidebarProps {
 
 // Default available filters
 const defaultAvailableFilters = {
-  priceRange: { min: 0, max: 300 },
+  priceRange: { min: 0, max: 100000 },
   colors: [
     { name: "Red", value: "#FF5733" },
     { name: "Blue", value: "#3498DB" },
@@ -44,7 +44,7 @@ const defaultAvailableFilters = {
     { name: "White", value: "#FFFFFF" },
     { name: "Pink", value: "#FF69B4" },
   ],
-  fabrics: ["Cotton", "Silk", "Linen", "Polyester", "Denim", "Wool", "Chiffon", "Satin"],
+  fabrics: ["Cotton", "Linen", "Polyester", "Denim", "Chiffon", "Satin", "GGT", "Cotto Slub","Chanderi","Butter Cotton","Poplin", "Cotton Voil", "Poly Crepe", "Organza", "Poly Spendex", "Modal", "Reyon", "Nylon", "Net", "Dobby", "Velvet", "Taffta", "Viscose", "Polysaint"],
 }
 
 export function FilterSidebar({
@@ -109,7 +109,7 @@ export function FilterSidebar({
 
   // Format price for display
   const formatPrice = (price: number) => {
-    return `$${price}`
+    return `₹${price}`
   }
 
   // Clear all filters
@@ -203,53 +203,53 @@ export function FilterSidebar({
               <div className="flex items-center">
                 <Checkbox
                   id="price-1"
-                  checked={filters.priceRange.min === 0 && filters.priceRange.max === 50}
+                  checked={filters.priceRange.min === 100 && filters.priceRange.max === 1000}
                   onCheckedChange={(checked) => {
-                    if (checked) handlePriceChange([0, 50])
+                    if (checked) handlePriceChange([100, 1000])
                   }}
                   className="mr-2"
                 />
                 <label htmlFor="price-1" className="text-sm text-[#5A5A5A] cursor-pointer">
-                  $0 - $50
+                ₹100 - ₹1000
                 </label>
               </div>
               <div className="flex items-center">
                 <Checkbox
                   id="price-2"
-                  checked={filters.priceRange.min === 50 && filters.priceRange.max === 100}
+                  checked={filters.priceRange.min === 1000 && filters.priceRange.max === 2500}
                   onCheckedChange={(checked) => {
-                    if (checked) handlePriceChange([50, 100])
+                    if (checked) handlePriceChange([1000, 2500])
                   }}
                   className="mr-2"
                 />
                 <label htmlFor="price-2" className="text-sm text-[#5A5A5A] cursor-pointer">
-                  $50 - $100
+                ₹1000 - ₹2500
                 </label>
               </div>
               <div className="flex items-center">
                 <Checkbox
                   id="price-3"
-                  checked={filters.priceRange.min === 100 && filters.priceRange.max === 150}
+                  checked={filters.priceRange.min === 2500 && filters.priceRange.max === 5000}
                   onCheckedChange={(checked) => {
-                    if (checked) handlePriceChange([100, 150])
+                    if (checked) handlePriceChange([2500, 5000])
                   }}
                   className="mr-2"
                 />
                 <label htmlFor="price-3" className="text-sm text-[#5A5A5A] cursor-pointer">
-                  $100 - $150
+                ₹2500 - ₹5000
                 </label>
               </div>
               <div className="flex items-center">
                 <Checkbox
                   id="price-4"
-                  checked={filters.priceRange.min === 150 && filters.priceRange.max === 500}
+                  checked={filters.priceRange.min === 5000 && filters.priceRange.max === 10000}
                   onCheckedChange={(checked) => {
-                    if (checked) handlePriceChange([150, 500])
+                    if (checked) handlePriceChange([5000, 10000])
                   }}
                   className="mr-2"
                 />
                 <label htmlFor="price-4" className="text-sm text-[#5A5A5A] cursor-pointer">
-                  $150+
+                ₹5000+
                 </label>
               </div>
             </div>

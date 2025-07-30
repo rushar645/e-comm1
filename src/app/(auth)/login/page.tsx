@@ -69,10 +69,12 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await api.post("/api/user/auth/login", {email:formData.emailOrPhone, password: formData.password});
+      const res = await api.post("/api/auth/login", {email:formData.emailOrPhone, password: formData.password});
       if (res.status === 200) {
         // You can store token/session here if returned
         router.push("/"); // redirect after login
+        // console.log(res.data.user)
+        localStorage.setItem('user', JSON.stringify(res.data.user))
       }
     } catch (err: any) {
       setErrors(err?.response?.data?.message || "Login failed");

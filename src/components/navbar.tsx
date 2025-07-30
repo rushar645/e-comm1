@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
+import { usePathname } from 'next/navigation'
 import logo from "@/images/logo.png"
 
 export function Navbar() {
@@ -26,6 +26,9 @@ export function Navbar() {
   const router = useRouter()
   const { itemCount: cartItemCount } = useCart()
   const { itemCount: wishlistItemCount } = useWishlist()
+  const pathname = usePathname();
+  const isAdminPage = pathname === '/admin';
+
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -43,8 +46,12 @@ export function Navbar() {
     { name: "Short Dress", href: "/category/short-dress" },
   ]
 
+  if (isAdminPage) {
+    return <></>
+  }
+  else
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
+    <header className="sticky top-0 z-40 bg-white dark:bg-background shadow-sm">
       <div className="container mx-auto py-3 px-4">
         {showSearch ? (
           <div className="flex items-center">
@@ -123,7 +130,7 @@ export function Navbar() {
                       <User className="h-5 w-5 text-[#3A3A3A]" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent align="end" className={"bg-white"}>
                     <DropdownMenuItem asChild>
                       <Link href="/account" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />

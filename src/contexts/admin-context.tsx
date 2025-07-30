@@ -75,13 +75,13 @@ export interface Coupon {
   code: string
   type: "percentage" | "fixed" | "free_shipping"
   value: number
-  minOrderValue: number
-  maxDiscount?: number
-  expiryDate: string
-  usageLimit: number
-  usedCount: number
-  isActive: boolean
-  createdAt: string
+  min_order_value: number
+  max_discount?: number
+  expiry_date: string
+  usage_limit: number
+  used_count: number
+  is_active: boolean
+  created_at: string
 }
 
 export interface Review {
@@ -404,19 +404,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     // Add more sample reviews...
   ])
 
-  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([
-    {
-      id: "ADMIN-001",
-      name: "Admin User",
-      email: "admin@dressdexterity.com",
-      role: "admin",
-      permissions: ["all"],
-      isActive: true,
-      lastLogin: "2023-06-01",
-      createdAt: "2023-01-01",
-    },
-    // Add more sample admin users...
-  ])
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([])
 
   // Add these state variables after the existing ones
   const [staticPages, setStaticPages] = useState<StaticPage[]>([
@@ -482,7 +470,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: error.message || "Failed to add product",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, products: false }))

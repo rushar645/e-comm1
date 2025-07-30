@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${playfairDisplay.variable} bg-white`}>
+      <body className={`${playfairDisplay.variable}`}>
         <ThemeWrapper>
           <AuthProvider> {/* ✅ Wrap client component here */}
             <CartProvider>

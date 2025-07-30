@@ -8,7 +8,7 @@ import { PaymentMethods } from "@/components/payment-methods"
 import { SocialLinks } from "@/components/social-links"
 import { FilterSidebar, type FilterState } from "@/components/filter-sidebar"
 import { SortDropdown } from "@/components/sort-dropdown"
-import { products } from "@/app/data/products"
+// import { products } from "@/app/data/products"
 
 
 const availableFilters = {
@@ -27,6 +27,7 @@ const availableFilters = {
 }
 
 export default function CategoryPage() {
+  const [products, setProducts] = useState([{}])
   // State for filters
   const [filters, setFilters] = useState<FilterState>({
     priceRange: { min: 0, max: 300 },
@@ -46,6 +47,7 @@ export default function CategoryPage() {
     imageSrc: product.images[0],
     colors: product.colors?.map((c) => c.value) || [],
     fabric: product.fabric || "",
+    sku:product.sku,
   }))
 
   // State for filtered products

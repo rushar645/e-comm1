@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,19 +13,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Package, Heart, MapPin, Settings, Edit, Eye, Truck, CheckCircle, Clock, X } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
-
+import { Camera } from "lucide-react"
+import { SingleImageUpload } from "@/components/ui/single-image-upload"
 // Mock user data - in real app, this would come from authentication context
-const userData = {
-  id: "USER-001",
-  name: "Priya Sharma",
-  email: "priya.sharma@example.com",
-  phone: "+91 98765 43210",
-  avatar: "/placeholder.svg?height=100&width=100",
-  joinDate: "May 2023",
-  totalOrders: 12,
-  totalSpent: 45000,
-  loyaltyPoints: 450,
-}
+import { UploadedImage } from "@/components/ui/single-image-upload"
 
 const orderHistory = [
   {
@@ -107,44 +98,110 @@ const addresses = [
     isDefault: false,
   },
 ]
+const defaultFormData = {
+  name: "",
+  avatar:"",
+  joinDate:"",
+  totalOrders:"",
+  totalSpent:"",
+  loyaltyPoints:"",
+  email:"",
+  phone:""
 
-const wishlistItems = [
-  {
-    id: "WISH-001",
-    productId: "PROD-001",
-    name: "Traditional Lehenga Choli",
-    price: 18500,
-    originalPrice: 22000,
-    image: "/placeholder.svg?height=200&width=200",
-    inStock: true,
-    colors: ["Red", "Blue", "Pink"],
-    sizes: ["S", "M", "L", "XL"],
-  },
-  {
-    id: "WISH-002",
-    productId: "PROD-002",
-    name: "Elegant Party Dress",
-    price: 6500,
-    originalPrice: 8000,
-    image: "/placeholder.svg?height=200&width=200",
-    inStock: false,
-    colors: ["Black", "Navy"],
-    sizes: ["S", "M", "L"],
-  },
-]
+}
+
+
+type WishListItem = {
+  id: string;
+  image: string;
+  name: string;
+  inStock: boolean;
+  price: string;
+  originalPrice: string;
+  colors: string[];
+  sizes: string[];
+};
+
+const defaultWishList: WishListItem[] = [{
+  id: "",
+  image: "",
+  name: "",
+  inStock: false,
+  price: "",
+  originalPrice: "",
+  colors: [],
+  sizes: [],
+}];
 
 export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState("profile")
+   const [activeTab, setActiveTab] = useState("profile")
   const [isEditing, setIsEditing] = useState(false)
-  const [formData, setFormData] = useState(userData)
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false)
+  const [formData, setFormData] = useState(defaultFormData)
+  const [wishlistItems, setWishlistItems] = useState<WishListItem[]>(defaultWishList)
   const { toast } = useToast()
 
-  const handleSaveProfile = () => {
-    // In real app, this would make an API call
-    setIsEditing(false)
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    const savedWishlist = localStorage.getItem("wishlist")
+    if (storedUser) {
+      try {
+        const userObj = JSON.parse(storedUser)
+        setFormData(userObj)
+      } catch (e) {
+        console.log(e)
+        setFormData(defaultFormData)
+      }
+    }
+    if (savedWishlist) {
+      try {
+        setWishlistItems(JSON.parse(savedWishlist))
+      } catch (e) {
+        console.log(e)
+        setWishlistItems([])
+      }
+    }
+  }, [])
+  const handleSaveProfile = async () => {
+    try {
+      // In real app, this would make an API call
+      const response = await fetch("/api/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile")
+      }
+
+      setIsEditing(false)
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been updated successfully.",
+      })
+    } catch (error) {
+      console.error("Profile update error:", error)
+      toast({
+        title: "Update Failed",
+        description: "Failed to update profile. Please try again.",
+        variant: "warning",
+      })
+    }
+  }
+
+  const handleAvatarChange = (image: UploadedImage) => {
+    setFormData((prev) => ({
+      ...prev,
+      avatar: image,
+    }))
+    setShowAvatarUpload(false)
+
     toast({
-      title: "Profile Updated",
-      description: "Your profile has been updated successfully.",
+      title: "Avatar Updated",
+      description: "Your profile picture has been updated successfully.",
     })
   }
 
@@ -192,31 +249,65 @@ export default function AccountPage() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex flex-col items-center text-center mb-6">
-                    <Avatar className="h-20 w-20 mb-4">
-                      <AvatarImage src={userData.avatar || "/placeholder.svg"} alt={userData.name} />
-                      <AvatarFallback className="text-lg">
-                        {userData.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <h3 className="font-semibold text-lg">{userData.name}</h3>
-                    <p className="text-sm text-[#5A5A5A]">Member since {userData.joinDate}</p>
+                    <div className="relative group mb-4">
+                      <Avatar className="h-20 w-20">
+                        <AvatarImage src={formData.avatar || "/placeholder.svg"} alt={formData.name} />
+                        <AvatarFallback className="text-lg">
+                          {formData.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      {/* Camera overlay */}
+                      <button
+                        onClick={() => setShowAvatarUpload(!showAvatarUpload)}
+                        className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Camera className="h-6 w-6 text-white" />
+                      </button>
+                    </div>
+
+                    {/* Avatar Upload Modal */}
+                    {showAvatarUpload && (
+                      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold">Update Profile Picture</h3>
+                            <Button variant="ghost" size="sm" onClick={() => setShowAvatarUpload(false)}>
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+
+                          <SingleImageUpload
+                            onImageChange={handleAvatarChange}
+                            folder="avatars"
+                            existingImage={formData.avatar}
+                            width={200}
+                            height={200}
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <h3 className="font-semibold text-lg">{formData.name}</h3>
+                    <p className="text-sm text-[#5A5A5A]">Member since {formData.joinDate}</p>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Total Orders:</span>
-                      <span className="font-semibold">{userData.totalOrders}</span>
+                      <span className="font-semibold">{formData.totalOrders}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Total Spent:</span>
-                      <span className="font-semibold">₹{userData.totalSpent.toLocaleString()}</span>
+                      <span className="font-semibold">₹{formData.totalSpent.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Loyalty Points:</span>
-                      <span className="font-semibold text-[#D35400]">{userData.loyaltyPoints}</span>
+                      <span className="font-semibold text-[#D35400]">{formData.loyaltyPoints}</span>
                     </div>
                   </div>
                 </CardContent>

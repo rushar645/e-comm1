@@ -97,6 +97,7 @@ export interface Order {
 }
 
 export interface OrderItem {
+  id: string
   productId: string
   name: string
   price: number
@@ -881,33 +882,32 @@ export interface ProductEvent {
 // EXPORT ALL TYPES
 // ============================================================================
 
-// export type {
-//   // Re-export all types for easy importing
-//   Product,
-//   ProductVariant,
-//   ProductCategory,
-//   Order,
-//   OrderItem,
-//   CartItem,
-//   Cart,
-//   Customer,
-//   CustomerProfile,
-//   Address,
-//   Coupon,
-//   Review,
-//   AdminUser,
-//   StaticPage,
-//   HomepageBanner,
-//   CMSContent,
-//   DashboardStats,
-//   SearchFilters,
-//   SearchResult,
-//   WishlistItem,
-//   PaymentMethod,
-//   PaymentDetails,
-//   ShippingMethod,
-//   ShippingAddress,
-//   ApiResponse,
-//   PaginatedResponse,
-//   ApiError,
-// }
+//  export type {
+//     Re-export all types for easy importingProduct,
+//     ProductVariant,
+//     ProductCategory,
+//     Order,
+//    OrderItem,
+//    CartItem,
+//    Cart,
+//    Customer,
+//    CustomerProfile,
+//    Address,
+//    Coupon,
+//    Review,
+//    AdminUser,
+//    StaticPage,
+//    HomepageBanner,
+//    CMSContent,
+//    DashboardStats,
+//    SearchFilters,
+//    SearchResult,
+//    WishlistItem,
+//    PaymentMethod,
+//    PaymentDetails,
+//    ShippingMethod,
+//    ShippingAddress,
+//    ApiResponse,
+//     PaginatedResponse,
+//     ApiError,
+//    }

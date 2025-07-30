@@ -19,6 +19,7 @@ interface ProductCardProps {
   numericPrice: number
   colors?: string[]
   fabric?: string
+  sku?:string
 }
 
 export function ProductCard({
@@ -32,6 +33,7 @@ export function ProductCard({
   numericPrice,
   colors,
   fabric,
+  sku
 }: ProductCardProps) {
   const { addItem } = useCart() // Removed unused isInCart
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist()
@@ -72,7 +74,7 @@ export function ProductCard({
   }
 
   return (
-    <Link href={`/product/${id}`} className="block w-full">
+    <Link href={`/product/${sku}`} className="block w-full">
       <div
         className={`bg-white rounded-lg overflow-hidden transition-all duration-300 ${
           highlighted ? "shadow-xl" : "shadow-sm hover:shadow-md"
@@ -123,7 +125,7 @@ export function ProductCard({
 
         <div className="p-3 bg-brand-light">
           <h3 className="text-sm font-medium text-brand-gray text-center line-clamp-2">{name}</h3>
-          <p className="text-sm text-brand-orange text-center font-medium mt-1">{price}</p>
+          <p className="text-sm text-brand-orange text-center font-medium mt-1">{numericPrice}</p>
 
           {showRating && (
             <div className="flex items-center justify-center mt-1">

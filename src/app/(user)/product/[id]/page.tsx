@@ -1,80 +1,91 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
+import { useState, useEffect } from "react"
 import Image from "next/image"
+import { useParams } from 'next/navigation'
+
 import { Heart, Share2 } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { ProductGallery } from "@/components/product-gallery"
 import { SizeSelector } from "@/components/size-selector"
-import { SimilarProducts } from "@/components/similar-products"
+// import { SimilarProducts } from "@/components/similar-products"
 import { CategoryShowcase } from "@/components/category-showcase"
-import { PaymentMethods } from "@/components/payment-methods"
-import { SocialLinks } from "@/components/social-links"
+
 import { Button } from "@/components/ui/button"
-import { getProductById, getSimilarProducts } from "@/app/data/products"
-import { Breadcrumb } from "@/components/ui/breadcrumb"
+import { Breadcrumb, type BreadcrumbType } from "@/components/ui/breadcrumb"
 import { Rating } from "@/components/ui/rating"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { TypographyH1, TypographyP, TypographySmall, TypographyH2 } from "@/components/ui/typography"
 import { useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
 import { toast } from "@/components/ui/use-toast"
+import SizeGuideModal from "@/components/size-guide-modal" 
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+import api from "@/lib/axios"
+import { Product } from "@/types"
+
+export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [breadcrumbSegments, setBreadcrumbSegments] = useState<BreadcrumbType[]>([]);
+  const [product, setProduct] = useState<Product>()
   const { addItem } = useCart()
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist()
 
-  // Get product data safely
-  const product = getProductById(params.id)
+  const params = useParams()
+  const productId = params?.id
+  
 
-  // If product not found, provide default values
-  if (!product) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-2xl font-bold">Product not found</h1>
-          <p className="mt-4">The product you &apos;re looking for doesn&apos;t exist or has been removed.</p>
-          <Link href="/" className="mt-6 inline-block text-[#8B4513] hover:underline">
-            Return to home page
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  useEffect(()=>{
+    const fetchProduct = async() =>{
+      try{
+        const res = await api.get(`api/products/${productId}`)
+        console.log("Fetching ka res 🔦", res)
+      
+        if(res.status != 200){
+          console.log("No Product Fetched", res)
+        }
 
-  const similarProducts = getSimilarProducts(product.category, params.id)
+        setProduct(res.data.data)
+        const segments:BreadcrumbType[] = [
+          { name: "Home", href: "/" },
+          {
+            name: product?.category.replace(/-/g, " "),
+            href: `/category?category=${product?.category}`,
+          },
+          { name: product?.name },
+        ];
+        setBreadcrumbSegments(segments);
+      }
+      catch(e){
+        console.log("Error Fetching the one product ::", e)
+      }
+    }
+    fetchProduct();
+  })
 
-  // Create breadcrumb segments
-  const breadcrumbSegments = [
-    { name: "Home", href: "/" },
-    { name: product.category.replace(/-/g, " "), href: `/category?category=${product.category}` },
-    { name: product.name },
-  ]
 
   const handleAddToCart = () => {
     if (!selectedSize) {
       toast({
         title: "Please select a size",
         description: "You need to select a size before adding to cart",
-        variant: "destructive",
+        variant: "warning",
         duration: 2000,
       })
       return
     }
 
     addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      numericPrice: Number.parseFloat(product.price.replace(/[^0-9.]/g, "")),
-      imageSrc: product.images[0],
-      color: selectedColor || product.colors?.[0] || "",
+      id: product?.id,
+      name: product?.name,
+      price: product?.price,
+      numericPrice: Number.parseFloat(product?.price.replace(/[^0-9.]/g, "")),
+      imageSrc: product?.images[0],
+      color: selectedColor || product?.colors?.[0] || "",
       size: selectedSize,
-      category: product.category,
+      category: product?.category,
     })
   }
 
@@ -83,7 +94,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       toast({
         title: "Please select a size",
         description: "You need to select a size before proceeding to checkout",
-        variant: "destructive",
+        variant: "warning",
         duration: 2000,
       })
       return
@@ -123,6 +134,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     setSelectedSize(size)
   }
 
+  const sizeGuideToggle = () =>{
+    setIsSizeGuideOpen((prev) => !prev)
+  }
+
+  if(!product)
+  return <>Loading...</>  
+  else
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -165,7 +183,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <div className="mb-4">
               <div className="flex items-baseline">
                 <span className="text-[#5A5A5A] mr-2">{product.mrp}</span>
-                <span className="text-2xl font-medium text-[#D35400]">{product.price}</span>
+                <span className="text-2xl font-medium text-emerald-400">Rs.{product.price}</span>
               </div>
               <TypographySmall>Inclusive of all taxes</TypographySmall>
             </div>
@@ -175,16 +193,16 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <div className="w-6 h-6 mr-2 flex items-center justify-center">
                 <Image src="/placeholder.svg?height=24&width=24" width={24} height={24} alt="Delivery" />
               </div>
-              <TypographySmall>{product.estimatedDelivery}</TypographySmall>
+              <TypographySmall>7 Days</TypographySmall>
             </div>
 
             {/* Size Selection */}
-            <div className="mb-6">
+             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium text-[#3A3A3A]">Select Size</span>
-                <Link href="#" className="text-sm text-[#8B4513] hover:underline">
+                <button onClick={sizeGuideToggle} className="text-sm text-[#8B4513] hover:underline">
                   Size Guide
-                </Link>
+                </button>
               </div>
               <SizeSelector
                 sizes={["XS", "S", "M", "L", "XL"]}
@@ -228,9 +246,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <AccordionItem value="details">
                 <AccordionTrigger>Product Details</AccordionTrigger>
                 <AccordionContent>
-                  This beautiful dress features a floral pattern on a black background. Made from high-quality fabric,
-                  it offers both comfort and style. The sleeveless design and flowy silhouette make it perfect for
-                  various occasions. The dress has a round neckline and falls to mid-calf length.
+                 j
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="reviews">
@@ -265,11 +281,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             </Accordion>
           </div>
         </div>
+        {/* Size Guide Modal */}
+      <SizeGuideModal isOpen={(isSizeGuideOpen)} onClose={sizeGuideToggle} productType={product.category} />
 
         {/* Similar Products */}
         <section className="mb-16">
           <TypographyH2 className="mb-6">Similar Product</TypographyH2>
-          <SimilarProducts products={similarProducts} />
+          {/* <SimilarProducts products={similarProducts} /> */}
         </section>
 
         {/* Explore Other Categories */}
@@ -281,3 +299,4 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     </div>
   )
 }
+ 
