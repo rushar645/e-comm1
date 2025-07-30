@@ -12,6 +12,7 @@ import { SizeSelector } from "@/components/size-selector"
 import { CategoryShowcase } from "@/components/category-showcase"
 
 import { Button } from "@/components/ui/button"
+import ProductLoading from "@/components/product-loading-skeleton"
 import { Breadcrumb, type BreadcrumbType } from "@/components/ui/breadcrumb"
 import { Rating } from "@/components/ui/rating"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -138,8 +139,25 @@ export default function ProductPage() {
     setIsSizeGuideOpen((prev) => !prev)
   }
 
+  const handleCopy = () => {
+
+    const shareText = `http://localhost:3000/product/${product?.sku}`;
+    navigator.clipboard.writeText(shareText)
+      .then(() => {
+        toast({
+          title: "Copied",
+          description: "Link copied to clipboard",
+          variant: "success",
+          duration: 2000,
+        })
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
+
   if(!product)
-  return <>Loading...</>  
+  return <ProductLoading/>  
   else
   return (
     <div className="min-h-screen bg-white">
@@ -168,7 +186,7 @@ export default function ProductPage() {
                 >
                   <Heart className={`h-6 w-6 ${isInWishlist(product.id) ? "fill-red-500" : ""}`} />
                 </button>
-                <button className="p-2 rounded-full hover:bg-gray-100" aria-label="Share product">
+                <button onClick={handleCopy }className="p-2 rounded-full hover:bg-gray-100" aria-label="Share product">
                   <Share2 className="h-6 w-6 text-[#3A3A3A]" />
                 </button>
               </div>
