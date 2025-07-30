@@ -20,18 +20,19 @@ const updateProductSchema = z.object({
   best_seller: z.boolean().optional(),
 })
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{id:string}> }) {
   try {
     const supabase = createServerClient()
+    const { id } = await params
 
-    const { data: product, error } = await supabase.from("products").select("*").eq("sku", params.id).single()
+    const { data: product, error } = await supabase.from("products").select("*").eq("sku", id).single()
 
     if (error) {
       return NextResponse.json({ error: `Product finding error: ${error.message}` }, { status: 404 })
     }
 
     if (!product) {
-      return NextResponse.json({ error: `Product nahi mila: ${error?.message}` }, { status: 404 })
+      return NextResponse.json({ error: `Product nahi mila:` }, { status: 404 })
     }
 
 
@@ -45,15 +46,16 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{id:string}> }) {
   try {
     const body = await request.json()
+    const { id } = await params
     const validatedData = updateProductSchema.parse(body)
 
     const supabase = createServerClient()
 
     // Check if product exists
-    const { data: existingProduct } = await supabase.from("products").select("id").eq("id", params.id).single()
+    const { data: existingProduct } = await supabase.from("products").select("id").eq("id", id).single()
 
     if (!existingProduct) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 })
@@ -65,7 +67,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         .from("products")
         .select("id")
         .eq("sku", validatedData.sku)
-        .neq("id", params.id)
+        .neq("id", id)
         .single()
 
       if (skuCheck) {
@@ -79,7 +81,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         ...validatedData,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single()
 
@@ -102,11 +104,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{id:string}> }) {
   try {
     const supabase = createServerClient()
+    const { id } = await params
 
-    const { error } = await supabase.from("products").delete().eq("id", params.id)
+    const { error } = await supabase.from("products").delete().eq("id", id)
 
     if (error) {
       console.error("Product deletion error:", error)
