@@ -1,12 +1,10 @@
 import Image from "next/image"
-import Link from "next/link"
 import { HeroCarousel } from "@/components/hero-carousel"
 import { Carousel3D } from "@/components/carousel-3d"
 import { ScrollableProductSection } from "@/components/scrollable-product-section"
 import { TestimonialCard } from "@/components/testimonial-card"
 import { ContactForm } from "@/components/contact-form"
-import { Navbar } from "@/components/navbar"
-import { heroBannersData } from "@/app/data/products"
+
 
 import img1 from "@/images/homepage/1.png"
 import img2 from "@/images/homepage/2.png"
@@ -113,8 +111,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <Navbar />
 
       <main>
         {/* Hero Carousel Section */}

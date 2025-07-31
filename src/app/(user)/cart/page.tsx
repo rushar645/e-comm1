@@ -11,7 +11,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
-import { Item } from "@/lib/types"
+// import { Item } from "@/types"
+
+
+import google from "@/images/payments/google-pay.png"
+import visa from "@/images/payments/visa.png"
+import upi from "@/images/payments/upi.png"
+import phonepe from "@/images/payments/phonepe.png"
+import paytm from "@/images/payments/paytm.png"
+
 export default function CartPage() {
   const router = useRouter()
   const {
@@ -127,7 +135,7 @@ export default function CartPage() {
   if (!isClient) {
     return (
       <div className="min-h-screen bg-white">
-        <Navbar />
+
         <main className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-serif text-[#3A3A3A] mb-8">My Cart</h1>
           <p className="text-center py-12">Loading cart...</p>
@@ -142,7 +150,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-serif text-[#3A3A3A]">
@@ -266,7 +273,7 @@ export default function CartPage() {
             )}
 
             {/* Saved for later */}
-            {savedItems.length > 0 && (
+            {savedItems?.length > 0 && (
               <div className="mt-12">
                 <h2 className="text-2xl font-serif text-[#3A3A3A]">
                   Saved for later <span className="text-lg font-normal text-gray-500">Available Piece</span>
@@ -429,14 +436,14 @@ export default function CartPage() {
                 </p>
 
                 <div className="flex justify-center space-x-2 mb-2">
-                  <Image src="/images/payments/google-pay.png" width={40} height={30} alt="Google Pay" />
-                  <Image src="/images/payments/visa.png" width={40} height={30} alt="Visa" />
-                  <Image src="/images/payments/paytm.png" width={40} height={30} alt="Paytm" />
+                  <Image src={google} width={40} height={30} alt="Google Pay" />
+                  <Image src={visa}  width={40} height={30} alt="Visa" />
+                  <Image src={paytm}  width={40} height={30} alt="Paytm" />
                 </div>
 
                 <div className="flex justify-center space-x-2">
-                  <Image src="/images/payments/phonepe.png" width={40} height={30} alt="PhonePe" />
-                  <Image src="/images/payments/upi.png" width={40} height={30} alt="UPI" />
+                  <Image src={phonepe} width={40} height={30} alt="PhonePe" />
+                  <Image src={upi}width={40} height={30} alt="UPI" />
                 </div>
               </div>
             </div>

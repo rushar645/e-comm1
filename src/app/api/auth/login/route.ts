@@ -3,6 +3,7 @@ import { z } from "zod"
 import { createServerClient } from "@/lib/supabase"
 import { verifyPassword, createSession } from "@/lib/auth"
 import {cookies} from 'next/headers';
+import { PublicUser, AdminUser, CustomerUser } from "@/types/user"
 
 
 const loginSchema = z.object({
@@ -12,21 +13,27 @@ const loginSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
-  // const cookieStore = cookies();
-  // const token = cookieStore.get('auth-token')?.value;
+
   try {
     const body = await request.json()
     const validatedData = loginSchema.parse(body)
 
     const supabase = createServerClient()
-    const tableName = validatedData.userType === "customer" ? "customers" : "admin_users"
+    const userType = validatedData.userType === "customer" ? "customers" : "admin_users"
     console.log(validatedData.userType)
-    // Find user
-    const { data: user, error } = await supabase
-      .from(tableName)
-      .select("id, name, email, password, status, role")
-      .eq("email", validatedData.email)
-      .single()
+
+    let select = "id, name, email, password, status, role, cart, wishlist"
+    if (userType == "admin_users"){
+      select = "id, name, email, password, status, role"
+    }
+
+    const { data, error } = await supabase
+    .from(userType)
+    .select(select)
+    .eq("email", validatedData.email)
+    .single<AdminUser | CustomerUser>()
+
+    const user = data
 
     if (error || !user) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
@@ -52,15 +59,27 @@ export async function POST(request: NextRequest) {
     const sessionToken = await createSession(user.id, user.role)
 
     // Set cookie
-    const response = NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    })
+    const publicUser =
+    userType === "customers"
+      ? {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          cart: (user as CustomerUser).cart,
+          wishlist: (user as CustomerUser).wishlist,
+          status: user.status,
+        }
+      : {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+        }
+
+  const response = NextResponse.json({ success: true, user: publicUser })
+
 
     response.cookies.set("auth-token", sessionToken, {
       httpOnly: true,

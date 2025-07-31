@@ -9,6 +9,8 @@ import { CartProvider } from "@/contexts/cart-context";
 import { WishlistProvider } from "@/contexts/wishlist-context";
 import { Toaster } from "@/components/ui/use-toast";
 import Footer from "@/components/footer";
+import { Navbar } from "@/components/navbar";
+import { UserProvider } from "@/contexts/user-contexts";
 
 export const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -37,18 +39,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${playfairDisplay.variable}`}>
-        <ThemeWrapper>
-          <AuthProvider> {/* ✅ Wrap client component here */}
-            <CartProvider>
-              <WishlistProvider>
-                {children}
-                <Footer />
-
-                <Toaster />
-              </WishlistProvider>
-            </CartProvider>
-          </AuthProvider>
-        </ThemeWrapper>
+        <UserProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <Navbar/>
+              {children}
+              <Footer />
+              <Toaster />
+            </WishlistProvider>
+          </CartProvider>
+        </UserProvider>
       </body>
     </html>
   );

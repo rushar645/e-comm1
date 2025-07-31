@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { X, ShoppingCart } from "lucide-react"
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { useWishlist } from "@/contexts/wishlist-context"
 import { useCart } from "@/contexts/cart-context"
@@ -38,7 +37,7 @@ export default function WishlistPage() {
   if (!isClient) {
     return (
       <div className="min-h-screen bg-white">
-        <Navbar />
+      
         <main className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-serif text-[#3A3A3A] mb-8">My Wishlist</h1>
           <p className="text-center py-12">Loading wishlist...</p>
@@ -49,7 +48,7 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
+      
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-serif text-[#3A3A3A]">

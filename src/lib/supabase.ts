@@ -9,3 +9,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export const createServerClient = () => {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY!)
 }
+
+export const createBrowserClient = () => {
+  createClient(supabaseUrl, supabaseAnonKey);
+}

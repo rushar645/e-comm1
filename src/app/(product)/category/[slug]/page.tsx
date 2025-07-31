@@ -3,8 +3,6 @@
 import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
 import { use } from "react"
-
-import { Navbar } from "@/components/navbar"
 import { ProductGrid } from "@/components/product-grid"
 import { FilterSidebar, type FilterState } from "@/components/filter-sidebar"
 import { SortDropdown } from "@/components/sort-dropdown"
@@ -136,7 +134,6 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="flex items-center text-sm mb-8">

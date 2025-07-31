@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -8,7 +10,21 @@ import upi from "@/images/payments/upi.png"
 import phonepe from "@/images/payments/phonepe.png"
 import paytm from "@/images/payments/paytm.png"
 
+import { usePathname } from 'next/navigation'
+
 const footer = () => {
+
+  const pathname = usePathname();
+
+  const isAdminPage = pathname === '/admin';
+  const isLoginPage = pathname ==='/login'
+  const isSignupPage = pathname ==='/singup'
+
+
+  if (isAdminPage || isLoginPage || isSignupPage) {
+    return <></>
+  }
+  else
   return (
     <footer className="bg-[#FBE3CE] pt-12 pb-4 mt-16">
         <div className="container mx-auto px-4">

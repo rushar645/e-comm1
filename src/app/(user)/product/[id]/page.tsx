@@ -5,12 +5,10 @@ import Image from "next/image"
 import { useParams } from 'next/navigation'
 
 import { Heart, Share2 } from "lucide-react"
-import { Navbar } from "@/components/navbar"
 import { ProductGallery } from "@/components/product-gallery"
 import { SizeSelector } from "@/components/size-selector"
 // import { SimilarProducts } from "@/components/similar-products"
 import { CategoryShowcase } from "@/components/category-showcase"
-
 import { Button } from "@/components/ui/button"
 import ProductLoading from "@/components/product-loading-skeleton"
 import { Breadcrumb, type BreadcrumbType } from "@/components/ui/breadcrumb"
@@ -114,13 +112,13 @@ export default function ProductPage() {
 
     // Navigate to checkout page
     window.location.href = "/checkout"
-  }
+  } 
 
   const handleWishlist = () => {
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id)
     } else {
-      addToWishlist({
+      addToWishlist({ 
         id: product.id,
         name: product.name,
         price: product.price,
@@ -161,7 +159,6 @@ export default function ProductPage() {
   else
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
 
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}

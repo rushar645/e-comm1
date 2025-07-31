@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Search, Heart, User, X, ShoppingCart, Menu, LogIn, UserPlus } from "lucide-react"
@@ -24,10 +24,19 @@ export function Navbar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
-  const { itemCount: cartItemCount } = useCart()
+  const { getItemCount} = useCart()
+  const [cartItemCount, setCartItemCount] = useState(0)
   const { itemCount: wishlistItemCount } = useWishlist()
   const pathname = usePathname();
+
   const isAdminPage = pathname === '/admin';
+  const isLoginPage = pathname ==='/login'
+  const isSignupPage = pathname ==='/singup'
+
+  useEffect(()=>{
+    const items = getItemCount;
+    setCartItemCount(items)
+  })
 
 
   const handleSearch = () => {
@@ -46,7 +55,7 @@ export function Navbar() {
     { name: "Short Dress", href: "/category/short-dress" },
   ]
 
-  if (isAdminPage) {
+  if (isAdminPage || isLoginPage || isSignupPage) {
     return <></>
   }
   else

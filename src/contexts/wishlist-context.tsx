@@ -2,23 +2,24 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { toast } from "@/components/ui/use-toast"
+import { createBrowserClient } from "@/lib/supabase"
+import { useUser } from "./user-contexts"
+
+import api from "@/lib/axios"
 
 export interface WishlistItem {
-  id: string | number
-  name: string
+  sku: string
   price: string
-  numericPrice: number
   imageSrc: string
   color?: string
   size?: string
-  category?: string
 }
 
 interface WishlistContextType {
   items: WishlistItem[]
   addItem: (item: WishlistItem) => void
-  removeItem: (id: string | number) => void
-  isInWishlist: (id: string | number) => boolean
+  removeItem: (sku: string) => void
+  isInWishlist: (sku: string) => boolean
   clearWishlist: () => void
   itemCount: number
 }
@@ -27,80 +28,64 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<WishlistItem[]>([])
-  const [mounted, setMounted] = useState(false)
+  const { user, setUser } = useUser()
+  const supabase = createBrowserClient()
 
-  // Load wishlist from localStorage on mount
   useEffect(() => {
-    setMounted(true)
-    const storedWishlist = localStorage.getItem("wishlist")
-    if (storedWishlist) {
-      try {
-        setItems(JSON.parse(storedWishlist))
-      } catch (error) {
-        console.error("Failed to parse wishlist from localStorage:", error)
-      }
+    if (user?.wishlist) {
+      setItems(user.wishlist)
     }
-  }, [])
+  }, [user?.wishlist])
 
-  // Save wishlist to localStorage whenever it changes
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("wishlist", JSON.stringify(items))
+  // Update wishlist in the DB, no await (fire-and-forget style)
+  const updateWishlistInDB = (updatedItems: WishlistItem[]) => {
+    if (!user?.id) return
+
+    try{
+      const res = api.put("api/updatewish", {id:user.id, wishlist:updatedItems})
     }
-  }, [items, mounted])
+    catch(e){
+      console.log(e)
+    }
+  }
 
-  // Add item to wishlist
   const addItem = (item: WishlistItem) => {
     setItems((prevItems) => {
-      // Check if item already exists in wishlist
-      const existingItem = prevItems.find((i) => i.id === item.id)
-      if (existingItem) {
+      const exists = prevItems.some((i) => i.sku === item.sku)
+      if (exists) {
         toast({
           title: "Already in wishlist",
-          description: `${item.name} is already in your wishlist`,
-          duration: 2000,
+          description: `Item with SKU ${item.sku} is already in your wishlist`,
         })
         return prevItems
       }
 
-      // Add new item
+      const updated = [...prevItems, item]
+      updateWishlistInDB(updated)
       toast({
         title: "Added to wishlist",
-        description: `${item.name} added to your wishlist`,
-        duration: 2000,
+        description: `Item with SKU ${item.sku} added to your wishlist`,
       })
-      return [...prevItems, item]
+
+      return updated
     })
   }
 
-  // Remove item from wishlist
-  const removeItem = (id: string | number) => {
+  const removeItem = (sku: string) => {
     setItems((prevItems) => {
-      const itemToRemove = prevItems.find((item) => item.id === id)
-      if (itemToRemove) {
-        toast({
-          title: "Removed from wishlist",
-          description: `${itemToRemove.name} removed from your wishlist`,
-          duration: 2000,
-        })
-      }
-      return prevItems.filter((item) => item.id !== id)
+      const updated = prevItems.filter((item) => item.sku !== sku)
+      updateWishlistInDB(updated)
+      toast({ title: "Removed", description: "Item removed from your wishlist" })
+      return updated
     })
   }
 
-  // Check if item is in wishlist
-  const isInWishlist = (id: string | number) => {
-    return items.some((item) => item.id === id)
-  }
+  const isInWishlist = (sku: string) => items.some((item) => item.sku === sku)
 
-  // Clear wishlist
   const clearWishlist = () => {
     setItems([])
-    toast({
-      title: "Wishlist cleared",
-      description: "All items have been removed from your wishlist",
-      duration: 2000,
-    })
+    updateWishlistInDB([])
+    toast({ title: "Wishlist cleared", description: "All items removed" })
   }
 
   return (
