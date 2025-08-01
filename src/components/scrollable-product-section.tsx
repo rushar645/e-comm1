@@ -3,14 +3,9 @@
 import { useRef } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ProductCard } from "@/components/product-card"
+import { Product } from "@/types"
 
-interface Product {
-  id: number
-  name: string
-  price: string
-  imageSrc: string
-  category?: string
-}
+
 
 interface ScrollableProductSectionProps {
   products: Product[]
@@ -48,11 +43,13 @@ export function ScrollableProductSection({
           <div key={product.id} className="shrink-0 snap-center" style={{ width: "240px" }}>
             <ProductCard
               id={product.id}
-              imageSrc={product.imageSrc}
+              imageSrc={product.images[0]}
               name={product.name}
-              price={product.price}
+              price={product.price.toString()}
+              numericPrice={product.price}
               showRating={showRating}
               category={product.category || category}
+              sku={product.sku}
             />
           </div>
         ))}

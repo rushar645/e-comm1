@@ -9,14 +9,14 @@ import { useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
 
 interface ProductCardProps {
-  id: string | number
+  id: string
   imageSrc: string
   name: string
   price: string
   highlighted?: boolean
   showRating?: boolean
   category?: string
-  numericPrice: number
+  numericPrice?: number
   colors?: string[]
   fabric?: string
   sku?:string
@@ -43,16 +43,16 @@ export function ProductCard({
     e.preventDefault()
     e.stopPropagation()
 
-    addItem({
-      id,
-      name,
-      price,
-      numericPrice,
-      imageSrc,
-      color: colors?.[0] || "",
-      size: "M",
-      category,
-    })
+    // addItem({
+    //   id,
+    //   name,
+    //   price,
+    //   numericPrice,
+    //   imageSrc,
+    //   color: colors?.[0] || "",
+    //   size: "M",
+    //   category,
+    // })
   }
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -62,14 +62,14 @@ export function ProductCard({
     if (isInWishlist(id)) {
       removeFromWishlist(id)
     } else {
-      addToWishlist({
-        id,
-        name,
-        price,
-        numericPrice,
-        imageSrc,
-        category,
-      })
+      // addToWishlist({
+      //   id,
+      //   name,
+      //   price,
+      //   numericPrice,
+      //   imageSrc,
+      //   category,
+      // })
     }
   }
 

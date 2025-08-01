@@ -166,7 +166,7 @@ interface AdminContextType {
 
   // Admin Users
   adminUsers: AdminUser[]
-  addAdminUser: (user: Omit<AdminUser, "id" | "createdAt">) => Promise<void>
+  addAdminUser: (user: Omit<AdminUser, "createdAt">) => Promise<void>
   updateAdminUser: (id: string, updates: Partial<AdminUser>) => Promise<void>
   deleteAdminUser: (id: string) => Promise<void>
 
@@ -682,12 +682,11 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Admin user functions
-  const addAdminUser = async (userData: Omit<AdminUser, "id" | "createdAt">) => {
+  const addAdminUser = async (userData: Omit<AdminUser, "createdAt">) => {
     setLoading((prev) => ({ ...prev, adminUsers: true }))
     try {
       const newUser: AdminUser = {
         ...userData,
-        id: `ADMIN-${Date.now()}`,
         createdAt: new Date().toISOString(),
       }
       setAdminUsers((prev) => [...prev, newUser])
@@ -699,7 +698,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to add admin user",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, adminUsers: false }))

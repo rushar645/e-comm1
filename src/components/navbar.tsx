@@ -36,7 +36,7 @@ export function Navbar() {
   useEffect(()=>{
     const items = getItemCount;
     setCartItemCount(items)
-  })
+  },[])
 
 
   const handleSearch = () => {

@@ -27,7 +27,7 @@ export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
-  const [breadcrumbSegments, setBreadcrumbSegments] = useState<BreadcrumbType[]>([]);
+  // const [breadcrumbSegments, setBreadcrumbSegments] = useState<BreadcrumbType[]>([]);
   const [product, setProduct] = useState<Product>()
   const { addItem } = useCart()
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist()
@@ -47,22 +47,22 @@ export default function ProductPage() {
         }
 
         setProduct(res.data.data)
-        const segments:BreadcrumbType[] = [
-          { name: "Home", href: "/" },
-          {
-            name: product?.category.replace(/-/g, " "),
-            href: `/category?category=${product?.category}`,
-          },
-          { name: product?.name },
-        ];
-        setBreadcrumbSegments(segments);
+        // const segments:BreadcrumbType[] = [
+        //   { name: "Home", href: "/" },
+        //   {
+        //     name: product?.category.replace(/-/g, " "),
+        //     href: `/category?category=${product?.category}`,
+        //   },
+        //   { name: product?.name },
+        // ];
+        // setBreadcrumbSegments(segments);
       }
       catch(e){
         console.log("Error Fetching the one product ::", e)
       }
     }
     fetchProduct();
-  })
+  },[])
 
 
   const handleAddToCart = () => {
@@ -76,16 +76,16 @@ export default function ProductPage() {
       return
     }
 
-    addItem({
-      id: product?.id,
-      name: product?.name,
-      price: product?.price,
-      numericPrice: Number.parseFloat(product?.price.replace(/[^0-9.]/g, "")),
-      imageSrc: product?.images[0],
-      color: selectedColor || product?.colors?.[0] || "",
-      size: selectedSize,
-      category: product?.category,
-    })
+    // addItem({
+    //   id: product?.id,
+    //   name: product?.name,
+    //   price: product?.price,
+    //   numericPrice: Number.parseFloat(product?.price.replace(/[^0-9.]/g, "")),
+    //   imageSrc: product?.images[0],
+    //   color: selectedColor || product?.colors?.[0] || "",
+    //   size: selectedSize,
+    //   category: product?.category,
+    // })
   }
 
   const handleBuyNow = () => {
@@ -99,34 +99,34 @@ export default function ProductPage() {
       return
     }
 
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      numericPrice: Number.parseFloat(product.price.replace(/[^0-9.]/g, "")),
-      imageSrc: product.images[0],
-      color: selectedColor || product.colors?.[0] || "",
-      size: selectedSize,
-      category: product.category,
-    })
+    // addItem({
+    //   id: product.id,
+    //   name: product.name,
+    //   price: product.price,
+    //   numericPrice: Number.parseFloat(product.price.replace(/[^0-9.]/g, "")),
+    //   imageSrc: product.images[0],
+    //   color: selectedColor || product.colors?.[0] || "",
+    //   size: selectedSize,
+    //   category: product.category,
+    // })
 
     // Navigate to checkout page
     window.location.href = "/checkout"
   } 
 
   const handleWishlist = () => {
-    if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id)
-    } else {
-      addToWishlist({ 
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        numericPrice: Number.parseFloat(product.price.replace(/[^0-9.]/g, "")),
-        imageSrc: product.images[0],
-        category: product.category,
-      })
-    }
+    // if (isInWishlist(product.id)) {
+    //   removeFromWishlist(product.id)
+    // } else {
+    //   addToWishlist({ 
+    //     id: product.id,
+    //     name: product.name,
+    //     price: product.price,
+    //     numericPrice: Number.parseFloat(product.price.replace(/[^0-9.]/g, "")),
+    //     imageSrc: product.images[0],
+    //     category: product.category,
+    //   })
+    // }
   }
 
   const handleSizeSelect = (size: string) => {
@@ -162,7 +162,7 @@ export default function ProductPage() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <Breadcrumb segments={breadcrumbSegments} className="mb-8" />
+        {/* <Breadcrumb segments={breadcrumbSegments} className="bread crumb mb-8" /> */}
 
         {/* Product Details */}
         <div className="flex flex-col md:flex-row gap-8 mb-16">
@@ -189,15 +189,15 @@ export default function ProductPage() {
               </div>
             </div>
 
-            <TypographyP className="mb-2">Cloth type: {product.clothType}</TypographyP>
+            <TypographyP className="mb-2">Cloth type: {product.material}</TypographyP>
 
             {/* Rating */}
-            <Rating value={product.rating} className="mb-4" />
+{/* //TODO       <Rating value={product.rating} className="mb-4" /> */}
 
             {/* Price */}
             <div className="mb-4">
               <div className="flex items-baseline">
-                <span className="text-[#5A5A5A] mr-2">{product.mrp}</span>
+                {/* <span className="text-[#5A5A5A] mr-2">{product.price + (Math.random()*200).toFixed()}</span> */}
                 <span className="text-2xl font-medium text-emerald-400">Rs.{product.price}</span>
               </div>
               <TypographySmall>Inclusive of all taxes</TypographySmall>
@@ -244,17 +244,17 @@ export default function ProductPage() {
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            {/* <div className="grid grid-cols-2 gap-4 mb-6">
               {product.features &&
                 product.features.map((feature, index) => (
                   <div key={index} className="flex items-center">
                     <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-2">
                       <Image src="/placeholder.svg?height=20&width=20" width={20} height={20} alt={feature} />
-                    </div>
+                    </div>hello
                     <TypographySmall>{feature}</TypographySmall>
                   </div>
                 ))}
-            </div>
+            </div> */}
 
             {/* Accordions */}
             <Accordion type="single" collapsible className="w-full">

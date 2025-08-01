@@ -52,7 +52,14 @@ export interface CartContextType {
   getTotal: () => number
   getTotalSavings: () => number
   isEligibleForFreeShipping: () => boolean
+
+  // Relaxed
+  appliedDiscount:{code:string, description:string}
+  shippingDiscount:number
+  applyDiscount: (code:string) => {success:boolean, message:string, discount:number}
+  removeDiscount: () => void
 }
+
 
 type CartAction =
   | { type: "ADD_ITEM"; payload: CartItem }

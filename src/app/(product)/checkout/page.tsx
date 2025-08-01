@@ -237,7 +237,7 @@ export default function CheckoutPage() {
                 </div>
               ) : (
                 items.map((item) => (
-                  <div key={`${item.id}-${item.size}-${item.color}`} className="flex space-x-3">
+                  <div key={item.id} className="flex space-x-3">
                     <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-200 rounded-lg overflow-hidden shrink-0">
                       <Image
                         src={item.imageSrc || "/placeholder.svg?height=64&width=64"}
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-[#3A3A3A] text-sm md:text-base truncate">{item.name}</h3>
                       <p className="text-xs md:text-sm text-[#5A5A5A]">
-                        Color: {item.color || "Default"} Size: {item.size || "M"}
+                        Color: {"Default"} Size: {"M"}
                       </p>
                       <p className="text-xs md:text-sm text-[#5A5A5A]">Qty: {item.quantity}</p>
                     </div>

@@ -10,6 +10,7 @@ import img1 from "@/images/homepage/1.png"
 import img2 from "@/images/homepage/2.png"
 import img3 from "@/images/homepage/3.png"
 import img4 from "@/images/homepage/4.png"
+import HomePageProducts from "@/components/homepage-products"
 
 export const dynamic = "force-dynamic" // Using the new dynamic directive for fresh data
 
@@ -166,77 +167,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* New Arrivals with 3D Carousel */}
-        <section className="container mx-auto py-12 px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-serif text-[#3A3A3A]">New Arrivals</h2>
-            <p className="text-[#5A5A5A]">Explore Our Latest Collection in 3D</p>
-          </div>
-
-          <Carousel3D products={newArrivals} />
-        </section>
-
-        {/* Shop by Style */}
-        <section className="container mx-auto py-12 px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-serif text-[#3A3A3A]">Shop by Style</h2>
-            <p className="text-[#5A5A5A]">Find the perfect outfit for every occasion</p>
-          </div>
-
-          {/* Lehenga */}
-          <div id="lehenga" className="mb-12">
-            <div className="flex items-center mb-4">
-              <h3 className="text-xl font-serif text-[#3A3A3A]">Lehenga</h3>
-              <div className="grow ml-4 border-t border-gray-300"></div>
-            </div>
-            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
-              <ScrollableProductSection products={lehengaProducts} showRating={true} category="lehenga" />
-            </div>
-          </div>
-
-          {/* Suit */}
-          <div id="suit" className="mb-12">
-            <div className="flex items-center mb-4">
-              <h3 className="text-xl font-serif text-[#3A3A3A]">Suit</h3>
-              <div className="grow ml-4 border-t border-gray-300"></div>
-            </div>
-            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
-              <ScrollableProductSection products={suitProducts} showRating={true} category="suit" />
-            </div>
-          </div>
-
-          {/* Jumpsuit */}
-          <div id="jumpsuit" className="mb-12">
-            <div className="flex items-center mb-4">
-              <h3 className="text-xl font-serif text-[#3A3A3A]">Jumpsuit</h3>
-              <div className="grow ml-4 border-t border-gray-300"></div>
-            </div>
-            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
-              <ScrollableProductSection products={jumpsuitProducts} showRating={true} category="jumpsuit" />
-            </div>
-          </div>
-
-          {/* Long Dress */}
-          <div id="long-dress" className="mb-12">
-            <div className="flex items-center mb-4">
-              <h3 className="text-xl font-serif text-[#3A3A3A]">Long Dress</h3>
-              <div className="grow ml-4 border-t border-gray-300"></div>
-            </div>
-            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
-              <ScrollableProductSection products={longDressProducts} showRating={true} category="long-dress" />
-            </div>
-          </div>
-
-          {/* Short Dress */}
-          <div id="short-dress" className="mb-12">
-            <div className="flex items-center mb-4">
-              <h3 className="text-xl font-serif text-[#3A3A3A]">Short Dress</h3>
-              <div className="grow ml-4 border-t border-gray-300"></div>
-            </div>
-            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
-              <ScrollableProductSection products={shortDressProducts} showRating={true} category="short-dress" />
-            </div>
-          </div>
+        <section>
+          <HomePageProducts/>
         </section>
 
         {/* Testimonials */}

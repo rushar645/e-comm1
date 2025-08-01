@@ -13,6 +13,7 @@ import Image from "next/image";
 import api from "@/lib/axios";
 import { useAdmin } from "@/contexts/admin-context";
 import loginImage from '@/images/admin_login/login.png'
+import { cn } from "@/lib/utils";
 
 
 interface LoginFormData {
@@ -25,6 +26,12 @@ interface FormErrors {
   emailOrPhone?: string;
   password?: string;
   userType:string;
+}
+
+const defaultFormErrors:FormErrors = {
+  emailOrPhone:"",
+  password:"",
+  userType:""
 }
 
 export default function LoginPage() {
@@ -40,18 +47,18 @@ export default function LoginPage() {
     password: "",
     rememberMe: false,
   });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [errors, setErrors] = useState<FormErrors>(defaultFormErrors);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   useEffect(() => {
     const user = localStorage.getItem('user')
-    if (user == {} || user =='{}')
+    if (user == null || user =='{}')
       return;
     else 
-      setIsUserLoggedIn(ture); 
+      setIsUserLoggedIn(true); 
   }, []);
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+    const newErrors: FormErrors = defaultFormErrors;
 
     if (!formData.emailOrPhone.trim()) {
       newErrors.emailOrPhone = "Email or phone number is required";
@@ -80,7 +87,7 @@ export default function LoginPage() {
         
         router.push("/admin"); 
         await addAdminUser({
-          id:1,
+          id:"1",
           name:"admin",
           email: formData.emailOrPhone,
           role: "admin",
@@ -129,15 +136,17 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
-                <Input
+              <Input
                   type="text"
                   placeholder="Email Address/Phone Number"
                   value={formData.emailOrPhone}
                   onChange={(e) =>
                     handleInputChange("emailOrPhone", e.target.value)
                   }
-                  className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]"
-                  error={!!errors.emailOrPhone}
+                  className={cn(
+                    "h-14 text-base rounded-2xl border border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]",
+                    errors.emailOrPhone && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  )}
                 />
                 {errors.emailOrPhone && (
                   <p className="text-red-500 text-sm mt-1">
@@ -147,15 +156,16 @@ export default function LoginPage() {
               </div>
 
               <div className="relative">
-                <Input
+              <Input
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={formData.password}
-                  onChange={(e) =>
-                    handleInputChange("password", e.target.value)
-                  }
-                  className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723] pr-12"
-                  error={!!errors.password}
+                  onChange={(e) => handleInputChange("password", e.target.value)}
+                  className={cn(
+                    "h-14 text-base rounded-2xl border-gray-300 pr-12",
+                    "focus:border-[#3A2723] focus:ring-[#3A2723]",
+                    errors.password && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  )}
                 />
                 <button
                   type="button"

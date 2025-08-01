@@ -17,21 +17,21 @@ export default function WishlistPage() {
     setIsClient(true)
   }, [])
 
-  const handleRemoveFromWishlist = (id: string | number) => {
+  const handleRemoveFromWishlist = (id: string) => {
     removeItem(id)
   }
 
   const handleAddToCart = (item: any) => {
-    addItem({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      numericPrice: item.numericPrice,
-      imageSrc: item.imageSrc,
-      color: item.color || "",
-      size: item.size || "M",
-      category: item.category || "",
-    })
+    // addItem({
+    //   id: item.id,
+    //   name: item.name,
+    //   price: item.price,
+    //   numericPrice: item.numericPrice,
+    //   imageSrc: item.imageSrc,
+    //   color: item.color || "",
+    //   size: item.size || "M",
+    //   category: item.category || "",
+    // })
   }
 
   if (!isClient) {
@@ -65,21 +65,21 @@ export default function WishlistPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-8">
             {wishlistItems.map((item) => (
-              <div key={item.id} className="bg-white border rounded-lg overflow-hidden relative">
+              <div key={item.sku} className="bg-white border rounded-lg overflow-hidden relative">
                 <button
-                  onClick={() => handleRemoveFromWishlist(item.id)}
+                  onClick={() => handleRemoveFromWishlist(item.sku)}
                   className="absolute top-2 right-2 z-10 bg-white rounded-full p-1 shadow-md"
                   aria-label="Remove from wishlist"
                 >
                   <X className="h-4 w-4" />
                 </button>
-                <Link href={`/product/${item.id}`}>
+                <Link href={`/product/${item.sku}`}>
                   <div className="relative h-48 bg-gray-200">
-                    <Image src={item.imageSrc || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+                    <Image src={item.imageSrc || "/placeholder.svg"} alt={item.sku} fill className="object-cover" />
                   </div>
                 </Link>
                 <div className="p-3">
-                  <h3 className="text-sm font-medium">{item.name}</h3>
+                  <h3 className="text-sm font-medium">{item.sku}</h3>
                   <p className="text-sm">{item.price}</p>
                   <Button
                     variant="outline"
