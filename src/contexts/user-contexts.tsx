@@ -15,7 +15,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Fetch user from API on mount
   useEffect(() => {
-    fetch("/api/auth//me")
+    fetch("/api/auth/me")
       .then((res) => res.json())
       .then((data) => setUser(data.user))
       .catch(() => setUser(null))

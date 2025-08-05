@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Package, Heart, MapPin, Settings, Edit, Eye, Truck, CheckCircle, Clock, X } from "lucide-react"
 import Image from "next/image"
@@ -72,7 +71,6 @@ const orderHistory = [
     ],
   },
 ]
-
 const addresses = [
   {
     id: "ADDR-001",
@@ -300,7 +298,7 @@ export default function AccountPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Total Spent:</span>
-                      <span className="font-semibold">₹{formData.totalSpent.toLocaleString()}</span>
+                      <span className="font-semibold">₹{formData.totalSpent?.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Loyalty Points:</span>
@@ -566,7 +564,7 @@ export default function AccountPage() {
                 {/* Settings Tab */}
                 <TabsContent value="settings">
                   <div className="space-y-6">
-                    <Card>
+                    {/* <Card>
                       <CardHeader>
                         <CardTitle>Account Settings</CardTitle>
                         <CardDescription>Manage your account preferences</CardDescription>
@@ -630,7 +628,7 @@ export default function AccountPage() {
                           </Button>
                         </div>
                       </CardContent>
-                    </Card>
+                    </Card> */}
 
                     <Card>
                       <CardHeader>

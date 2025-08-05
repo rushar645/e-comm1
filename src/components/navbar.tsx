@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Search, Heart, User, X, ShoppingCart, Menu, LogIn, UserPlus } from "lucide-react"
+import { Search, Heart, User, X, ShoppingCart, Menu, LogIn, UserPlus, LogOut } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useRouter } from "next/navigation"
@@ -19,6 +19,8 @@ import {
 import { usePathname } from 'next/navigation'
 import logo from "@/images/logo.png"
 
+import { useUser } from "@/contexts/user-contexts"
+
 export function Navbar() {
   const [showSearch, setShowSearch] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
@@ -32,6 +34,7 @@ export function Navbar() {
   const isAdminPage = pathname === '/admin';
   const isLoginPage = pathname ==='/login'
   const isSignupPage = pathname ==='/singup'
+  const {user, setUser} = useUser();
 
   useEffect(()=>{
     const items = getItemCount;
@@ -141,23 +144,29 @@ export function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className={"bg-white"}>
                     <DropdownMenuItem asChild>
-                      <Link href="/account" className="flex items-center">
+                      {user && <Link href="/account" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
                         My Account
-                      </Link>
+                      </Link>}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/login" className="flex items-center">
+                      {!user && <Link href="/login" className="flex items-center">
                         <LogIn className="mr-2 h-4 w-4" />
                         Sign In
-                      </Link>
+                      </Link>}
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/signup" className="flex items-center">
+                      {!user && <Link href="/signup" className="flex items-center">
                         <UserPlus className="mr-2 h-4 w-4" />
                         Sign Up
-                      </Link>
+                      </Link>}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      {user && <button className='flex items-center cursor-pointer text-red-600' onClick={()=>setUser(null)}>
+                        <LogOut className="mr-4 h-4 w-4"/>
+                        Log out
+                      </button>}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -197,9 +206,6 @@ export function Navbar() {
                   <Menu className="h-5 w-5 text-[#3A3A3A]" />
                 </button>
 
-                <div className="hidden sm:block">
-                  <ThemeToggle />
-                </div>
               </div>
               </div>
             </div>

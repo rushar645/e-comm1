@@ -60,7 +60,7 @@ export default function HomePageProducts() {
               <h3 className="text-xl font-serif text-[#3A3A3A]">{section.category}</h3>
               <div className="grow ml-4 border-t border-gray-300"></div>
             </div>
-            <div className="bg-[#7BA59A] bg-opacity-10 p-4 rounded-md">
+            <div className="bg-[#799e9a] bg-opacity-10 p-4 rounded-md">
               <ScrollableProductSection
                 products={section.products}
                 showRating={true}

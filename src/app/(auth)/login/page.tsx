@@ -75,7 +75,7 @@ export default function LoginPage() {
         
         router.push("/"); 
         console.log("Welcome User customer",res.data.user)
-        localStorage.setItem('user', JSON.stringify(res.data.user))
+        setUser(res.data.user)
       }
     } catch (err: any) {
       setErrors(err?.response?.data?.message || "Login failed");
