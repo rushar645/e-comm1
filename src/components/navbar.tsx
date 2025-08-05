@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Search, Heart, User, X, ShoppingCart, Menu, LogIn, UserPlus, LogOut } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { ThemeToggle } from "@/components/theme-toggle"
+// import { ThemeToggle } from "@/components/theme-toggle"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
@@ -16,9 +16,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { toast } from "./ui/use-toast"
 import { usePathname } from 'next/navigation'
-import logo from "@/images/logo.png"
 
+import logo from "@/images/logo.png"
+import api from "@/lib/axios"
 import { useUser } from "@/contexts/user-contexts"
 
 export function Navbar() {
@@ -47,6 +49,20 @@ export function Navbar() {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
       setShowSearch(false)
       setSearchQuery("")
+    }
+  }
+
+  const logOut = async() =>{
+    try{
+      const res = await api.post("api/auth/logout")
+      if (res.status == 200){
+        // toast()
+        setUser(null);
+        router.push('/');
+      }
+    }
+    catch(e){
+      console.log("Error Logging Out", e)
     }
   }
 
@@ -163,7 +179,7 @@ export function Navbar() {
                       </Link>}
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      {user && <button className='flex items-center cursor-pointer text-red-600' onClick={()=>setUser(null)}>
+                      {user && <button className='flex items-center cursor-pointer text-red-600' onClick={logOut}>
                         <LogOut className="mr-4 h-4 w-4"/>
                         Log out
                       </button>}
@@ -224,32 +240,34 @@ export function Navbar() {
                       {category.name}
                     </Link>
                   ))}
-                  <Link
+                  <hr className="text-gray-300"></hr>
+                  {user && <Link
                     href="/account"
-                    className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors"
+                    className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors flex items-center"
                     onClick={() => setShowMobileMenu(false)}
-                  >
+                  ><User className="mr-2 h-4 w-4"/>
                     My Account
-                  </Link>
-                  <Link
-                    href="/auth/login"
+                  </Link>}
+                  {!user && <Link
+                    href="/login"
                     className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors flex items-center"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     <LogIn className="mr-2 h-4 w-4" />
                     Sign In
-                  </Link>
-                  <Link
-                    href="/auth/signup"
+                  </Link>}
+                   {!user && <Link
+                    href="/signup"
                     className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors flex items-center"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     <UserPlus className="mr-2 h-4 w-4" />
                     Sign Up
-                  </Link>
-                  <div className="sm:hidden pt-2">
-                    <ThemeToggle />
-                  </div>
+                  </Link>}
+                  {user && <button className='flex items-center cursor-pointer text-red-600 text-sm py-2 px-2' onClick={logOut}>
+                    <LogOut className="mr-4 h-4 w-4"/>
+                        Log out
+                  </button>}
                 </nav>
               </div>
             )}

@@ -4,6 +4,7 @@ export type BaseUser = {
     id: string
     name: string
     email: string
+    phone: number
     password: string
     status: "active" | "inactive"
     role: "admin" | "customer"

@@ -57,33 +57,6 @@ export const newArrivalsData = [
   },
 ]
 
-import heroBanner1 from "@/images/banner/image9.png";
-
-export const heroBannersData = [
-  {
-    id: 1,
-    title: "Welcome to Dress Dexterity –\nSustainable, Stylish, &\nDesigned to Last.",
-    subtitle:
-      "High-quality visuals showcasing the latest collection with\na slogan like: Where Style Meets Sustainability",
-    buttonText: "Shop Now",
-    imageSrc: heroBanner1,
-  },
-  {
-    id: 2,
-    title: "Summer Collection 2023\nBright Colors &\nBreathable Fabrics",
-    subtitle: "Discover our new summer collection with vibrant colors\nand lightweight fabrics perfect for the season",
-    buttonText: "Explore Collection",
-    imageSrc: "/placeholder.svg?height=500&width=400",
-  },
-  {
-    id: 3,
-    title: "Exclusive Designs\nHandcrafted with Love\nJust for You",
-    subtitle: "Each piece is carefully crafted by our artisans\nusing traditional techniques and sustainable materials",
-    buttonText: "View Exclusives",
-    imageSrc: "/placeholder.svg?height=500&width=400",
-  },
-]
-
 // Helper function to get product by ID
 export function getProductById(id: string | number) {
   // Convert id to number if it's a string

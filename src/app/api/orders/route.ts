@@ -6,7 +6,7 @@ const orderItemSchema = z.object({
   product_id: z.string().uuid(),
   product_name: z.string(),
   product_sku: z.string(),
-  price: z.number().positive(),
+  product_price: z.number().positive(),
   quantity: z.number().int().positive(),
   color: z.string().optional(),
   size: z.string().optional(),
@@ -15,27 +15,13 @@ const orderItemSchema = z.object({
 
 const orderSchema = z.object({
   customer_id: z.string().uuid().optional(),
-  customer_name: z.string().min(1),
-  customer_email: z.string().email(),
-  customer_phone: z.string().min(10),
-  shipping_address: z.object({
-    name: z.string(),
-    phone: z.string(),
-    address: z.string(),
-    city: z.string(),
-    state: z.string(),
-    pincode: z.string(),
-    landmark: z.string().optional(),
-  }),
+  shipping_id: z.uuid(),
   items: z.array(orderItemSchema).min(1),
   subtotal: z.number().positive(),
   shipping_cost: z.number().min(0).default(0),
-  tax: z.number().min(0).default(0),
   discount: z.number().min(0).default(0),
   total: z.number().positive(),
-  payment_method: z.string().optional(),
   coupon_code: z.string().optional(),
-  notes: z.string().optional(),
 })
 
 export async function GET(request: NextRequest) {
@@ -102,18 +88,14 @@ export async function POST(request: NextRequest) {
       .from("orders")
       .insert({
         customer_id: validatedData.customer_id,
-        customer_name: validatedData.customer_name,
-        customer_email: validatedData.customer_email,
-        customer_phone: validatedData.customer_phone,
-        shipping_address: validatedData.shipping_address,
+        shipping_address_id:validatedData.shipping_id,
         subtotal: validatedData.subtotal,
         shipping_cost: validatedData.shipping_cost,
-        tax: validatedData.tax,
         discount: validatedData.discount,
         total: validatedData.total,
-        payment_method: validatedData.payment_method,
         coupon_code: validatedData.coupon_code,
-        notes: validatedData.notes,
+        status:"pending",
+        tracking_number:""
       })
       .select()
       .single()

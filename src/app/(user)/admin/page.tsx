@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   BarChart,
@@ -13,87 +14,51 @@ import {
   Line,
   Legend,
 } from "recharts"
-import { ArrowUpIcon, ArrowDownIcon, DollarSign, ShoppingBag, Users, Ticket, PlusCircle } from "lucide-react"
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  DollarSign,
+  ShoppingBag,
+  Users,
+  Ticket,
+  PlusCircle,
+} from "lucide-react"
 import { DataTable } from "@/components/admin/data-table"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
-// Sample data for charts
-const salesData = [
-  { name: "Jan", sales: 4000 },
-  { name: "Feb", sales: 3000 },
-  { name: "Mar", sales: 5000 },
-  { name: "Apr", sales: 4500 },
-  { name: "May", sales: 6000 },
-  { name: "Jun", sales: 5500 },
-  { name: "Jul", sales: 7000 },
-]
-
-const productPerformance = [
-  { name: "Lehenga", sales: 35, revenue: 12000 },
-  { name: "Suit", sales: 28, revenue: 9800 },
-  { name: "Jumpsuit", sales: 15, revenue: 5200 },
-  { name: "Long Dress", sales: 22, revenue: 7500 },
-  { name: "Short Dress", sales: 18, revenue: 6300 },
-]
-
-// Sample data for recent orders
-type Order = {
+type RecentOrder = {
   id: string
-  customer: string
-  date: string
-  total: number
-  status: "pending" | "shipped" | "delivered" | "cancelled"
-  items: number
+  customer?: string
+  customer_name?: string
+  created_at?: string
+  date?: string
+  total?: number
+  amount?: number
+  status?: string
+  items?: number | any[]
 }
 
-const recentOrders: Order[] = [
-  {
-    id: "ORD-001",
-    customer: "Priya Sharma",
-    date: "2023-06-01",
-    total: 4500,
-    status: "delivered",
-    items: 2,
-  },
-  {
-    id: "ORD-002",
-    customer: "Rahul Patel",
-    date: "2023-06-02",
-    total: 3200,
-    status: "shipped",
-    items: 1,
-  },
-  {
-    id: "ORD-003",
-    customer: "Ananya Singh",
-    date: "2023-06-03",
-    total: 7800,
-    status: "pending",
-    items: 3,
-  },
-  {
-    id: "ORD-004",
-    customer: "Vikram Mehta",
-    date: "2023-06-03",
-    total: 2100,
-    status: "cancelled",
-    items: 1,
-  },
-  {
-    id: "ORD-005",
-    customer: "Neha Gupta",
-    date: "2023-06-04",
-    total: 5600,
-    status: "pending",
-    items: 2,
-  },
-]
+type TopProduct = {
+  id: string
+  name: string
+  sales: number
+  revenue: number
+}
 
-// Table columns
-const columns: ColumnDef<Order>[] = [
+type DashboardStats = {
+  totalSales: number
+  totalOrders: number
+  totalCustomers: number
+  pendingOrders: number
+  lowStockProducts: number
+  recentOrders: RecentOrder[]
+  topProducts: TopProduct[]
+}
+
+const columns: ColumnDef<RecentOrder>[] = [
   {
     accessorKey: "id",
     header: "Order ID",
@@ -106,15 +71,17 @@ const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "customer",
     header: "Customer",
+    cell: ({ row }) => row.original.customer || row.original.customer_name || "—",
   },
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ row }) => row.original.created_at?.slice(0, 10) || row.original.date || "—",
   },
   {
     accessorKey: "total",
     header: "Total",
-    cell: ({ row }) => <span>₹{row.original.total.toLocaleString()}</span>,
+    cell: ({ row }) => <span>₹{((row.original.total ?? row.original.amount ?? 0) as number).toLocaleString()}</span>,
   },
   {
     accessorKey: "status",
@@ -133,7 +100,7 @@ const columns: ColumnDef<Order>[] = [
                   : "bg-red-100 text-red-800"
           }
         >
-          {status.charAt(0).toUpperCase() + status.slice(1)}
+          {status ? status.charAt(0).toUpperCase() + status.slice(1) : "—"}
         </Badge>
       )
     },
@@ -141,6 +108,10 @@ const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "items",
     header: "Items",
+    cell: ({ row }) =>
+      Array.isArray(row.original.items)
+        ? row.original.items.length
+        : row.original.items ?? "—",
   },
   {
     id: "actions",
@@ -153,6 +124,50 @@ const columns: ColumnDef<Order>[] = [
 ]
 
 export default function AdminDashboard() {
+  const [stats, setStats] = useState<DashboardStats>({
+    totalSales: 0,
+    totalOrders: 0,
+    totalCustomers: 0,
+    pendingOrders: 0,
+    lowStockProducts: 0,
+    recentOrders: [],
+    topProducts: [],
+  })
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>("")
+
+  useEffect(() => {
+    async function fetchStats() {
+      setLoading(true)
+      setError("")
+      try {
+        const res = await fetch("/api/admin/dashboard")
+        const json = await res.json()
+        if (json.success) {
+          setStats(json.data)
+        } else {
+          setError(json.error || "Failed to load")
+        }
+      } catch (e) {
+        setError("Failed to load data")
+      }
+      setLoading(false)
+    }
+    fetchStats()
+  }, [])
+
+  // For charts (substitute with your own time-based data as needed)
+  const salesData = [
+    { name: "Total Sales", sales: stats.totalSales },
+    { name: "Pending Orders", sales: stats.pendingOrders },
+  ]
+
+  const productPerformance = stats.topProducts.map((prod) => ({
+    name: prod.name,
+    sales: prod.sales,
+    revenue: prod.revenue,
+  }))
+
   return (
     <div className="space-y-6">
       <div>
@@ -216,11 +231,13 @@ export default function AdminDashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹42,500</div>
+            <div className="text-2xl font-bold">
+              {loading ? "…" : `₹${(stats.totalSales || 0).toLocaleString()}`}
+            </div>
             <p className="text-xs text-muted-foreground">
+              {/* Static compared to last month, see API for dynamic trends */}
               <span className="text-green-600 flex items-center">
-                <ArrowUpIcon className="mr-1 h-4 w-4" />
-                +12.5%
+                <ArrowUpIcon className="mr-1 h-4 w-4" /> +12.5%
               </span>{" "}
               from last month
             </p>
@@ -232,11 +249,12 @@ export default function AdminDashboard() {
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+24</div>
+            <div className="text-2xl font-bold">
+              {loading ? "…" : `+${stats.totalOrders || 0}`}
+            </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-red-600 flex items-center">
-                <ArrowDownIcon className="mr-1 h-4 w-4" />
-                -4%
+                <ArrowDownIcon className="mr-1 h-4 w-4" /> -4%
               </span>{" "}
               from last month
             </p>
@@ -248,11 +266,12 @@ export default function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+128</div>
+            <div className="text-2xl font-bold">
+              {loading ? "…" : `+${stats.totalCustomers || 0}`}
+            </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-green-600 flex items-center">
-                <ArrowUpIcon className="mr-1 h-4 w-4" />
-                +18.2%
+                <ArrowUpIcon className="mr-1 h-4 w-4" /> +18.2%
               </span>{" "}
               from last month
             </p>
@@ -269,21 +288,18 @@ export default function AdminDashboard() {
           <CardContent className="pt-2">
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={salesData}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
+                <LineChart data={salesData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="sales" stroke="#8B4513" activeDot={{ r: 8 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="sales"
+                    stroke="#8B4513"
+                    activeDot={{ r: 8 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -296,15 +312,7 @@ export default function AdminDashboard() {
           <CardContent className="pt-2">
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={productPerformance}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
+                <BarChart data={productPerformance}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -324,7 +332,13 @@ export default function AdminDashboard() {
           <CardTitle>Recent Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={recentOrders} />
+          {loading ? (
+            <div className="py-6 text-center">Loading...</div>
+          ) : error ? (
+            <div className="py-6 text-red-600 text-center">{error}</div>
+          ) : (
+            <DataTable columns={columns} data={stats.recentOrders || []} />
+          )}
         </CardContent>
       </Card>
     </div>

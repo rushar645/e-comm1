@@ -2,8 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { createServerClient } from "@/lib/supabase"
 import { verifyPassword, createSession } from "@/lib/auth"
-import {cookies} from 'next/headers';
 import { PublicUser, AdminUser, CustomerUser } from "@/types/user"
+import {cookies} from 'next/headers';
 
 
 const loginSchema = z.object({
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const userType = validatedData.userType === "customer" ? "customers" : "admin_users"
     console.log(validatedData.userType)
 
-    let select = "id, name, email, password, status, role, cart, wishlist"
+    let select = "id, name, email, phone, password, status, role, cart, wishlist"
     if (userType == "admin_users"){
       select = "id, name, email, password, status, role"
     }
@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
           id: user.id,
           name: user.name,
           email: user.email,
+          phone: user.phone,
           role: user.role,
           cart: (user as CustomerUser).cart,
           wishlist: (user as CustomerUser).wishlist,
