@@ -5,11 +5,12 @@ import { toast } from "@/components/ui/use-toast"
 import { createBrowserClient } from "@/lib/supabase"
 import { useUser } from "./user-contexts"
 
-import api from "@/lib/axios"
+import api from "@/lib/axios" 
 
 export interface WishlistItem {
-  sku: string
-  price: string
+  sku: string 
+  price: number
+  name: string
   imageSrc: string
   color?: string
   size?: string
@@ -29,14 +30,13 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<WishlistItem[]>([])
   const { user, setUser } = useUser()
-  const supabase = createBrowserClient()
 
   useEffect(() => {
     if (user?.wishlist) {
       setItems(user.wishlist)
     }
   }, [user?.wishlist])
-
+ 
   // Update wishlist in the DB, no await (fire-and-forget style)
   const updateWishlistInDB = (updatedItems: WishlistItem[]) => {
     if (!user?.id) return
@@ -52,22 +52,17 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const addItem = (item: WishlistItem) => {
     setItems((prevItems) => {
       const exists = prevItems.some((i) => i.sku === item.sku)
-      if (exists) {
-        toast({
-          title: "Already in wishlist",
-          description: `Item with SKU ${item.sku} is already in your wishlist`,
-        })
+      if (exists)
         return prevItems
-      }
 
       const updated = [...prevItems, item]
       updateWishlistInDB(updated)
-      toast({
-        title: "Added to wishlist",
-        description: `Item with SKU ${item.sku} added to your wishlist`,
-      })
-
+      
       return updated
+    })
+    toast({
+      title: "Added to wishlist",
+      description: `${item.name} added to your wishlist`,
     })
   }
 
@@ -75,9 +70,9 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     setItems((prevItems) => {
       const updated = prevItems.filter((item) => item.sku !== sku)
       updateWishlistInDB(updated)
-      toast({ title: "Removed", description: "Item removed from your wishlist" })
       return updated
     })
+    toast({ title: "Removed", description: "Item removed from your wishlist" })
   }
 
   const isInWishlist = (sku: string) => items.some((item) => item.sku === sku)

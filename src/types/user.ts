@@ -1,4 +1,5 @@
 import { WishlistItem } from "@/contexts/wishlist-context"
+import { CartItem  } from "@/contexts/cart-context"
 
 export type BaseUser = {
     id: string
@@ -17,7 +18,7 @@ export type BaseUser = {
   
   export interface CustomerUser extends BaseUser {
     role: "customer"
-    cart: Record<string, any>[]
+    cart: CartItem[]
     wishlist: WishlistItem[]
   }
   

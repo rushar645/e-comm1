@@ -1,11 +1,12 @@
 "use client"
 
 import useSWR from "swr"
-import axios from "axios"
 import {Carousel3D} from "@/components/carousel-3d"
 import {ScrollableProductSection} from "@/components/scrollable-product-section"
 import React from "react"
 import { Product } from "@/types"
+
+import api from "@/lib/axios"
 
 
 type CategorySection = {
@@ -20,13 +21,13 @@ type HomeProductsResponse = {
 }
 
 const fetcher = (url: string) =>
-  axios.get<HomeProductsResponse>(url).then(res => res.data)
+  api.get<HomeProductsResponse>(url).then(res => res.data)
 
 export default function HomePageProducts() {
   const { data, error, isLoading } = useSWR("api/home-products", fetcher, {
     keepPreviousData: true,
-    revalidateOnFocus: true,
-    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateIfStale: true,
   })
 
   if (isLoading) return <div className="py-8 text-center">Loading...</div>

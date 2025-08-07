@@ -27,19 +27,18 @@ export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
-  // const [breadcrumbSegments, setBreadcrumbSegments] = useState<BreadcrumbType[]>([]);
   const [product, setProduct] = useState<Product>()
   const { addItem } = useCart()
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist()
 
   const params = useParams()
-  const productId = params?.id
+  const productSku = params?.id
   
 
   useEffect(()=>{
     const fetchProduct = async() =>{
       try{
-        const res = await api.get(`api/products/${productId}`)
+        const res = await api.get(`api/products/${productSku}`)
         console.log("Fetching ka res 🔦", res)
       
         if(res.status != 200){
@@ -47,15 +46,7 @@ export default function ProductPage() {
         }
 
         setProduct(res.data.data)
-        // const segments:BreadcrumbType[] = [
-        //   { name: "Home", href: "/" },
-        //   {
-        //     name: product?.category.replace(/-/g, " "),
-        //     href: `/category?category=${product?.category}`,
-        //   },
-        //   { name: product?.name },
-        // ];
-        // setBreadcrumbSegments(segments);
+        console.log("Product Dataa", res.data.data)
       }
       catch(e){
         console.log("Error Fetching the one product ::", e)
@@ -66,6 +57,9 @@ export default function ProductPage() {
 
 
   const handleAddToCart = () => {
+    if (!product)
+      return
+    
     if (!selectedSize) {
       toast({
         title: "Please select a size",
@@ -76,19 +70,21 @@ export default function ProductPage() {
       return
     }
 
-    // addItem({
-    //   id: product?.id,
-    //   name: product?.name,
-    //   price: product?.price,
-    //   numericPrice: Number.parseFloat(product?.price.replace(/[^0-9.]/g, "")),
-    //   imageSrc: product?.images[0],
-    //   color: selectedColor || product?.colors?.[0] || "",
-    //   size: selectedSize,
-    //   category: product?.category,
-    // })
+    addItem({
+      sku: product.sku,
+      name: product.name,
+      price: product.price,
+      imageSrc: product.images[0],
+      color: selectedColor || product.colors[0] || "",
+      size: selectedSize,
+      category: product.category,
+    })
   }
 
   const handleBuyNow = () => {
+    if (!product)
+      return 
+
     if (!selectedSize) {
       toast({
         title: "Please select a size",
@@ -99,34 +95,34 @@ export default function ProductPage() {
       return
     }
 
-    // addItem({
-    //   id: product.id,
-    //   name: product.name,
-    //   price: product.price,
-    //   numericPrice: Number.parseFloat(product.price.replace(/[^0-9.]/g, "")),
-    //   imageSrc: product.images[0],
-    //   color: selectedColor || product.colors?.[0] || "",
-    //   size: selectedSize,
-    //   category: product.category,
-    // })
+    addItem({
+      sku: product.sku,
+      name: product.name,
+      price: product.price,
+      imageSrc: product.images[0],
+      color: selectedColor || product.colors?.[0] || "",
+      size: selectedSize,
+      category: product.category,
+    })
 
     // Navigate to checkout page
     window.location.href = "/checkout"
   } 
 
   const handleWishlist = () => {
-    // if (isInWishlist(product.id)) {
-    //   removeFromWishlist(product.id)
-    // } else {
-    //   addToWishlist({ 
-    //     id: product.id,
-    //     name: product.name,
-    //     price: product.price,
-    //     numericPrice: Number.parseFloat(product.price.replace(/[^0-9.]/g, "")),
-    //     imageSrc: product.images[0],
-    //     category: product.category,
-    //   })
-    // }
+    if (!product)
+      return
+
+    if (isInWishlist(product.sku)) {
+      removeFromWishlist(product.sku)
+    } else {
+      addToWishlist({ 
+        sku: product.sku,
+        name: product.name,
+        price: product.price,
+        imageSrc: product.images[0],
+      })
+    }
   }
 
   const handleSizeSelect = (size: string) => {
@@ -177,11 +173,11 @@ export default function ProductPage() {
               <TypographyH1 className="mb-2">{product.name}</TypographyH1>
               <div className="flex space-x-2">
                 <button
-                  className={`p-2 rounded-full hover:bg-gray-100 ${isInWishlist(product.id) ? "text-red-500" : ""}`}
-                  aria-label={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                  className={`p-2 rounded-full hover:bg-gray-100 ${isInWishlist(product.sku) ? "text-red-500" : ""}`}
+                  aria-label={isInWishlist(product.sku) ? "Remove from wishlist" : "Add to wishlist"}
                   onClick={handleWishlist}
                 >
-                  <Heart className={`h-6 w-6 ${isInWishlist(product.id) ? "fill-red-500" : ""}`} />
+                  <Heart className={`h-6 w-6 ${isInWishlist(product.sku) ? "fill-red-500 stroke-red-500" : ""}`} />
                 </button>
                 <button onClick={handleCopy }className="p-2 rounded-full hover:bg-gray-100" aria-label="Share product">
                   <Share2 className="h-6 w-6 text-[#3A3A3A]" />

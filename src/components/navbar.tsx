@@ -5,17 +5,10 @@ import Link from "next/link"
 import Image from "next/image"
 import { Search, Heart, User, X, ShoppingCart, Menu, LogIn, UserPlus, LogOut } from "lucide-react"
 import { Input } from "@/components/ui/input"
-// import { ThemeToggle } from "@/components/theme-toggle"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import { toast } from "./ui/use-toast"
 import { usePathname } from 'next/navigation'
 
@@ -28,7 +21,7 @@ export function Navbar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
-  const { getItemCount} = useCart()
+  const { items, getItemCount} = useCart()
   const [cartItemCount, setCartItemCount] = useState(0)
   const { itemCount: wishlistItemCount } = useWishlist()
   const pathname = usePathname();
@@ -41,7 +34,7 @@ export function Navbar() {
   useEffect(()=>{
     const items = getItemCount;
     setCartItemCount(items)
-  },[])
+  },[items])
 
 
   const handleSearch = () => {

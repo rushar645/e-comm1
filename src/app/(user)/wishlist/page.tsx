@@ -37,7 +37,7 @@ export default function WishlistPage() {
   if (!isClient) {
     return (
       <div className="min-h-screen bg-white">
-      
+
         <main className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-serif text-[#3A3A3A] mb-8">My Wishlist</h1>
           <p className="text-center py-12">Loading wishlist...</p>
@@ -48,7 +48,7 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      
+
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-serif text-[#3A3A3A]">
@@ -79,17 +79,18 @@ export default function WishlistPage() {
                   </div>
                 </Link>
                 <div className="p-3">
-                  <h3 className="text-sm font-medium">{item.sku}</h3>
+                  <h3 className="text-sm font-medium">{item.name}</h3>
                   <p className="text-sm">{item.price}</p>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full mt-2 text-xs"
+                    className="w-full mt-2 text-xs cursor-pointer hover:shadow-md hover:scale-102 transition-transform duration-100"
                     onClick={() => handleAddToCart(item)}
                   >
                     <ShoppingCart className="h-3 w-3 mr-1" />
                     Add to cart
                   </Button>
+
                 </div>
               </div>
             ))}

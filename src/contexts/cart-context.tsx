@@ -1,306 +1,203 @@
 "use client"
 
-import { createContext, useContext, useReducer, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { useUser } from "@/contexts/user-contexts"
+import api from "@/lib/axios"
+import { toast } from "@/components/ui/use-toast"
 
 export interface CartItem {
-  id: number
+  id?: number
+  sku: string
   name: string
-  price: string 
-  numericPrice: number
+  price: number 
+  numericPrice?: number
   imageSrc: string
-  imageAlt: string
-  category: string
-  brand: string
-  selectedColor?: string
-  selectedSize?: string
+  imageAlt?: string
+  category?: string
+  color?: string
+  size?: string
   quantity: number
-  maxQuantity?: number
-}
-
-export interface CartState {
-  items: CartItem[]
-  isOpen: boolean
-  couponCode: string
-  discountPercentage: number
-  shippingCost: number
-  freeShippingThreshold: number
 }
 
 export interface CartContextType {
-  // State
   items: CartItem[]
   isOpen: boolean
-  couponCode: string
-  discountPercentage: number
-  discountAmount: number
-
-  // Actions
   addItem: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void
-  removeItem: (id: number) => void
-  updateQuantity: (id: number, quantity: number) => void
+  removeItem: (sku: string) => void
+  updateQuantity: (sku: string, quantity: number) => void
   clearCart: () => void
   toggleCart: () => void
   openCart: () => void
   closeCart: () => void
-  applyCoupon: (code: string) => boolean
-  removeCoupon: () => void
-
-  // Calculations
   getItemCount: () => number
   getSubtotal: () => number
   getShippingCost: () => number
   getTotal: () => number
-  getTotalSavings: () => number
   isEligibleForFreeShipping: () => boolean
-
-  // Relaxed
-  appliedDiscount:{code:string, description:string}
-  shippingDiscount:number
-  applyDiscount: (code:string) => {success:boolean, message:string, discount:number}
-  removeDiscount: () => void
-}
-
-
-type CartAction =
-  | { type: "ADD_ITEM"; payload: CartItem }
-  | { type: "REMOVE_ITEM"; payload: number }
-  | { type: "UPDATE_QUANTITY"; payload: { id: number; quantity: number } }
-  | { type: "CLEAR_CART" }
-  | { type: "TOGGLE_CART" }
-  | { type: "OPEN_CART" }
-  | { type: "CLOSE_CART" }
-  | { type: "APPLY_COUPON"; payload: { code: string; discount: number } }
-  | { type: "REMOVE_COUPON" }
-  | { type: "LOAD_CART"; payload: CartState }
-
-const initialState: CartState = {
-  items: [],
-  isOpen: false,
-  couponCode: "",
-  discountPercentage: 0,
-  shippingCost: 99,
-  freeShippingThreshold: 1999,
-}
-
-// Available coupons
-const AVAILABLE_COUPONS = {
-  WELCOME10: 10,
-  SAVE20: 20,
-  FESTIVE25: 25,
-  NEWUSER15: 15,
-}
-
-function cartReducer(state: CartState, action: CartAction): CartState {
-  switch (action.type) {
-    case "ADD_ITEM": {
-      const existingItemIndex = state.items.findIndex(
-        (item) =>
-          item.id === action.payload.id &&
-          item.selectedColor === action.payload.selectedColor &&
-          item.selectedSize === action.payload.selectedSize,
-      )
-
-      if (existingItemIndex > -1) {
-        const updatedItems = [...state.items]
-        const existingItem = updatedItems[existingItemIndex]
-        const maxQuantity = existingItem.maxQuantity || 10
-        updatedItems[existingItemIndex] = {
-          ...existingItem,
-          quantity: Math.min(existingItem.quantity + action.payload.quantity, maxQuantity),
-        }
-        return { ...state, items: updatedItems }
-      }
-
-      return {
-        ...state,
-        items: [...state.items, action.payload],
-      }
-    }
-
-    case "REMOVE_ITEM":
-      return {
-        ...state,
-        items: state.items.filter((item) => item.id !== action.payload),
-      }
-
-    case "UPDATE_QUANTITY": {
-      if (action.payload.quantity <= 0) {
-        return {
-          ...state,
-          items: state.items.filter((item) => item.id !== action.payload.id),
-        }
-      }
-
-      return {
-        ...state,
-        items: state.items.map((item) =>
-          item.id === action.payload.id
-            ? { ...item, quantity: Math.min(action.payload.quantity, item.maxQuantity || 10) }
-            : item,
-        ),
-      }
-    }
-
-    case "CLEAR_CART":
-      return {
-        ...state,
-        items: [],
-        couponCode: "",
-        discountPercentage: 0,
-      }
-
-    case "TOGGLE_CART":
-      return { ...state, isOpen: !state.isOpen }
-
-    case "OPEN_CART":
-      return { ...state, isOpen: true }
-
-    case "CLOSE_CART":
-      return { ...state, isOpen: false }
-
-    case "APPLY_COUPON":
-      return {
-        ...state,
-        couponCode: action.payload.code,
-        discountPercentage: action.payload.discount,
-      }
-
-    case "REMOVE_COUPON":
-      return {
-        ...state,
-        couponCode: "",
-        discountPercentage: 0,
-      }
-
-    case "LOAD_CART":
-      return action.payload
-
-    default:
-      return state
-  }
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(cartReducer, initialState)
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [items, setItems] = useState<CartItem[]>([])
+  const [isOpen, setIsOpen] = useState(false)
+  const shippingCost = 99
+  const freeShippingThreshold = 1999
 
-  // Load cart from localStorage on mount
+  const { user } = useUser()
+
+
   useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem("cart")
-      if (savedCart) {
-        const parsedCart = JSON.parse(savedCart)
-        if (parsedCart && Array.isArray(parsedCart.items)) {
-          dispatch({ type: "LOAD_CART", payload: parsedCart })
+    const saved = localStorage.getItem("cart")
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed)) {
+          setItems(parsed)
         }
+      } catch (e) {
+        console.error("Error parsing saved cart", e)
       }
-    } catch (error) {
-      console.error("Error loading cart from localStorage:", error)
     }
   }, [])
+ 
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
-    try {
-      localStorage.setItem("cart", JSON.stringify(state))
-    } catch (error) {
-      console.error("Error saving cart to localStorage:", error)
+    const loadOrSyncCart = async () => {
+      if (!user?.id) return
+  
+      try {
+        // const res = await api.get(`/api/user-cart?id=${user.id}`)
+        const userCart = user.cart
+  
+        if (Array.isArray(userCart) && userCart.length > 0) {
+          // Use user cart from backend
+          setItems(userCart)
+          localStorage.removeItem("cart")
+        } else {
+          // Fallback to localStorage cart
+          const localCart = localStorage.getItem("cart")
+          if (localCart) {
+            const parsedLocalCart = JSON.parse(localCart)
+            if (Array.isArray(parsedLocalCart) && parsedLocalCart.length > 0) {
+              setItems(parsedLocalCart)
+              await updateCartInDB(parsedLocalCart)
+              localStorage.removeItem("cart")
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load or sync user cart", e)
+      }
     }
-  }, [state])
+  
+    loadOrSyncCart()
+  }, [user?.id])
+  
+
+  useEffect(() => {
+    if (!user?.id) {
+      localStorage.setItem("cart", JSON.stringify(items))
+    }
+  }, [items, user?.id])
+
+
+
+  const updateCartInDB = async (updatedItems: CartItem[]) => {
+    if (!user?.id) return
+    try {
+      await api.put("/api/updatecart", {
+        id: user.id,
+        cart: updatedItems.map(({ id, color, size, quantity }) => ({
+          id,
+          color,
+          size,
+          quantity,
+        })),
+      })
+    } catch (e) {
+      console.error("Failed to update cart in DB", e)
+    }
+  }
 
   // Actions
   const addItem = (item: Omit<CartItem, "quantity"> & { quantity?: number }) => {
-    const cartItem: CartItem = {
-      ...item,
-      quantity: item.quantity || 1,
-      maxQuantity: 10, // Default max quantity
-    }
-    dispatch({ type: "ADD_ITEM", payload: cartItem })
+    let flag = 0
+    setItems((prev) => {
+      const existing = prev.find(
+        (p) =>
+          p.sku === item.sku
+      )
+
+      let updated: CartItem[]
+      if (existing) {
+        updated = prev
+        toast({
+          title: "Item already in cart",
+          description: `${item.name} is already in your cart`,
+        })
+      } else {
+        flag = 1
+        updated = [...prev, { ...item, quantity: item.quantity || 1 }]
+      }
+      
+      updateCartInDB(updated)
+      return updated
+    })
+    if (flag == 1)
+      toast({
+        title: "Item added in your cart",
+        description: `${item.name} is added to your cart`,
+        link:"/cart"
+      })
   }
 
-  const removeItem = (id: number) => {
-    dispatch({ type: "REMOVE_ITEM", payload: id })
+  const removeItem = (sku: string) => {
+    setItems((prev) => {
+      const updated = prev.filter((item) => item.sku !== sku)
+      updateCartInDB(updated)
+      return updated
+    })
+    toast({
+      title: "Removed item from your cart",
+      description: `Item removed from your cart`,
+    })
   }
 
-  const updateQuantity = (id: number, quantity: number) => {
-    dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } })
+  const updateQuantity = (sku: string, quantity: number) => {
+    setItems((prev) => {
+      let updated: CartItem[]
+      if (quantity <= 0) {
+        updated = prev.filter((item) => item.sku !== sku)
+      } else {
+        updated = prev.map((item) =>
+          item.sku === sku ? { ...item, quantity: Math.min(quantity, 10) } : item
+        )
+      }
+      updateCartInDB(updated)
+      return updated
+    })
   }
 
   const clearCart = () => {
-    dispatch({ type: "CLEAR_CART" })
+    setItems([])
+    updateCartInDB([])
   }
 
-  const toggleCart = () => {
-    dispatch({ type: "TOGGLE_CART" })
-  }
-
-  const openCart = () => {
-    dispatch({ type: "OPEN_CART" })
-  }
-
-  const closeCart = () => {
-    dispatch({ type: "CLOSE_CART" })
-  }
-
-  const applyCoupon = (code: string): boolean => {
-    const upperCode = code.toUpperCase()
-    const discount = AVAILABLE_COUPONS[upperCode as keyof typeof AVAILABLE_COUPONS]
-
-    if (discount) {
-      dispatch({ type: "APPLY_COUPON", payload: { code: upperCode, discount } })
-      return true
-    }
-    return false
-  }
-
-  const removeCoupon = () => {
-    dispatch({ type: "REMOVE_COUPON" })
-  }
+  const toggleCart = () => setIsOpen((prev) => !prev)
+  const openCart = () => setIsOpen(true)
+  const closeCart = () => setIsOpen(false)
 
   // Calculations
-  const getItemCount = (): number => {
-    return state.items.reduce((total, item) => total + item.quantity, 0)
-  }
+  const getItemCount = () => items.reduce((sum, item) => sum + item.quantity, 0)
+  const getSubtotal = () => items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const getShippingCost = () => (getSubtotal() >= freeShippingThreshold ? 0 : shippingCost)
+  const getTotal = () => getSubtotal() + getShippingCost()
+  const isEligibleForFreeShipping = () => getSubtotal() >= freeShippingThreshold
 
-  const getSubtotal = (): number => {
-    return state.items.reduce((total, item) => total + item.numericPrice * item.quantity, 0)
-  }
-
-  const getShippingCost = (): number => {
-    const subtotal = getSubtotal()
-    return subtotal >= state.freeShippingThreshold ? 0 : state.shippingCost
-  }
-
-  const getDiscountAmount = (): number => {
-    const subtotal = getSubtotal()
-    return Math.round((subtotal * state.discountPercentage) / 100)
-  }
-
-  const getTotal = (): number => {
-    const subtotal = getSubtotal()
-    const shipping = getShippingCost()
-    const discount = getDiscountAmount()
-    return Math.max(0, subtotal + shipping - discount)
-  }
-
-  const getTotalSavings = (): number => {
-    return getDiscountAmount()
-  }
-
-  const isEligibleForFreeShipping = (): boolean => {
-    return getSubtotal() >= state.freeShippingThreshold
-  }
-
-  const contextValue: CartContextType = {
-    // State
-    items: state.items,
-    isOpen: state.isOpen,
-    couponCode: state.couponCode,
-    discountPercentage: state.discountPercentage,
-    discountAmount: getDiscountAmount(),
-
-    // Actions
+  const value: CartContextType = {
+    items,
+    isOpen,
     addItem,
     removeItem,
     updateQuantity,
@@ -308,24 +205,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     toggleCart,
     openCart,
     closeCart,
-    applyCoupon,
-    removeCoupon,
-
-    // Calculations
     getItemCount,
     getSubtotal,
     getShippingCost,
     getTotal,
-    getTotalSavings,
     isEligibleForFreeShipping,
   }
 
-  return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
 
 export function useCart() {
   const context = useContext(CartContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useCart must be used within a CartProvider")
   }
   return context

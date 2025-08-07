@@ -12,14 +12,14 @@ interface ProductCardProps {
   id: string
   imageSrc: string
   name: string
-  price: string
+  price: number
   highlighted?: boolean
   showRating?: boolean
   category?: string
   numericPrice?: number
   colors?: string[]
   fabric?: string
-  sku?:string
+  sku:string
 }
 
 export function ProductCard({
@@ -35,41 +35,36 @@ export function ProductCard({
   fabric,
   sku
 }: ProductCardProps) {
-  const { addItem } = useCart() // Removed unused isInCart
+  const { addItem } = useCart()
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist()
-  // Removed unused isHovered and setIsHovered since they weren't being used
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    // addItem({
-    //   id,
-    //   name,
-    //   price,
-    //   numericPrice,
-    //   imageSrc,
-    //   color: colors?.[0] || "",
-    //   size: "M",
-    //   category,
-    // })
+    addItem({
+      sku,
+      name,
+      price,
+      imageSrc,
+      color: colors?.[0] || "",
+      size: "M",
+    })
   }
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (isInWishlist(id)) {
-      removeFromWishlist(id)
+    if (isInWishlist(sku)) {
+      removeFromWishlist(sku)
     } else {
-      // addToWishlist({
-      //   id,
-      //   name,
-      //   price,
-      //   numericPrice,
-      //   imageSrc,
-      //   category,
-      // })
+      addToWishlist({
+        sku,
+        name,
+        price,
+        imageSrc,
+      })
     }
   }
 
@@ -83,7 +78,7 @@ export function ProductCard({
         <div className="relative aspect-[4/5] overflow-hidden group">
           <Image
             src={imageSrc || "/placeholder.svg"}
-            fill
+            fill 
             alt={name}
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
@@ -97,7 +92,7 @@ export function ProductCard({
             } md:opacity-100`}
             aria-label={isInWishlist(id) ? "Remove from wishlist" : "Add to wishlist"}
           >
-            <Heart className={`size-4 ${isInWishlist(id) ? "fill-red-500" : ""}`} />
+            <Heart className={`size-4 ${isInWishlist(sku) ? "fill-red-500 stroke-red-500" : ""}`} />
           </button>
 
           {/* Add to cart overlay - Hidden on mobile, shown on hover for desktop */}

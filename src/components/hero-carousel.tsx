@@ -10,14 +10,8 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from 'next/link';
 import api from "@/lib/axios"
+import useSWR from "swr"
 
-
-interface HeroBanner {
-  title: string
-  subtitle: string
-  button_text: string
-  image_url: string
-}
 
 interface Banner {
   id: string,
@@ -37,62 +31,58 @@ interface Banner {
   image_url: string,
 }
 
+type BannerResponse = {
+  success: boolean
+  data: Banner[]
+}
+
+
 interface HeroCarouselProps {
   autoSlideInterval?: number
 }
 
+
+const fetcher = (url: string) =>
+  api.get<BannerResponse>(url).then(res => res.data)
+
 export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
   
-  const [banners, setBanners] = useState<Banner[]>([{}])
+  // const [banners, setBanners] = useState<Banner[]>([{}])
   const [currentSlide, setCurrentSlide] = useState(0)
 
+  const { data, error, isLoading } = useSWR("api/admin/banners", fetcher, {
+    keepPreviousData: true,
+    revalidateOnFocus: false,
+    revalidateIfStale: true,
+  })
+
+  const banners = data?.data.filter(b => b.is_active) || []
+
+  
+  
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev === banners.length - 1 ? 0 : prev + 1))
   }, [banners.length])
-
+  
   const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev === 0 ? banners.length - 1 : prev - 1))
   }, [banners.length])
 
-
-  //Fetch Call
-  useEffect(()=> {
-    const fetchBanners = async () =>{
-      try{
-        const res = await api.get('api/admin/banners')
-
-        if (res.status != 200){
-          alert("Something went wrong!!")
-        }
-
-        setBanners(
-          res.data.data
-            .filter((banner: any) => banner.is_active)            // ✅ Only active banners
-            .sort((a: any, b: any) => a.position - b.position)    // ✅ Sort by position (duplicates allowed)
-        );
-        
-        console.log("Banners:",res)
-      }
-      catch(e){
-        console.log("Errors fetching banners in client side home page::", e)
-      }
-    } 
-
-    fetchBanners()
-  },[])
-
-
-  //Slide Call
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide()
     }, autoSlideInterval)
-
+    
     return () => clearInterval(interval)
-  }, [nextSlide, autoSlideInterval])
+  }, [banners, nextSlide, autoSlideInterval])
+  
 
 
+  if (isLoading) return <div className="py-8 text-center">Loading...</div>
+  if (error) return <div className="py-8 text-center text-red-500">Failed to load Banners</div>
+  if (!data) return null
 
+  
   return (
     <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
       <div
