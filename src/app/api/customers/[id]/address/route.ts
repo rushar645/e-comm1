@@ -14,20 +14,15 @@ const addressSchema = z.object({
   is_default: z.boolean(),
 });
 
-type RouteParams = {
-  params: {
-    id: string;
-  };
-};
 
-export async function GET(req:NextRequest, { params }: RouteParams ) {
+export async function GET(req:NextRequest, { params }: {params: Promise<{id:string}>} ) {
   const supabase = createServerClient(); 
+  const {id} = await params
 
   const { data, error } = await supabase
     .from("customer_addresses")
     .select("*")
-    .eq("customer_id", params.id);
-
+    .eq("customer_id", id)
   if (error || !data) {
     return NextResponse.json({ error: `Address not found nahi mila na ${error?.message}` }, { status: 404 });
   }

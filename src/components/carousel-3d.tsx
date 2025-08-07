@@ -3,14 +3,8 @@
 import { useState, useEffect, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ProductCard } from "@/components/product-card"
+import { Product } from "@/types"
 
-interface Product {
-  id: number
-  name: string
-  price: string
-  imageSrc: string
-  category?: string
-}
 
 interface Carousel3DProps {
   products: Product[]
@@ -140,12 +134,14 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
               >
                 <ProductCard
                   id={product.id}
-                  imageSrc={product.imageSrc}
+                  imageSrc={product.images[0]}
                   name={product.name}
-                  price={product.price}
+                  price={product.price.toString()}
+                  numericPrice={product.price}
                   highlighted={index === activeIndex}
                   showRating={index === activeIndex}
                   category={product.category || getCategoryFromName(product.name)}
+                  sku={product.sku}
                 />
               </div>
             </div>

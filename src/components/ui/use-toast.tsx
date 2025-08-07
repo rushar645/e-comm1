@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
+import Link from "next/link"
 
 interface ToastProps {
   title: string
   description?: string
   duration?: number
   variant?: "default" | "success" | "error" | "warning"
+  link?:string
 }
 
 interface ToastState extends ToastProps {
@@ -121,6 +123,7 @@ export function Toaster() {
             <div>
               <h3 className="font-medium">{toast.title}</h3>
               {toast.description && <p className="text-sm mt-1">{toast.description}</p>}
+              {toast.link && <Link href={toast.link} className="text-md mt-2 underline">Go to Cart</Link>}
             </div>
             <button onClick={() => dismiss(toast.id)} className="text-[#5A5A5A] hover:text-[#3A3A3A] rounded-full p-1">
               <X className="h-4 w-4" />

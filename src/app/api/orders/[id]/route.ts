@@ -9,9 +9,10 @@ const updateOrderSchema = z.object({
   notes: z.string().optional(),
 })
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{id:string}> }) {
   try {
     const supabase = createServerClient()
+    const { id } = await params;
 
     const { data: order, error } = await supabase
       .from("orders")
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         *,
         order_items (*)
       `)
-      .eq("id", params.id)
+      .eq("id", id)
       .single()
 
     if (error || !order) {
@@ -36,11 +37,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{id:string}> }) {
   try {
     const body = await request.json()
     const validatedData = updateOrderSchema.parse(body)
-
+    const {id} = await params;
     const supabase = createServerClient()
 
     const { data: order, error } = await supabase
@@ -49,7 +50,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         ...validatedData,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single()
 
@@ -64,7 +65,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
     console.error("Order update error:", error)

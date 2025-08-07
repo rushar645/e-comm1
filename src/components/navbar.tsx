@@ -1,33 +1,40 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Search, Heart, User, X, ShoppingCart, Menu, LogIn, UserPlus } from "lucide-react"
+import { Search, Heart, User, X, ShoppingCart, Menu, LogIn, UserPlus, LogOut } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import { toast } from "./ui/use-toast"
 import { usePathname } from 'next/navigation'
+
 import logo from "@/images/logo.png"
+import api from "@/lib/axios"
+import { useUser } from "@/contexts/user-contexts"
 
 export function Navbar() {
   const [showSearch, setShowSearch] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
-  const { itemCount: cartItemCount } = useCart()
+  const { items, getItemCount} = useCart()
+  const [cartItemCount, setCartItemCount] = useState(0)
   const { itemCount: wishlistItemCount } = useWishlist()
   const pathname = usePathname();
+
   const isAdminPage = pathname === '/admin';
+  const isLoginPage = pathname ==='/login'
+  const isSignupPage = pathname ==='/singup'
+  const {user, setUser} = useUser();
+
+  useEffect(()=>{
+    const items = getItemCount;
+    setCartItemCount(items)
+  },[items])
 
 
   const handleSearch = () => {
@@ -35,6 +42,20 @@ export function Navbar() {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
       setShowSearch(false)
       setSearchQuery("")
+    }
+  }
+
+  const logOut = async() =>{
+    try{
+      const res = await api.post("api/auth/logout")
+      if (res.status == 200){
+        // toast()
+        setUser(null);
+        router.push('/');
+      }
+    }
+    catch(e){
+      console.log("Error Logging Out", e)
     }
   }
 
@@ -46,7 +67,7 @@ export function Navbar() {
     { name: "Short Dress", href: "/category/short-dress" },
   ]
 
-  if (isAdminPage) {
+  if (isAdminPage || isLoginPage || isSignupPage) {
     return <></>
   }
   else
@@ -132,23 +153,29 @@ export function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className={"bg-white"}>
                     <DropdownMenuItem asChild>
-                      <Link href="/account" className="flex items-center">
+                      {user && <Link href="/account" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
                         My Account
-                      </Link>
+                      </Link>}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/login" className="flex items-center">
+                      {!user && <Link href="/login" className="flex items-center">
                         <LogIn className="mr-2 h-4 w-4" />
                         Sign In
-                      </Link>
+                      </Link>}
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/signup" className="flex items-center">
+                      {!user && <Link href="/signup" className="flex items-center">
                         <UserPlus className="mr-2 h-4 w-4" />
                         Sign Up
-                      </Link>
+                      </Link>}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      {user && <button className='flex items-center cursor-pointer text-red-600' onClick={logOut}>
+                        <LogOut className="mr-4 h-4 w-4"/>
+                        Log out
+                      </button>}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -188,9 +215,6 @@ export function Navbar() {
                   <Menu className="h-5 w-5 text-[#3A3A3A]" />
                 </button>
 
-                <div className="hidden sm:block">
-                  <ThemeToggle />
-                </div>
               </div>
               </div>
             </div>
@@ -209,32 +233,34 @@ export function Navbar() {
                       {category.name}
                     </Link>
                   ))}
-                  <Link
+                  <hr className="text-gray-300"></hr>
+                  {user && <Link
                     href="/account"
-                    className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors"
+                    className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors flex items-center"
                     onClick={() => setShowMobileMenu(false)}
-                  >
+                  ><User className="mr-2 h-4 w-4"/>
                     My Account
-                  </Link>
-                  <Link
-                    href="/auth/login"
+                  </Link>}
+                  {!user && <Link
+                    href="/login"
                     className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors flex items-center"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     <LogIn className="mr-2 h-4 w-4" />
                     Sign In
-                  </Link>
-                  <Link
-                    href="/auth/signup"
+                  </Link>}
+                   {!user && <Link
+                    href="/signup"
                     className="sm:hidden text-[#3A3A3A] hover:text-[#8B4513] text-sm py-2 px-2 rounded transition-colors flex items-center"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     <UserPlus className="mr-2 h-4 w-4" />
                     Sign Up
-                  </Link>
-                  <div className="sm:hidden pt-2">
-                    <ThemeToggle />
-                  </div>
+                  </Link>}
+                  {user && <button className='flex items-center cursor-pointer text-red-600 text-sm py-2 px-2' onClick={logOut}>
+                    <LogOut className="mr-4 h-4 w-4"/>
+                        Log out
+                  </button>}
                 </nav>
               </div>
             )}

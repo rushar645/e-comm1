@@ -1,22 +1,22 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Package, Heart, MapPin, Settings, Edit, Eye, Truck, CheckCircle, Clock, X } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
 import { Camera } from "lucide-react"
 import { SingleImageUpload } from "@/components/ui/single-image-upload"
-// Mock user data - in real app, this would come from authentication context
 import { UploadedImage } from "@/components/ui/single-image-upload"
+import { useUser } from "@/contexts/user-contexts"
+import { useRouter } from "next/navigation"
+import api from "@/lib/axios"
 
 const orderHistory = [
   {
@@ -73,7 +73,6 @@ const orderHistory = [
     ],
   },
 ]
-
 const addresses = [
   {
     id: "ADDR-001",
@@ -98,16 +97,15 @@ const addresses = [
     isDefault: false,
   },
 ]
+
 const defaultFormData = {
+  id: "",
   name: "",
   avatar:"",
-  joinDate:"",
   totalOrders:"",
   totalSpent:"",
-  loyaltyPoints:"",
   email:"",
-  phone:""
-
+  phone:0
 }
 
 
@@ -134,34 +132,53 @@ const defaultWishList: WishListItem[] = [{
 }];
 
 export default function AccountPage() {
-   const [activeTab, setActiveTab] = useState("profile")
+  const [activeTab, setActiveTab] = useState("profile")
   const [isEditing, setIsEditing] = useState(false)
   const [showAvatarUpload, setShowAvatarUpload] = useState(false)
   const [formData, setFormData] = useState(defaultFormData)
   const [wishlistItems, setWishlistItems] = useState<WishListItem[]>(defaultWishList)
   const { toast } = useToast()
+  const router = useRouter();
+  const {user, loading} = useUser();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user")
-    const savedWishlist = localStorage.getItem("wishlist")
-    if (storedUser) {
+    if (!loading && !user){
+      router.push('/')
+      return
+    }
+    const fetchData = async () => {
       try {
-        const userObj = JSON.parse(storedUser)
-        setFormData(userObj)
+        const res = await api.get(`api/customers/${user.id}/orders`)
+        const { data } = res.data
+
+        setFormData({
+          id: user.id,
+          name: user.name,
+          avatar: '',
+          email: user.email,
+          phone: user.phone,
+          totalOrders: data.count.toString(),
+          totalSpent: data.total_spent.toFixed(2)
+        })
       } catch (e) {
-        console.log(e)
-        setFormData(defaultFormData)
+        console.error("Error fetching account data", e)
+      }
+
+      // Restore wishlist from localStorage
+      const savedWishlist = localStorage.getItem("wishlist")
+      if (savedWishlist) {
+        try {
+          setWishlistItems(JSON.parse(savedWishlist))
+        } catch (e) {
+          console.error("Invalid wishlist data", e)
+          setWishlistItems([])
+        }
       }
     }
-    if (savedWishlist) {
-      try {
-        setWishlistItems(JSON.parse(savedWishlist))
-      } catch (e) {
-        console.log(e)
-        setWishlistItems([])
-      }
-    }
-  }, [])
+
+    fetchData()
+  }, [user, loading])
+
   const handleSaveProfile = async () => {
     try {
       // In real app, this would make an API call
@@ -233,7 +250,6 @@ export default function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
@@ -283,7 +299,6 @@ export default function AccountPage() {
                           <SingleImageUpload
                             onImageChange={handleAvatarChange}
                             folder="avatars"
-                            existingImage={formData.avatar}
                             width={200}
                             height={200}
                             className="w-full"
@@ -293,7 +308,7 @@ export default function AccountPage() {
                     )}
 
                     <h3 className="font-semibold text-lg">{formData.name}</h3>
-                    <p className="text-sm text-[#5A5A5A]">Member since {formData.joinDate}</p>
+                    {/* <p className="text-sm text-[#5A5A5A]">Member since {formData.joinDate}</p> */}
                   </div>
 
                   <div className="space-y-2">
@@ -303,11 +318,7 @@ export default function AccountPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Total Spent:</span>
-                      <span className="font-semibold">₹{formData.totalSpent.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Loyalty Points:</span>
-                      <span className="font-semibold text-[#D35400]">{formData.loyaltyPoints}</span>
+                      <span className="font-semibold">₹{formData.totalSpent?.toLocaleString()}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -569,7 +580,7 @@ export default function AccountPage() {
                 {/* Settings Tab */}
                 <TabsContent value="settings">
                   <div className="space-y-6">
-                    <Card>
+                    {/* <Card>
                       <CardHeader>
                         <CardTitle>Account Settings</CardTitle>
                         <CardDescription>Manage your account preferences</CardDescription>
@@ -633,7 +644,7 @@ export default function AccountPage() {
                           </Button>
                         </div>
                       </CardContent>
-                    </Card>
+                    </Card> */}
 
                     <Card>
                       <CardHeader>

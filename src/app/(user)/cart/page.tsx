@@ -4,24 +4,29 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Plus, ShoppingCart, Lock, Trash2, Heart } from "lucide-react"
+import { Plus, ShoppingCart, Lock, Trash2, Heart, Minus } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { useCart } from "@/contexts/cart-context"
+import { CartItem, useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
-import { Item } from "@/lib/types"
+// import { Item } from "@/types"
+
+
+import google from "@/images/payments/google-pay.png"
+import visa from "@/images/payments/visa.png"
+import upi from "@/images/payments/upi.png"
+import phonepe from "@/images/payments/phonepe.png"
+import paytm from "@/images/payments/paytm.png"
+import { useUser } from "@/contexts/user-contexts"
+
 export default function CartPage() {
   const router = useRouter()
   const {
     items: cartItems,
-    savedItems,
     updateQuantity, 
     removeItem,
-    saveForLater,
-    moveToCart,
-    removeSavedItem,
     getSubtotal,
     getShippingCost,
     getTotal,
@@ -31,18 +36,13 @@ export default function CartPage() {
     removeDiscount,
   } = useCart()
 
-  const { addItem: addToWishlist } = useWishlist()
+  const { addItem: addToWishlist, isInWishlist, removeItem:removeFromWishlist } = useWishlist()
 
   const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({})
   const [discountCode, setDiscountCode] = useState("")
-  const [isClient, setIsClient] = useState(false)
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false)
   const [discountError, setDiscountError] = useState("")
-
-  // Set isClient to true once component mounts
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
+  const { user } = useUser();
 
   // Handle item selection
   const toggleItemSelection = (itemId: string | number, color?: string, size?: string) => {
@@ -58,13 +58,13 @@ export default function CartPage() {
     if (!cartItems.length) return
 
     const allSelected = cartItems.every((item) => {
-      const key = `${item.id}-${item.color || ""}-${item.size || ""}`
+      const key = `${item.sku}-${item.color || ""}-${item.size || ""}`
       return selectedItems[key]
     })
 
     const newSelectedItems: Record<string, boolean> = {}
     cartItems.forEach((item) => {
-      const key = `${item.id}-${item.color || ""}-${item.size || ""}`
+      const key = `${item.sku}-${item.color || ""}-${item.size || ""}`
       newSelectedItems[key] = !allSelected
     })
 
@@ -75,16 +75,18 @@ export default function CartPage() {
   const selectedCount = Object.values(selectedItems).filter(Boolean).length
  
   // Handle add to wishlist
-  const handleAddToWishlist = (item: Item) => {
-    addToWishlist({
-      id: item.id,
+  const handleAddToWishlist = (item : CartItem) => {
+  if (isInWishlist(item.sku)) {
+    removeFromWishlist(item.sku)
+  } else {
+    addToWishlist({ 
+      sku: item.sku,
       name: item.name,
       price: item.price,
-      numericPrice: item.numericPrice,
       imageSrc: item.imageSrc,
-      category: item.category,
     })
   }
+}
 
   // Handle proceed to checkout
   const handleProceedToCheckout = () => {
@@ -93,8 +95,11 @@ export default function CartPage() {
       return
     }
 
-    // Navigate to checkout page
-    router.push("/checkout")
+    // Navigate to checkout page'
+    if (user)
+      router.push("/checkout")
+    if (!user)
+      router.push("/login")
   }
 
   // Apply discount code
@@ -123,18 +128,6 @@ export default function CartPage() {
     return `₹${amount.toFixed(2)}`
   }
 
-  // If not client-side yet, show a simple loading state
-  if (!isClient) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-serif text-[#3A3A3A] mb-8">My Cart</h1>
-          <p className="text-center py-12">Loading cart...</p>
-        </main>
-      </div>
-    )
-  }
 
   const subtotal = getSubtotal()
   const shipping = getShippingCost()
@@ -142,7 +135,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-serif text-[#3A3A3A]">
@@ -157,7 +149,7 @@ export default function CartPage() {
                 checked={
                   cartItems.length > 0 &&
                   cartItems.every((item) => {
-                    const key = `${item.id}-${item.color || ""}-${item.size || ""}`
+                    const key = `${item.sku}-${item.color || ""}-${item.size || ""}`
                     return selectedItems[key]
                   })
                 }
@@ -185,13 +177,13 @@ export default function CartPage() {
             ) : (
               <div className="space-y-6">
                 {cartItems.map((item) => {
-                  const itemKey = `${item.id}-${item.color || ""}-${item.size || ""}`
+                  const itemKey = `${item.sku}-${item.color || ""}-${item.size || ""}`
                   return (
                     <div key={itemKey} className="border-b pb-6">
                       <div className="flex items-start gap-4">
                         <Checkbox
                           checked={selectedItems[itemKey] || false}
-                          onCheckedChange={() => toggleItemSelection(item.id, item.color, item.size)}
+                          onCheckedChange={() => toggleItemSelection(item.sku, item.color, item.size)}
                           className="mt-2"
                         />
 
@@ -211,18 +203,8 @@ export default function CartPage() {
                               <p className="text-sm text-gray-600">
                                 Color : {item.color || "Default"} | Size : {item.size || "M"}
                               </p>
-                              <p className="text-sm text-[#D35400] mt-1">
-                                You save <span className="font-medium">Amount</span>
-                              </p>
 
                               <div className="flex items-center gap-4 mt-2">
-                                <button
-                                  className="text-xs text-[#5A5A5A] hover:text-[#8B4513] flex items-center gap-1"
-                                  onClick={() => saveForLater(item.id, item.color, item.size)}
-                                >
-                                  <Checkbox className="h-3 w-3 mr-1" />
-                                  Save for later
-                                </button>
                                 <button
                                   className="text-xs text-[#5A5A5A] hover:text-[#8B4513] flex items-center gap-1"
                                   onClick={() => handleAddToWishlist(item)}
@@ -241,16 +223,24 @@ export default function CartPage() {
                           <div className="flex justify-end items-center mt-4">
                             <div className="flex items-center border rounded-md">
                               <button
-                                className="px-2 py-1 border-r"
-                                onClick={() => updateQuantity(item.id, item.quantity - 1, item.color, item.size)}
-                                aria-label="Decrease quantity"
+                                className="px-2 py-1 border-r cursor-pointer"
+                                onClick={() => removeItem(item.sku)}
+                                aria-label="Remove Item"
                               >
                                 <Trash2 className="h-4 w-4 text-red-500" />
                               </button>
+                              {item.quantity > 1 && <button
+                                className="px-2 py-1 border-r cursor-pointer disabled:cursor-not-allowed"
+                                onClick={() => updateQuantity(item.sku, item.quantity - 1)}
+                                aria-label="Decrease quantity"
+                                disabled={item.quantity == 1}
+                              >
+                                <Minus className="h-4 w-4 " />
+                              </button>}
                               <span className="px-4">{item.quantity}</span>
                               <button
-                                className="px-2 py-1 border-l"
-                                onClick={() => updateQuantity(item.id, item.quantity + 1, item.color, item.size)}
+                                className="px-2 py-1 border-l cursor-pointer"
+                                onClick={() => updateQuantity(item.sku, item.quantity + 1)}
                                 aria-label="Increase quantity"
                               >
                                 <Plus className="h-4 w-4" />
@@ -266,15 +256,15 @@ export default function CartPage() {
             )}
 
             {/* Saved for later */}
-            {savedItems.length > 0 && (
+            {/* {cartItems?.length > 0 && (
               <div className="mt-12">
                 <h2 className="text-2xl font-serif text-[#3A3A3A]">
                   Saved for later <span className="text-lg font-normal text-gray-500">Available Piece</span>
                 </h2>
 
                 <div className="space-y-6 mt-6">
-                  {savedItems.map((item) => (
-                    <div key={`saved-${item.id}-${item.color || ""}-${item.size || ""}`} className="border-b pb-6">
+                  {cartItems.map((item) => (
+                    <div key={`saved-${item.sku}-${item.color || ""}-${item.size || ""}`} className="border-b pb-6">
                       <div className="flex items-start gap-4">
                         <div className="w-24 h-24 bg-gray-200 relative">
                           <Image
@@ -299,7 +289,7 @@ export default function CartPage() {
                               <div className="flex items-center gap-4 mt-2">
                                 <button
                                   className="text-xs text-[#5A5A5A] hover:text-[#8B4513] flex items-center gap-1"
-                                  onClick={() => moveToCart(item.id, item.color, item.size)}
+                                  onClick={() => moveToCart(item.sku, item.color, item.size)}
                                 >
                                   <ShoppingCart className="h-3 w-3 mr-1" />
                                   Add to cart
@@ -323,7 +313,7 @@ export default function CartPage() {
                             <div className="flex items-center border rounded-md">
                               <button
                                 className="px-2 py-1 border-r"
-                                onClick={() => removeSavedItem(item.id, item.color, item.size)}
+                                onClick={() => removeSavedItem(item.sku, item.color, item.size)}
                                 aria-label="Remove saved item"
                               >
                                 <Trash2 className="h-4 w-4 text-red-500" />
@@ -340,7 +330,7 @@ export default function CartPage() {
                   ))}
                 </div>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Order Summary */}
@@ -362,19 +352,21 @@ export default function CartPage() {
                   </div>
                 )}
 
+                {subtotal !=0 &&
                 <div className="flex justify-between">
                   <span className="text-[#5A5A5A]">Shipping Charges</span>
-                  <span className="font-medium">{shipping === 0 ? "Free" : formatCurrency(shipping)}</span>
+                   <span className="font-medium">{shipping === 0 ? "Free" : formatCurrency(shipping)}</span>
                 </div>
+                }
 
                 <div className="flex justify-between pt-3 border-t border-[#E0D0C0]">
                   <span className="text-[#3A3A3A] font-medium">Total :</span>
-                  <span className="font-medium">{formatCurrency(total)}</span>
+                  <span className="font-medium">{subtotal !=0 ? formatCurrency(total): formatCurrency(0)}</span>
                 </div>
               </div>
 
               <Button
-                className="w-full mt-6 bg-[#3A2723] hover:bg-[#5A3A33] text-white transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"
+                className="w-full mt-6 bg-[#3A2723] hover:bg-[#5A3A33] text-white transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg cursor-pointer"
                 onClick={handleProceedToCheckout}
                 disabled={cartItems.length === 0}
               >
@@ -429,14 +421,14 @@ export default function CartPage() {
                 </p>
 
                 <div className="flex justify-center space-x-2 mb-2">
-                  <Image src="/images/payments/google-pay.png" width={40} height={30} alt="Google Pay" />
-                  <Image src="/images/payments/visa.png" width={40} height={30} alt="Visa" />
-                  <Image src="/images/payments/paytm.png" width={40} height={30} alt="Paytm" />
+                  <Image src={google} width={40} height={30} alt="Google Pay" />
+                  <Image src={visa}  width={40} height={30} alt="Visa" />
+                  <Image src={paytm}  width={40} height={30} alt="Paytm" />
                 </div>
 
                 <div className="flex justify-center space-x-2">
-                  <Image src="/images/payments/phonepe.png" width={40} height={30} alt="PhonePe" />
-                  <Image src="/images/payments/upi.png" width={40} height={30} alt="UPI" />
+                  <Image src={phonepe} width={40} height={30} alt="PhonePe" />
+                  <Image src={upi}width={40} height={30} alt="UPI" />
                 </div>
               </div>
             </div>

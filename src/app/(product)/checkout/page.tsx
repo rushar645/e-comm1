@@ -4,7 +4,6 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { X, Tag, Info } from "lucide-react"
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -80,7 +79,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
 
       <div className="container mx-auto px-4 py-4 md:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -95,10 +93,10 @@ export default function CheckoutPage() {
                     <SelectTrigger className="w-full h-12">
                       <SelectValue placeholder="Country/Region" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="india">India</SelectItem>
-                      <SelectItem value="usa">United States</SelectItem>
-                      <SelectItem value="uk">United Kingdom</SelectItem>
+                      {/* <SelectItem value="usa">United States</SelectItem>
+                      <SelectItem value="uk">United Kingdom</SelectItem> */}
                     </SelectContent>
                   </Select>
                 </div>
@@ -129,7 +127,7 @@ export default function CheckoutPage() {
                       <SelectTrigger className="h-12">
                         <SelectValue placeholder="State" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white">
                         <SelectItem value="delhi">Delhi</SelectItem>
                         <SelectItem value="mumbai">Mumbai</SelectItem>
                         <SelectItem value="bangalore">Bangalore</SelectItem>
@@ -184,7 +182,7 @@ export default function CheckoutPage() {
 
             {/* Billing Address */}
             <div>
-              <h2 className="text-xl md:text-2xl font-medium text-[#3A3A3A] mb-4">Billing Address</h2>
+              {/* <h2 className="text-xl md:text-2xl font-medium text-[#3A3A3A] mb-4">Billing Address</h2>
               <RadioGroup defaultValue="same" className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="same" id="same" />
@@ -198,7 +196,7 @@ export default function CheckoutPage() {
                     Use a different billing address
                   </Label>
                 </div>
-              </RadioGroup>
+              </RadioGroup> */}
 
               <div className="flex items-start space-x-2 mt-6 mb-6">
                 <Checkbox id="terms" className="mt-1" />
@@ -239,7 +237,7 @@ export default function CheckoutPage() {
                 </div>
               ) : (
                 items.map((item) => (
-                  <div key={`${item.id}-${item.size}-${item.color}`} className="flex space-x-3">
+                  <div key={item.id} className="flex space-x-3">
                     <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-200 rounded-lg overflow-hidden shrink-0">
                       <Image
                         src={item.imageSrc || "/placeholder.svg?height=64&width=64"}
@@ -252,7 +250,7 @@ export default function CheckoutPage() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-[#3A3A3A] text-sm md:text-base truncate">{item.name}</h3>
                       <p className="text-xs md:text-sm text-[#5A5A5A]">
-                        Color: {item.color || "Default"} Size: {item.size || "M"}
+                        Color: {"Default"} Size: {"M"}
                       </p>
                       <p className="text-xs md:text-sm text-[#5A5A5A]">Qty: {item.quantity}</p>
                     </div>

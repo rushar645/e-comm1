@@ -10,7 +10,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import api from "@/lib/axios";;
+
+import { useUser } from "@/contexts/user-contexts"
+import api from "@/lib/axios";import { cn } from "@/lib/utils";
+;
 
 interface LoginFormData {
   emailOrPhone: string;
@@ -24,16 +27,14 @@ interface FormErrors {
 }
 
 export default function LoginPage() {
+  const {setUser} = useUser()
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [formData, setFormData] = useState<LoginFormData>({
-    emailOrPhone: "",
-    password: "",
-    rememberMe: false,
-  });
+  const [formData, setFormData] = useState<LoginFormData>({emailOrPhone: "",password: "",rememberMe: false,});
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
@@ -71,10 +72,10 @@ export default function LoginPage() {
     try {
       const res = await api.post("/api/auth/login", {email:formData.emailOrPhone, password: formData.password});
       if (res.status === 200) {
-        // You can store token/session here if returned
-        router.push("/"); // redirect after login
-        // console.log(res.data.user)
-        localStorage.setItem('user', JSON.stringify(res.data.user))
+        
+        router.push("/"); 
+        console.log("Welcome User customer",res.data.user)
+        setUser(res.data.user)
       }
     } catch (err: any) {
       setErrors(err?.response?.data?.message || "Login failed");
@@ -128,8 +129,10 @@ export default function LoginPage() {
                   onChange={(e) =>
                     handleInputChange("emailOrPhone", e.target.value)
                   }
-                  className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]"
-                  error={!!errors.emailOrPhone}
+                  className={cn(
+                    "h-14 text-base rounded-2xl border border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]",
+                    errors.emailOrPhone && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  )}
                 />
                 {errors.emailOrPhone && (
                   <p className="text-red-500 text-sm mt-1">
@@ -139,16 +142,18 @@ export default function LoginPage() {
               </div>
 
               <div className="relative">
-                <Input
+              <Input
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={formData.password}
-                  onChange={(e) =>
-                    handleInputChange("password", e.target.value)
-                  }
-                  className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723] pr-12"
-                  error={!!errors.password}
+                  onChange={(e) => handleInputChange("password", e.target.value)}
+                  className={cn(
+                    "h-14 text-base rounded-2xl border-gray-300 pr-12",
+                    "focus:border-[#3A2723] focus:ring-[#3A2723]",
+                    errors.password && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  )}
                 />
+
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}

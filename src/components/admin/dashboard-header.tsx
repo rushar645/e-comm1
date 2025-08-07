@@ -13,12 +13,12 @@ import React from "react"
 import { useRouter, usePathname } from 'next/navigation'
 import { useAdmin } from "@/contexts/admin-context"
 interface DashboardHeaderProps {
-  title: string
+  title?: string
   description?: string
   action?: React.ReactNode
 }
 
-export function DashboardHeader() {
+export function DashboardHeader({title, description, action}: DashboardHeaderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const isLoginPage = pathname === '/admin/login'
@@ -39,7 +39,7 @@ export function DashboardHeader() {
     <header className="bg-white border-b border-gray-200 h-16 flex items-center px-4 md:px-6">
       <div className="flex-1">
         <div>
-          <h1 className="text-xl font-semibold">Admin</h1>
+          { title && <h1 className="text-xl font-semibold">Admin</h1>}
           {/* {description && <p className="text-sm text-muted-foreground">hrloo</p>} */}
         </div>
       </div>
