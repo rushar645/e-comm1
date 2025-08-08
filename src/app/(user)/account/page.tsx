@@ -11,101 +11,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Package, Heart, MapPin, Settings, Edit, Eye, Truck, CheckCircle, Clock, X } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
-import { Camera } from "lucide-react"
-import { SingleImageUpload } from "@/components/ui/single-image-upload"
-import { UploadedImage } from "@/components/ui/single-image-upload"
+// import { Camera } from "lucide-react"
+// import { SingleImageUpload } from "@/components/ui/single-image-upload"
+// import { UploadedImage } from "@/components/ui/single-image-upload"
 import { useUser } from "@/contexts/user-contexts"
 import { useRouter } from "next/navigation"
 import api from "@/lib/axios"
 
-const orderHistory = [
-  {
-    id: "ORD-001",
-    date: "2024-01-15",
-    status: "delivered",
-    total: 12500,
-    items: [
-      {
-        id: "1",
-        name: "Floral Embroidered Lehenga",
-        image: "/placeholder.svg?height=80&width=80",
-        price: 12500,
-        quantity: 1,
-        color: "Red",
-        size: "M",
-      },
-    ],
-    trackingNumber: "TRK123456789",
-  },
-  {
-    id: "ORD-002",
-    date: "2024-01-10",
-    status: "shipped",
-    total: 8500,
-    items: [
-      {
-        id: "2",
-        name: "Designer Anarkali Suit",
-        image: "/placeholder.svg?height=80&width=80",
-        price: 8500,
-        quantity: 1,
-        color: "Blue",
-        size: "L",
-      },
-    ],
-    trackingNumber: "TRK987654321",
-  },
-  {
-    id: "ORD-003",
-    date: "2024-01-05",
-    status: "pending",
-    total: 15000,
-    items: [
-      {
-        id: "3",
-        name: "Silk Saree with Blouse",
-        image: "/placeholder.svg?height=80&width=80",
-        price: 15000,
-        quantity: 1,
-        color: "Green",
-        size: "Free Size",
-      },
-    ],
-  },
-]
-const addresses = [
-  {
-    id: "ADDR-001",
-    type: "Home",
-    name: "Priya Sharma",
-    address: "123 Main Street, Apartment 4B",
-    city: "Mumbai",
-    state: "Maharashtra",
-    pincode: "400001",
-    phone: "+91 98765 43210",
-    isDefault: true,
-  },
-  {
-    id: "ADDR-002",
-    type: "Office",
-    name: "Priya Sharma",
-    address: "456 Business Park, Floor 3",
-    city: "Mumbai",
-    state: "Maharashtra",
-    pincode: "400002",
-    phone: "+91 98765 43210",
-    isDefault: false,
-  },
-]
 
 const defaultFormData = {
   id: "",
-  name: "",
+  name: "Your Name",
   avatar:"",
   totalOrders:"",
   totalSpent:"",
-  email:"",
-  phone:0
+  email:"your-email@host.com",
+  phone:9999999999
 }
 
 
@@ -132,24 +53,30 @@ const defaultWishList: WishListItem[] = [{
 }];
 
 export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState("profile")
+  const [activeTab, setActiveTab] = useState("")
   const [isEditing, setIsEditing] = useState(false)
   const [showAvatarUpload, setShowAvatarUpload] = useState(false)
   const [formData, setFormData] = useState(defaultFormData)
   const [wishlistItems, setWishlistItems] = useState<WishListItem[]>(defaultWishList)
+  const [orderHistory, setOrderHistory] = useState([])
+  const [addresses, setAdresses] = useState([])
+  
   const { toast } = useToast()
   const router = useRouter();
   const {user, loading} = useUser();
 
   useEffect(() => {
-    if (!loading && !user){
-      router.push('/')
+    if (!user){
+      if(!loading)
+        router.push('/')
       return
     }
     const fetchData = async () => {
       try {
         const res = await api.get(`api/customers/${user.id}/orders`)
         const { data } = res.data
+        // console.log(data)
+        // console.log(user)
 
         setFormData({
           id: user.id,
@@ -160,6 +87,7 @@ export default function AccountPage() {
           totalOrders: data.count.toString(),
           totalSpent: data.total_spent.toFixed(2)
         })
+        setOrderHistory(data.orders)
       } catch (e) {
         console.error("Error fetching account data", e)
       }
@@ -178,6 +106,29 @@ export default function AccountPage() {
 
     fetchData()
   }, [user, loading])
+
+  useEffect(()=>{
+    if(!user){
+      if(!loading)
+        router.push('/')
+      return;
+    }
+    const fetchAddresses = async() =>{
+      try{
+        const res = await api.get(`api/customers/${user.id}/address`)
+        const data = res.data.data;
+
+        if (res.status == 200){
+          setAdresses(data)
+        }
+      }
+      catch(e){
+        console.log("Error occured while fetching Address(es)", e)
+      }
+    }
+
+    fetchAddresses()
+  },[user])
 
   const handleSaveProfile = async () => {
     try {
@@ -209,18 +160,18 @@ export default function AccountPage() {
     }
   }
 
-  const handleAvatarChange = (image: UploadedImage) => {
-    setFormData((prev) => ({
-      ...prev,
-      avatar: image,
-    }))
-    setShowAvatarUpload(false)
+  // const handleAvatarChange = (image: UploadedImage) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     avatar: image,
+  //   }))
+  //   setShowAvatarUpload(false)
 
-    toast({
-      title: "Avatar Updated",
-      description: "Your profile picture has been updated successfully.",
-    })
-  }
+  //   toast({
+  //     title: "Avatar Updated",
+  //     description: "Your profile picture has been updated successfully.",
+  //   })
+  // }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -278,10 +229,10 @@ export default function AccountPage() {
 
                       {/* Camera overlay */}
                       <button
-                        onClick={() => setShowAvatarUpload(!showAvatarUpload)}
-                        className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => (console.log("It's Youuu!!"))}
+                        className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-10 transition-opacity"
                       >
-                        <Camera className="h-6 w-6 text-white" />
+                        {/* <Camera className="h-6 w-6 text-white" /> */}
                       </button>
                     </div>
 
@@ -296,13 +247,13 @@ export default function AccountPage() {
                             </Button>
                           </div>
 
-                          <SingleImageUpload
+                          {/* <SingleImageUpload
                             onImageChange={handleAvatarChange}
                             folder="avatars"
                             width={200}
                             height={200}
                             className="w-full"
-                          />
+                          /> */}
                         </div>
                       </div>
                     )}
@@ -326,9 +277,9 @@ export default function AccountPage() {
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 mb-1">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
+                <TabsList className="flex w-full">
                   <TabsTrigger value="profile" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span className="hidden sm:inline">Profile</span>
@@ -337,10 +288,10 @@ export default function AccountPage() {
                     <Package className="h-4 w-4" />
                     <span className="hidden sm:inline">Orders</span>
                   </TabsTrigger>
-                  <TabsTrigger value="wishlist" className="flex items-center gap-2">
+                  {/* <TabsTrigger value="wishlist" className="flex items-center gap-2">
                     <Heart className="h-4 w-4" />
                     <span className="hidden sm:inline">Wishlist</span>
-                  </TabsTrigger>
+                  </TabsTrigger> */}
                   <TabsTrigger value="addresses" className="flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     <span className="hidden sm:inline">Addresses</span>
@@ -389,7 +340,7 @@ export default function AccountPage() {
                           <Label htmlFor="phone">Phone Number</Label>
                           <Input
                             id="phone"
-                            value={formData.phone}
+                            value={`+91 ${formData.phone}`}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                             disabled={!isEditing}
                           />
@@ -417,7 +368,7 @@ export default function AccountPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-6">
-                        {orderHistory.map((order) => (
+                        {orderHistory?.map((order) => (
                           <div key={order.id} className="border rounded-lg p-6">
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4">
                               <div className="flex items-center gap-4 mb-4 lg:mb-0">
@@ -448,8 +399,8 @@ export default function AccountPage() {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {order.items.map((item) => (
-                                <div key={item.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                              {order?.items?.map((item) => (
+                                <div key={item.sku} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                                   <Image
                                     src={item.image || "/placeholder.svg"}
                                     alt={item.name}
@@ -458,7 +409,7 @@ export default function AccountPage() {
                                     className="rounded-md object-cover"
                                   />
                                   <div className="flex-1 min-w-0">
-                                    <h4 className="font-medium text-sm truncate">{item.name}</h4>
+                                    <h4 className="font-medium text-sm truncate">{item.product_name}</h4>
                                     <p className="text-xs text-[#5A5A5A]">
                                       {item.color} • {item.size} • Qty: {item.quantity}
                                     </p>
@@ -546,7 +497,7 @@ export default function AccountPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {addresses.map((address) => (
+                        {addresses?.map((address) => (
                           <div key={address.id} className="border rounded-lg p-6">
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-2">

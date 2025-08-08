@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerClient } from "@/lib/supabase";
 
-// ✅ Address schema for validation
+
 const addressSchema = z.object({
   customer_id: z.string(),
   type: z.enum(["home", "work", "other"]),
@@ -20,14 +20,14 @@ export async function GET(req:NextRequest, { params }: {params: Promise<{id:stri
   const {id} = await params
 
   const { data, error } = await supabase
-    .from("customer_addresses")
+    .from("customer_addresses") 
     .select("*")
     .eq("customer_id", id)
   if (error || !data) {
     return NextResponse.json({ error: `Address not found nahi mila na ${error?.message}` }, { status: 404 });
   }
 
-  return NextResponse.json({ success: true, data });
+  return NextResponse.json({ success: true, data }, { status: 200 });
 }
 
 export async function PUT(req: NextRequest) {

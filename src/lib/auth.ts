@@ -10,6 +10,7 @@ export interface AuthUser {
   name: string
   email: string
   role?: "customer" | "admin"
+  phone?: number
 }
 
 export interface SessionData {
@@ -84,7 +85,7 @@ export async function validateSession(token: string, userType: "customer" | "adm
     // Get user data
     const { data: user } = await supabase
       .from(userTable)
-      .select("id, name, email")
+      .select("id, name, email, phone")
       .eq("id", session[columnName])
       .single()
 
@@ -94,6 +95,7 @@ export async function validateSession(token: string, userType: "customer" | "adm
       id: user.id,
       name: user.name,
       email: user.email,
+      phone:user.phone,
       role: userType,
     }
   } catch (error) {
