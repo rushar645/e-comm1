@@ -78,7 +78,39 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
   
 
 
-  if (isLoading) return <div className="py-8 text-center">Loading...</div>
+  if (isLoading) return(
+    <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
+      <div className="flex transition-transform duration-800 ease-in-out">
+        {/* Single skeleton slide — could duplicate if needed */}
+        <div className="w-full shrink-0 h-[80vh] bg-gray-200 animate-pulse">
+          <div className="container mx-auto px-4 flex flex-col md:flex-row items-center h-full">
+            {/* Text section */}
+            <div className="md:w-1/2 space-y-6 z-10">
+              <div className="h-10 md:h-14 lg:h-16 bg-gray-300 rounded w-3/4"></div>
+              <div className="h-5 bg-gray-300 rounded w-1/2"></div>
+              <div className="h-10 bg-gray-300 rounded w-32"></div>
+            </div>
+
+            {/* Image section */}
+            <div className="md:w-1/2 mt-6 md:mt-0 flex justify-center">
+              <div className="w-[441.5px] h-[450px] bg-gray-300 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Nav buttons skeleton */}
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-300 rounded-full p-4"></div>
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-300 rounded-full p-4"></div>
+
+      {/* Dots skeleton */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+        {[...Array(3)].map((_, index) => (
+          <div key={index} className="w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+        ))}
+      </div>
+    </div>
+  );
   if (error) return <div className="py-8 text-center text-red-500">Failed to load Banners</div>
   if (!data) return null
 
