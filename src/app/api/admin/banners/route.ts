@@ -163,3 +163,35 @@ export async function PUT(request: NextRequest) {
     }
   })
 }
+
+export async function DELETE(request: NextRequest) {
+  return withAuth(request, async () => {
+    try {
+      const body = await request.json()
+      const { id } = body
+
+      if (!id) {
+        return NextResponse.json({ error: "Banner ID is required" }, { status: 400 })
+      }
+
+      // Delete banner
+      const { error } = await supabase
+        .from("homepage_banners")
+        .delete()
+        .eq("id", id)
+
+      if (error) {
+        console.error("Database error:", error)
+        return NextResponse.json({ error: "Failed to delete banner" }, { status: 500 })
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Banner deleted successfully",
+      })
+    } catch (error) {
+      console.error("Banner delete error:", error)
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    }
+  })
+}

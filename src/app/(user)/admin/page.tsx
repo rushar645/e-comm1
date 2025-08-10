@@ -337,7 +337,7 @@ export default function AdminDashboard() {
           ) : error ? (
             <div className="py-6 text-red-600 text-center">{error}</div>
           ) : (
-            <DataTable columns={columns} data={stats.recentOrders || []} />
+            <DataTable columns={columns} data={stats.recentOrders || []} loading={loading} />
           )}
         </CardContent>
       </Card>

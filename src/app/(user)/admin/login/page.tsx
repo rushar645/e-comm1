@@ -7,13 +7,14 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import api from "@/lib/axios";
 import { useAdmin } from "@/contexts/admin-context";
 import loginImage from '@/images/admin_login/login.png'
 import { cn } from "@/lib/utils";
+import { toast } from "@/components/ui/use-toast";
 
 
 interface LoginFormData {
@@ -38,7 +39,7 @@ export default function LoginPage() {
   const { addAdminUser, adminUsers } = useAdmin()
 
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -50,8 +51,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<FormErrors>(defaultFormErrors);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   useEffect(() => {
-    const user = localStorage.getItem('user')
-    if (user == null || user =='{}')
+    if (adminUsers)
       return;
     else 
       setIsUserLoggedIn(true); 
@@ -62,20 +62,28 @@ export default function LoginPage() {
 
     if (!formData.emailOrPhone.trim()) {
       newErrors.emailOrPhone = "Email or phone number is required";
+      setErrors(newErrors);
+      return false
     }
 
     if (!formData.password) {
       newErrors.password = "Password is required";
+      setErrors(newErrors);
+      return false
     }
+    return true
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
+      toast({
+        title:"Error",
+        description:`Something went wrong ${errors.userType}`,
+        variant:"error"
+      })
       return;
     }
 
@@ -118,9 +126,9 @@ export default function LoginPage() {
   }
   else
   return (
-    <div className="min-h-screen flex">
+    <div className="h-screen flex">
       {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+      <div className="flex-1 flex items-center justify-center px-8 bg-white">
         <div className="w-full max-w-md space-y-8">
           {message && (
             <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
@@ -210,10 +218,10 @@ export default function LoginPage() {
             </Button>
           </form>
         </div>
-      </div>
+      </div> 
 
       {/* Right Side - Image */}
-      <div className="none md:flex-1 relative bg-white h-screen">
+      <div className="none md:flex-1 relative bg-white">
         <Image
           src={loginImage}
           alt="Fashion Model"

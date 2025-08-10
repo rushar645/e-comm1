@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import loginPageImge from "@/images/costumer_login/sigup.png"
 
 import { useUser } from "@/contexts/user-contexts"
 import api from "@/lib/axios";import { cn } from "@/lib/utils";
@@ -70,7 +71,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await api.post("/api/auth/login", {email:formData.emailOrPhone, password: formData.password});
+      const res = await api.post("api/auth/login", {email:formData.emailOrPhone, password: formData.password});
       if (res.status === 200) {
         
         router.push("/"); 
@@ -111,7 +112,7 @@ export default function LoginPage() {
             <p className="text-gray-600">
               Don&apos;t have an account yet?{" "}
               <Link
-                href="/auth/signup"
+                href="/signup"
                 className="text-[#3A2723] font-semibold hover:underline"
               >
                 Sign in
@@ -200,12 +201,12 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Image */}
-      <div className="flex-1 relative bg-gradient-to-br from-gray-300 to-gray-400">
+      <div className="flex-1 relative bg-white h-screen">
         <Image
-          src="/images/auth-model.png"
+          src={loginPageImge}
           alt="Fashion Model"
           fill
-          className="object-cover"
+          className="object-contain"
           priority
         />
       </div>

@@ -295,11 +295,11 @@ export interface HomepageBanner {
   id: string
   title: string
   subtitle: string
-  image: string
+  image_url: string
   buttonText: string
   buttonLink: string
   position: number
-  isActive: boolean
+  is_active: boolean
   backgroundColor: string
   textColor: string
   buttonColor: string

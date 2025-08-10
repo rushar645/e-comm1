@@ -49,7 +49,7 @@ export interface Order {
     image: string
   }>
   subtotal: number
-  shipping: number
+  shippingNumber: number
   tax: number
   discount: number
   total: number
@@ -210,237 +210,21 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast()
 
   // Sample data - in real app, this would come from API
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: "PROD-001",
-      name: "Floral Embroidered Lehenga",
-      description: "Beautiful floral embroidered lehenga perfect for weddings",
-      price: 12500,
-      sku: "LEH-001",
-      category: "Lehenga",
-      stock: 15,
-      status: "active",
-      images: ["/placeholder.svg?height=400&width=400"],
-      colors: ["red", "blue", "pink"],
-      sizes: ["S", "M", "L", "XL"],
-      material: "Silk",
-      careInstructions: "Dry clean only",
-      featured: true,
-      newArrival: false,
-      bestSeller: true,
-      createdAt: "2023-06-01",
-      updatedAt: "2023-06-01",
-    },
-    // Add more sample products...
-  ])
+  const [products, setProducts] = useState<Product[]>([])
 
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      id: "ORD-001",
-      customer: {
-        name: "Priya Sharma",
-        email: "priya.sharma@example.com",
-        phone: "+91 98765 43210",
-      },
-      shipping: {
-        address: "123 Main Street",
-        city: "Mumbai",
-        state: "Maharashtra",
-        pincode: "400001",
-      },
-      items: [
-        {
-          productId: "PROD-001",
-          name: "Floral Embroidered Lehenga",
-          price: 12500,
-          quantity: 1,
-          color: "red",
-          size: "M",
-          image: "/placeholder.svg?height=100&width=100",
-        },
-      ],
-      subtotal: 12500,
-      shipping: 0,
-      tax: 1250,
-      discount: 0,
-      total: 13750,
-      status: "pending",
-      paymentStatus: "paid",
-      date: "2023-06-01",
-    },
-    // Add more sample orders...
-  ])
+  const [orders, setOrders] = useState<Order[]>([])
 
-  const [customers, setCustomers] = useState<Customer[]>([
-    {
-      id: "CUST-001",
-      name: "Priya Sharma",
-      email: "priya.sharma@example.com",
-      phone: "+91 98765 43210",
-      registrationDate: "2023-05-15",
-      totalOrders: 3,
-      totalSpent: 25000,
-      status: "active",
-    },
-    {
-      id: "CUST-002",
-      name: "Anita Patel",
-      email: "anita.patel@example.com",
-      phone: "+91 87654 32109",
-      registrationDate: "2023-04-20",
-      totalOrders: 5,
-      totalSpent: 45000,
-      status: "active",
-    },
-    {
-      id: "CUST-003",
-      name: "Meera Singh",
-      email: "meera.singh@example.com",
-      phone: "+91 76543 21098",
-      registrationDate: "2023-03-10",
-      totalOrders: 2,
-      totalSpent: 18000,
-      status: "inactive",
-    },
-    {
-      id: "CUST-004",
-      name: "Kavya Reddy",
-      email: "kavya.reddy@example.com",
-      phone: "+91 65432 10987",
-      registrationDate: "2023-06-01",
-      totalOrders: 7,
-      totalSpent: 62000,
-      status: "active",
-    },
-    {
-      id: "CUST-005",
-      name: "Riya Gupta",
-      email: "riya.gupta@example.com",
-      registrationDate: "2023-02-28",
-      totalOrders: 1,
-      totalSpent: 8500,
-      status: "active",
-    },
-  ])
+  const [customers, setCustomers] = useState<Customer[]>([])
 
-  const [coupons, setCoupons] = useState<Coupon[]>([
-    {
-      id: "COUP-001",
-      code: "WELCOME10",
-      type: "percentage",
-      value: 10,
-      minOrderValue: 500,
-      maxDiscount: 200,
-      expiryDate: "2024-12-31",
-      usageLimit: 1000,
-      usedCount: 45,
-      isActive: true,
-      createdAt: "2023-06-01",
-    },
-    {
-      id: "COUP-002",
-      code: "FESTIVE25",
-      type: "percentage",
-      value: 25,
-      minOrderValue: 2000,
-      maxDiscount: 500,
-      expiryDate: "2024-10-31",
-      usageLimit: 500,
-      usedCount: 123,
-      isActive: true,
-      createdAt: "2023-06-01",
-    },
-    {
-      id: "COUP-003",
-      code: "FLAT500",
-      type: "fixed",
-      value: 500,
-      minOrderValue: 3000,
-      expiryDate: "2024-09-30",
-      usageLimit: 200,
-      usedCount: 67,
-      isActive: true,
-      createdAt: "2023-06-01",
-    },
-    {
-      id: "COUP-004",
-      code: "FREESHIP",
-      type: "free_shipping",
-      value: 0,
-      minOrderValue: 1000,
-      expiryDate: "2024-11-30",
-      usageLimit: 2000,
-      usedCount: 234,
-      isActive: true,
-      createdAt: "2023-06-01",
-    },
-    {
-      id: "COUP-005",
-      code: "EXPIRED20",
-      type: "percentage",
-      value: 20,
-      minOrderValue: 1500,
-      maxDiscount: 300,
-      expiryDate: "2023-05-31",
-      usageLimit: 100,
-      usedCount: 89,
-      isActive: false,
-      createdAt: "2023-04-01",
-    },
-  ])
+  const [coupons, setCoupons] = useState<Coupon[]>([])
 
-  const [reviews, setReviews] = useState<Review[]>([
-    {
-      id: "REV-001",
-      productId: "PROD-001",
-      productName: "Floral Embroidered Lehenga",
-      customerName: "Priya Sharma",
-      customerEmail: "priya.sharma@example.com",
-      rating: 5,
-      comment: "Absolutely beautiful! Perfect for my wedding.",
-      date: "2023-06-01",
-      status: "pending",
-    },
-    // Add more sample reviews...
-  ])
+  const [reviews, setReviews] = useState<Review[]>([])
 
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([])
 
-  // Add these state variables after the existing ones
-  const [staticPages, setStaticPages] = useState<StaticPage[]>([
-    {
-      id: "about",
-      title: "About Us",
-      slug: "/about",
-      metaTitle: "About Us - Dress Dexterity",
-      metaDescription: "Learn about Dress Dexterity's mission and values",
-      content: "# About Us\n\nWelcome to Dress Dexterity...",
-      status: "published",
-      showInFooter: true,
-      showInHeader: false,
-      lastModified: "2024-01-15",
-    },
-    // Add more sample pages...
-  ])
+  const [staticPages, setStaticPages] = useState<StaticPage[]>([])
 
-  const [homepageBanners, setHomepageBanners] = useState<HomepageBanner[]>([
-    {
-      id: "banner-1",
-      title: "Summer Collection 2024",
-      subtitle: "Discover vibrant styles for the season",
-      image: "/placeholder.svg?height=400&width=800",
-      buttonText: "Shop Now",
-      buttonLink: "/category/summer",
-      position: 1,
-      isActive: true,
-      backgroundColor: "#FFF2E6",
-      textColor: "#3A3A3A",
-      buttonColor: "#FF6B35",
-      alignment: "left",
-      lastModified: "2024-01-15",
-    },
-    // Add more sample banners...
-  ])
+  const [homepageBanners, setHomepageBanners] = useState<HomepageBanner[]>([])
 
   const [loading, setLoading] = useState({
     products: false,
@@ -469,7 +253,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       toast({
         title: "Error",
-        description: error.message || "Failed to add product",
+        description: "Failed to add product",
         variant: "warning",
       })
     } finally {
@@ -493,7 +277,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update product",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, products: false }))
@@ -512,7 +296,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to delete product",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, products: false }))
@@ -532,7 +316,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update order status",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, orders: false }))
@@ -551,7 +335,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update payment status",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, orders: false }))
@@ -571,7 +355,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update customer status",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, customers: false }))
@@ -585,8 +369,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       const newCoupon: Coupon = {
         ...couponData,
         id: `COUP-${Date.now()}`,
-        usedCount: 0,
-        createdAt: new Date().toISOString(),
+        used_count: 0,
+        created_at: new Date().toISOString(),
       }
       setCoupons((prev) => [...prev, newCoupon])
       toast({
@@ -597,7 +381,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to add coupon",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, coupons: false }))
@@ -616,7 +400,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update coupon",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, coupons: false }))
@@ -635,7 +419,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to delete coupon",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, coupons: false }))
@@ -655,7 +439,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update review status",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, reviews: false }))
@@ -674,7 +458,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to delete review",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, reviews: false }))
@@ -717,7 +501,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update admin user",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, adminUsers: false }))
@@ -736,7 +520,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to delete admin user",
-        variant: "destructive",
+        variant: "warning",
       })
     } finally {
       setLoading((prev) => ({ ...prev, adminUsers: false }))
@@ -761,7 +545,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to add page",
-        variant: "destructive",
+        variant: "warning",
       })
     }
   }
@@ -781,7 +565,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update page",
-        variant: "destructive",
+        variant: "warning",
       })
     }
   }
@@ -797,7 +581,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to delete page",
-        variant: "destructive",
+        variant: "warning",
       })
     }
   }
@@ -818,7 +602,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to add banner",
-        variant: "destructive",
+        variant: "warning",
       })
     }
   }
@@ -838,7 +622,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to update banner",
-        variant: "destructive",
+        variant: "warning",
       })
     }
   }
@@ -854,7 +638,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Error",
         description: "Failed to delete banner",
-        variant: "destructive",
+        variant: "warning",
       })
     }
   }
@@ -867,42 +651,12 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     pendingOrders: orders.filter((order) => order.status === "pending").length,
   }
 
-  const value: AdminContextType = {
-    products,
-    addProduct,
-    updateProduct,
-    deleteProduct,
-    orders,
-    updateOrderStatus,
-    updatePaymentStatus,
-    customers,
-    updateCustomerStatus,
-    coupons,
-    addCoupon,
-    updateCoupon,
-    deleteCoupon,
-    reviews,
-    updateReviewStatus,
-    deleteReview,
+  const value = {
     adminUsers,
     addAdminUser,
     updateAdminUser,
     deleteAdminUser,
-    dashboardStats,
     loading,
-    // Add these to the value object
-    staticPages,
-    homepageBanners,
-    addStaticPage,
-    updateStaticPage,
-    deleteStaticPage,
-    addHomepageBanner,
-    updateHomepageBanner,
-    deleteHomepageBanner,
-    cmsContent: {
-      staticPages,
-      homepageBanners,
-    },
   }
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>

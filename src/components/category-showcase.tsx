@@ -1,33 +1,45 @@
 import Link from "next/link"
 import Image from "next/image"
 
-export function CategoryShowcase() {
+export function CategoryShowcase(category:{category:string}) {
   const categories = [
     {
       name: "Lehenga",
+      slug: "lehenga",
       imageSrc: "/placeholder.svg?height=300&width=240",
-      href: "/category?category=lehenga",
+      href: "/category/lehenga",
     },
     {
       name: "Suit",
+      slug: "suit",
       imageSrc: "/placeholder.svg?height=300&width=240",
-      href: "/category?category=suit",
+      href: "/category/suit",
     },
     {
       name: "Jumpsuit",
+      slug:"jumpsuit",
       imageSrc: "/placeholder.svg?height=300&width=240",
-      href: "/category?category=jumpsuit",
+      href: "/category/jumpsuit",
     },
     {
       name: "Short Dress",
+      slug: "short-dress",
       imageSrc: "/placeholder.svg?height=300&width=240",
-      href: "/category?category=short-dress",
+      href: "/category/short-dress",
+    },
+    {
+      name: "Long Dress",
+      slug: "long-dress",
+      imageSrc: "/placeholder.svg?height=300&width=240",
+      href: "/category/long-dress",
     },
   ]
-
+  
+  const filteredCategorires = categories.filter((cat) => cat.slug !==category.category)
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-      {categories.map((category) => (
+      
+      {filteredCategorires.map((category) => (
         <Link key={category.name} href={category.href} className="group">
           <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="relative h-80 overflow-hidden">

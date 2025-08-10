@@ -54,7 +54,7 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
     buttonLink: "/category",
     position: 1,
     isActive: true,
-    backgroundColor: "#FFF2E6",
+    backgroundColor: "#aaa",
     textColor: "#3A3A3A",
     buttonColor: "#FF6B35",
     alignment: "left",
@@ -171,20 +171,21 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
             </CardHeader>
             <CardContent>
               <div
-                className="relative w-full h-64 rounded-lg overflow-hidden"
+                className="relative w-full h-78 rounded-lg overflow-hidden bg-amber-400"
                 style={{ backgroundColor: bannerData.backgroundColor }}
               >
                 {bannerData.image && (
-                  <Image
-                    src={bannerData.image.url || "/placeholder.svg"}
-                    alt={bannerData.title}
-                    width={800}
-                    height={400}
+                  // <Image
+                  //   src={bannerData.image.url || "/placeholder.svg"}
+                  //   alt={bannerData.title}
+                  //   width={200}
+                  //   height={100}
 
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
+                  //   className="absolute inset-0 w-full h-full object-cover"
+                  // />
+                  <img className="ml-40 object-contain w-full h-full" src={bannerData.image.url}/>
                 )}
-                <div className="absolute inset-0 bg-black bg-opacity-20" />
+                <div className="absolute inset-0 bg-opacity-20" />
                 <div
                   className={`absolute inset-0 flex flex-col justify-center p-8 ${
                     bannerData.alignment === "center"
@@ -194,10 +195,10 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
                         : "text-left items-start"
                   }`}
                 >
-                  <h2 className="text-2xl font-bold mb-2" style={{ color: bannerData.textColor }}>
+                  <h2 className="text-xl font-bold mb-2 w-[45%]" style={{ color: bannerData.textColor }}>
                     {bannerData.title || "Banner Title"}
-                  </h2>
-                  <p className="text-lg mb-4" style={{ color: bannerData.textColor }}>
+                  </h2> 
+                  <p className="text-sm mb-4" style={{ color: bannerData.textColor }}>
                     {bannerData.subtitle || "Banner subtitle"}
                   </p>
                   <button

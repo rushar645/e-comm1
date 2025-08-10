@@ -399,3 +399,414 @@ export default function CheckoutPage() {
     </div>
   )
 }
+
+
+
+// "use client"
+
+// import type React from "react"
+
+// import { useState, useEffect } from "react"
+// import { useRouter } from "next/navigation"
+// import { useCart } from "@/contexts/cart-context"
+// import { Button } from "@/components/ui/button"
+// import { Input } from "@/components/ui/input"
+// import { Label } from "@/components/ui/label"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+// import { Separator } from "@/components/ui/separator"
+// import { useToast } from "@/components/ui/use-toast"
+// import { RazorpayPayment } from "@/components/payment/razorpay-payment"
+// import { applyCouponToCart } from "@/lib/discount-utils"
+// import { isValidEmail, isNotEmpty, isValidPhoneNumber } from "@/lib/validation-utils"
+// import { createClient } from "@/lib/supabase"
+// import { getCouponByCode } from "@/app/data/coupons"
+
+// export default function CheckoutPage() {
+//   const { items, getSubtotal, clearCart } = useCart()
+//   const router = useRouter()
+//   const { toast } = useToast()
+
+//   const [shippingAddress, setShippingAddress] = useState({
+//     fullName: "",
+//     email: "",
+//     phone: "",
+//     addressLine1: "",
+//     addressLine2: "",
+//     city: "",
+//     state: "",
+//     zipCode: "",
+//   })
+//   const [paymentMethod, setPaymentMethod] = useState("razorpay")
+//   const [couponCode, setCouponCode] = useState("")
+//   const [appliedCoupon, setAppliedCoupon] = useState<any>(null)
+//   const [discountAmount, setDiscountAmount] = useState(0)
+//   const [loading, setLoading] = useState(false)
+
+//   const subtotal = getSubtotal()
+//   const shippingCost = subtotal >= 999 ? 0 : 50
+//   const totalAmount = subtotal + shippingCost - discountAmount
+
+//   useEffect(() => {
+//     if (items.length === 0) {
+//       toast({
+//         title: "Your cart is empty!",
+//         description: "Please add items to your cart before proceeding to checkout.",
+//         variant: "destructive",
+//       })
+//       router.push("/cart")
+//     }
+//   }, [items, router, toast])
+
+//   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target
+//     setShippingAddress((prev) => ({ ...prev, [name]: value }))
+//   }
+
+//   const validateShippingAddress = () => {
+//     if (!isNotEmpty(shippingAddress.fullName)) return "Full Name is required."
+//     if (!isValidEmail(shippingAddress.email)) return "Valid Email is required."
+//     if (!isValidPhoneNumber(shippingAddress.phone)) return "Valid Phone Number is required (10 digits)."
+//     if (!isNotEmpty(shippingAddress.addressLine1)) return "Address Line 1 is required."
+//     if (!isNotEmpty(shippingAddress.city)) return "City is required."
+//     if (!isNotEmpty(shippingAddress.state)) return "State is required."
+//     if (!isNotEmpty(shippingAddress.zipCode)) return "Zip Code is required."
+//     return null
+//   }
+
+//   const handleApplyCoupon = async () => {
+//     if (!couponCode) {
+//       toast({
+//         title: "Please enter a coupon code.",
+//         variant: "destructive",
+//       })
+//       return
+//     }
+
+//     const coupon = getCouponByCode(couponCode)
+//     if (!coupon) {
+//       toast({
+//         title: "Invalid Coupon Code",
+//         description: "The coupon code you entered is not valid.",
+//         variant: "destructive",
+//       })
+//       setAppliedCoupon(null)
+//       setDiscountAmount(0)
+//       return
+//     }
+
+//     const { discountAmount: calculatedDiscount, message } = applyCouponToCart(items, coupon)
+
+//     if (calculatedDiscount > 0) {
+//       setAppliedCoupon(coupon)
+//       setDiscountAmount(calculatedDiscount)
+//       toast({
+//         title: "Coupon Applied!",
+//         description: message,
+//         variant: "default",
+//       })
+//     } else {
+//       setAppliedCoupon(null)
+//       setDiscountAmount(0)
+//       toast({
+//         title: "Coupon Not Applied",
+//         description: message,
+//         variant: "destructive",
+//       })
+//     }
+//   }
+
+//   const handleCODOrder = async () => {
+//     const validationError = validateShippingAddress()
+//     if (validationError) {
+//       toast({
+//         title: "Validation Error",
+//         description: validationError,
+//         variant: "destructive",
+//       })
+//       return
+//     }
+
+//     setLoading(true)
+//     try {
+//       const supabase = createClient()
+
+//       const {
+//         data: { user },
+//         error: userError,
+//       } = await supabase.auth.getUser()
+//       if (userError || !user) {
+//         toast({
+//           title: "Authentication Required",
+//           description: "Please log in to place your order.",
+//           variant: "destructive",
+//         })
+//         router.push("/auth/login")
+//         return
+//       }
+
+//       const orderData = {
+//         user_id: user.id,
+//         total_amount: totalAmount,
+//         shipping_cost: shippingCost,
+//         discount_amount: discountAmount,
+//         coupon_code: appliedCoupon?.code || null,
+//         payment_method: "cod",
+//         payment_status: "pending",
+//         status: "pending",
+//         shipping_address: shippingAddress,
+//         order_items: items.map((item) => ({
+//           product_id: item.id,
+//           name: item.name,
+//           price: item.numericPrice,
+//           quantity: item.quantity,
+//           color: item.selectedColor,
+//           size: item.selectedSize,
+//           image_src: item.imageSrc,
+//         })),
+//       }
+
+//       const { error: orderError } = await supabase.from("orders").insert([orderData])
+
+//       if (orderError) {
+//         console.error("Error placing order:", orderError)
+//         toast({
+//           title: "Order Placement Failed",
+//           description: "There was an error placing your order. Please try again.",
+//           variant: "destructive",
+//         })
+//       } else {
+//         clearCart()
+//         toast({
+//           title: "Order Placed Successfully!",
+//           description: "Your order has been placed and will be processed shortly.",
+//           variant: "default",
+//         })
+//         router.push("/track")
+//       }
+//     } catch (error) {
+//       console.error("Unexpected error during order placement:", error)
+//       toast({
+//         title: "An unexpected error occurred",
+//         description: "Please try again later.",
+//         variant: "destructive",
+//       })
+//     } finally {
+//       setLoading(false)
+//     }
+//   }
+
+//   const handlePaymentSuccess = (paymentData: any) => {
+//     clearCart()
+//     toast({
+//       title: "Payment Successful!",
+//       description: "Your order has been placed successfully.",
+//     })
+//     router.push("/track")
+//   }
+
+//   const handlePaymentError = (error: any) => {
+//     console.error("Payment error:", error)
+//     toast({
+//       title: "Payment Failed",
+//       description: "There was an error processing your payment. Please try again.",
+//       variant: "destructive",
+//     })
+//   }
+
+//   const orderData = {
+//     total_amount: totalAmount,
+//     shipping_cost: shippingCost,
+//     discount_amount: discountAmount,
+//     coupon_code: appliedCoupon?.code || null,
+//     shipping_address: shippingAddress,
+//     order_items: items.map((item) => ({
+//       product_id: item.id,
+//       name: item.name,
+//       price: item.numericPrice,
+//       quantity: item.quantity,
+//       color: item.selectedColor,
+//       size: item.selectedSize,
+//       image_src: item.imageSrc,
+//     })),
+//   }
+
+//   return (
+//     <div className="container mx-auto px-4 py-8 md:py-12">
+//       <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+
+//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+//         {/* Shipping Address */}
+//         <Card className="lg:col-span-2">
+//           <CardHeader>
+//             <CardTitle>Shipping Address</CardTitle>
+//           </CardHeader>
+//           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//             <div>
+//               <Label htmlFor="fullName">Full Name</Label>
+//               <Input
+//                 id="fullName"
+//                 name="fullName"
+//                 value={shippingAddress.fullName}
+//                 onChange={handleInputChange}
+//                 placeholder="John Doe"
+//               />
+//             </div>
+//             <div>
+//               <Label htmlFor="email">Email</Label>
+//               <Input
+//                 id="email"
+//                 name="email"
+//                 type="email"
+//                 value={shippingAddress.email}
+//                 onChange={handleInputChange}
+//                 placeholder="john.doe@example.com"
+//               />
+//             </div>
+//             <div>
+//               <Label htmlFor="phone">Phone Number</Label>
+//               <Input
+//                 id="phone"
+//                 name="phone"
+//                 type="tel"
+//                 value={shippingAddress.phone}
+//                 onChange={handleInputChange}
+//                 placeholder="9876543210"
+//               />
+//             </div>
+//             <div className="md:col-span-2">
+//               <Label htmlFor="addressLine1">Address Line 1</Label>
+//               <Input
+//                 id="addressLine1"
+//                 name="addressLine1"
+//                 value={shippingAddress.addressLine1}
+//                 onChange={handleInputChange}
+//                 placeholder="123 Main St"
+//               />
+//             </div>
+//             <div className="md:col-span-2">
+//               <Label htmlFor="addressLine2">Address Line 2 (Optional)</Label>
+//               <Input
+//                 id="addressLine2"
+//                 name="addressLine2"
+//                 value={shippingAddress.addressLine2}
+//                 onChange={handleInputChange}
+//                 placeholder="Apartment, Suite, etc."
+//               />
+//             </div>
+//             <div>
+//               <Label htmlFor="city">City</Label>
+//               <Input
+//                 id="city"
+//                 name="city"
+//                 value={shippingAddress.city}
+//                 onChange={handleInputChange}
+//                 placeholder="Mumbai"
+//               />
+//             </div>
+//             <div>
+//               <Label htmlFor="state">State</Label>
+//               <Input
+//                 id="state"
+//                 name="state"
+//                 value={shippingAddress.state}
+//                 onChange={handleInputChange}
+//                 placeholder="Maharashtra"
+//               />
+//             </div>
+//             <div>
+//               <Label htmlFor="zipCode">Zip Code</Label>
+//               <Input
+//                 id="zipCode"
+//                 name="zipCode"
+//                 value={shippingAddress.zipCode}
+//                 onChange={handleInputChange}
+//                 placeholder="400001"
+//               />
+//             </div>
+//           </CardContent>
+//         </Card>
+
+//         {/* Order Summary */}
+//         <Card>
+//           <CardHeader>
+//             <CardTitle>Order Summary</CardTitle>
+//           </CardHeader>
+//           <CardContent className="space-y-4">
+//             <div className="flex justify-between text-sm text-gray-700">
+//               <span>Subtotal ({items.length} items)</span>
+//               <span>₹{subtotal.toFixed(2)}</span>
+//             </div>
+//             <div className="flex justify-between text-sm text-gray-700">
+//               <span>Shipping</span>
+//               <span>{shippingCost === 0 ? "Free" : `₹${shippingCost.toFixed(2)}`}</span>
+//             </div>
+//             {discountAmount > 0 && (
+//               <div className="flex justify-between text-sm text-green-600 font-medium">
+//                 <span>Discount ({appliedCoupon?.code})</span>
+//                 <span>- ₹{discountAmount.toFixed(2)}</span>
+//               </div>
+//             )}
+//             <Separator />
+//             <div className="flex justify-between text-lg font-bold text-gray-900">
+//               <span>Total</span>
+//               <span>₹{totalAmount.toFixed(2)}</span>
+//             </div>
+
+//             <div className="space-y-2">
+//               <Label htmlFor="coupon">Coupon Code</Label>
+//               <div className="flex gap-2">
+//                 <Input
+//                   id="coupon"
+//                   placeholder="Enter coupon code"
+//                   value={couponCode}
+//                   onChange={(e) => setCouponCode(e.target.value)}
+//                 />
+//                 <Button onClick={handleApplyCoupon} variant="outline">
+//                   Apply
+//                 </Button>
+//               </div>
+//             </div>
+
+//             <Separator />
+
+//             {/* Payment Method */}
+//             <div className="space-y-2">
+//               <h3 className="text-lg font-semibold text-gray-900">Payment Method</h3>
+//               <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-2">
+//                 <div className="flex items-center space-x-2">
+//                   <RadioGroupItem value="razorpay" id="razorpay" />
+//                   <Label htmlFor="razorpay">Pay Online (UPI, Cards, Net Banking)</Label>
+//                 </div>
+//                 <div className="flex items-center space-x-2">
+//                   <RadioGroupItem value="cod" id="cod" />
+//                   <Label htmlFor="cod">Cash on Delivery (COD)</Label>
+//                 </div>
+//               </RadioGroup>
+//             </div>
+
+//             {paymentMethod === "razorpay" ? (
+//               <RazorpayPayment
+//                 amount={totalAmount}
+//                 orderData={orderData}
+//                 onSuccess={handlePaymentSuccess}
+//                 onError={handlePaymentError}
+//                 disabled={items.length === 0 || !validateShippingAddress()}
+//               >
+//                 Pay ₹{totalAmount.toFixed(2)}
+//               </RazorpayPayment>
+//             ) : (
+//               <Button
+//                 onClick={handleCODOrder}
+//                 className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 text-lg"
+//                 disabled={items.length === 0 || loading}
+//               >
+//                 {loading ? "Placing Order..." : "Place Order (COD)"}
+//               </Button>
+//             )}
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   )
+// }

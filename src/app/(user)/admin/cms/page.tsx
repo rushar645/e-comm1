@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, Edit, Eye, ImageIcon, FileText, Settings } from "lucide-react"
+import { Plus, Edit, Eye, ImageIcon, FileText, Settings, Trash, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,10 +13,22 @@ import { HomepageBanner } from "@/types"
 
 import api from "@/lib/axios"
 export default function CMSPage() {
-  const [activeTab, setActiveTab] = useState("pages")
-  const [editingPage, setEditingPage] = useState<string | null>(null)
+
   const [editingBanner, setEditingBanner] = useState<string | null>(null)
   const [homepageBanners, setHomepageBanner] = useState<HomepageBanner[] | null>([])
+
+  const handleDelete = async(id:string) =>{
+    try {
+      await api.delete("api/admin/banners", {data:{id}})
+
+    } catch (error) {
+      console.log(error)
+    }
+    if (!homepageBanners)
+      return
+    // const latestBanners = homepageBanners.filter((b)=>b.id != id)
+    // setHomepageBanner(latestBanners)
+  }
 
   useEffect(()=>{
     async function fetchHomepage(){
@@ -34,54 +46,6 @@ export default function CMSPage() {
     fetchHomepage()
   },[])
 
-  const staticPages = [
-    {
-      id: "about",
-      title: "About Us",
-      slug: "/about",
-      lastModified: "2024-01-15",
-      status: "published",
-      wordCount: 850,
-    },
-    {
-      id: "privacy",
-      title: "Privacy Policy",
-      slug: "/privacy",
-      lastModified: "2024-01-10",
-      status: "published",
-      wordCount: 1200,
-    },
-    {
-      id: "terms",
-      title: "Terms & Conditions",
-      slug: "/terms",
-      lastModified: "2024-01-08",
-      status: "published",
-      wordCount: 950,
-    },
-    {
-      id: "faq",
-      title: "FAQ",
-      slug: "/faq",
-      lastModified: "2024-01-12",
-      status: "published",
-      wordCount: 600,
-    },
-    {
-      id: "returns",
-      title: "Returns & Exchanges",
-      slug: "/returns",
-      lastModified: "2024-01-05",
-      status: "published",
-      wordCount: 450,
-    },
-  ]
-
-
-  if (editingPage) {
-    return <StaticPageEditor pageId={editingPage} onBack={() => setEditingPage(null)} />
-  }
-
   if (editingBanner) {
     return <BannerManager bannerId={editingBanner} onBack={() => setEditingBanner(null)} />
   }
@@ -94,20 +58,41 @@ export default function CMSPage() {
           <p className="text-gray-600">Manage your website content and homepage banners</p>
         </div>
       </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Banners</CardTitle>
+            <ImageIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{homepageBanners?.filter((b) => b.is_active).length}</div>
+            <p className="text-xs text-muted-foreground">of {homepageBanners?.length} total banners</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Last Updated</CardTitle>
+            <Settings className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">Today</div>
+            <p className="text-xs text-muted-foreground">Content last modified</p>
+          </CardContent>
+        </Card>
+      </div>
+      <Tabs value="banners" className="">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="pages" className="flex items-center gap-2">
+          {/* <TabsTrigger value="pages" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Static Pages
-          </TabsTrigger>
-          <TabsTrigger value="banners" className="flex items-center gap-2">
+          </TabsTrigger> */}
+          {/* <TabsTrigger value="banners" className="flex items-center gap-2">
             <ImageIcon className="h-4 w-4" />
             Homepage Banners
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
-        <TabsContent value="pages" className="space-y-6">
+        {/* <TabsContent value="pages" className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold">Static Pages</h2>
@@ -120,7 +105,7 @@ export default function CMSPage() {
           </div>
 
           <div className="grid gap-4">
-            {staticPages.map((page) => (
+            {staticPages?.map((page) => (
               <Card key={page.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -162,7 +147,7 @@ export default function CMSPage() {
               </Card>
             ))}
           </div>
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value="banners" className="space-y-6">
           <div className="flex items-center justify-between">
@@ -177,13 +162,13 @@ export default function CMSPage() {
           </div>
 
           <div className="grid gap-4">
-          {homepageBanners.map((banner) => (
+          {homepageBanners?.map((banner) => (
               <Card key={banner.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex gap-4">
                     <div className="w-32 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                       <Image
-                        src={banner.image || "/placeholder.svg"}
+                        src={banner.image_url || "/placeholder.svg"}
                         alt={banner.title}
                         height={400}
                         width={800}
@@ -193,8 +178,8 @@ export default function CMSPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="font-semibold text-lg">{banner.title}</h3>
-                        <Badge variant={banner.isActive ? "default" : "secondary"}>
-                          {banner.isActive ? "Active" : "Inactive"}
+                        <Badge variant={banner.is_active ? "default" : "secondary"}>
+                          {banner.is_active ? "Active" : "Inactive"}
                         </Badge>
                         <Badge variant="outline">Position {banner.position}</Badge>
                       </div>
@@ -211,11 +196,11 @@ export default function CMSPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open("/", "_blank")}
-                        className="flex items-center gap-2"
+                        onClick={() => handleDelete(banner.id)}
+                        className="flex items-center gap-2 text-red-600"
                       >
-                        <Eye className="h-4 w-4" />
-                        Preview
+                        <Trash2/>
+                        Delete
                       </Button>
                       <Button
                         variant="outline"
@@ -234,42 +219,6 @@ export default function CMSPage() {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Pages</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{staticPages.length}</div>
-            <p className="text-xs text-muted-foreground">
-              {staticPages.filter((p) => p.status === "published").length} published
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Banners</CardTitle>
-            <ImageIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{homepageBanners.filter((b) => b.isActive).length}</div>
-            <p className="text-xs text-muted-foreground">of {homepageBanners.length} total banners</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Last Updated</CardTitle>
-            <Settings className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Today</div>
-            <p className="text-xs text-muted-foreground">Content last modified</p>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   )
 }

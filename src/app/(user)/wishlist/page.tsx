@@ -22,16 +22,15 @@ export default function WishlistPage() {
   }
 
   const handleAddToCart = (item: any) => {
-    // addItem({
-    //   id: item.id,
-    //   name: item.name,
-    //   price: item.price,
-    //   numericPrice: item.numericPrice,
-    //   imageSrc: item.imageSrc,
-    //   color: item.color || "",
-    //   size: item.size || "M",
-    //   category: item.category || "",
-    // })
+    console.log(item)
+    addItem({
+      sku: item.sku,
+      name: item.name,
+      price: item.price,
+      imageSrc: item.imageSrc,
+      color: "",
+      size: "M",
+    })
   }
 
   if (!isClient) {
@@ -81,7 +80,7 @@ export default function WishlistPage() {
                 <div className="p-3">
                   <h3 className="text-sm font-medium">{item.name}</h3>
                   <p className="text-sm">{item.price}</p>
-                  <Button
+                  {/* <Button
                     variant="outline"
                     size="sm"
                     className="w-full mt-2 text-xs cursor-pointer hover:shadow-md hover:scale-102 transition-transform duration-100"
@@ -89,7 +88,7 @@ export default function WishlistPage() {
                   >
                     <ShoppingCart className="h-3 w-3 mr-1" />
                     Add to cart
-                  </Button>
+                  </Button> */}
 
                 </div>
               </div>

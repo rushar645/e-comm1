@@ -72,7 +72,7 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
     const interval = setInterval(() => {
       nextSlide()
     }, autoSlideInterval)
-    
+    console.log(banners)
     return () => clearInterval(interval)
   }, [banners, nextSlide, autoSlideInterval])
   
@@ -118,7 +118,7 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
   return (
     <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
       <div
-        className="flex transition-transform duration-800 ease-in-out"
+        className="flex justify-center items-center transition-transform duration-800 ease-in-out"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {banners.map((banner, index) => (

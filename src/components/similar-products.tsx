@@ -4,14 +4,8 @@ import { useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Product } from "@/types"
 
-interface Product {
-  id: string
-  name: string
-  price: string
-  imageSrc: string
-  category?: string
-}
 
 interface SimilarProductsProps {
   products: Product[]
@@ -49,7 +43,7 @@ export function SimilarProducts({ products }: SimilarProductsProps) {
             <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="relative h-64 overflow-hidden">
                 <Image
-                  src={product.imageSrc || "/placeholder.svg"}
+                  src={product.images[0] || "/placeholder.svg"}
                   fill
                   alt={product.name}
                   className="object-cover transition-transform duration-500 group-hover:scale-110"

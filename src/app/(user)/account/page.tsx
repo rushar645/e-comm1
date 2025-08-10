@@ -53,7 +53,7 @@ const defaultWishList: WishListItem[] = [{
 }];
 
 export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState("")
+  const [activeTab, setActiveTab] = useState("profile")
   const [isEditing, setIsEditing] = useState(false)
   const [showAvatarUpload, setShowAvatarUpload] = useState(false)
   const [formData, setFormData] = useState(defaultFormData)

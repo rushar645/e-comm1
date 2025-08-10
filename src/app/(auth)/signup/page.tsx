@@ -12,7 +12,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import api from "@/lib/axios";
-import banner from "@/images/banner/image9.png";
+import banner from "@/images/costumer_sigup/signup.png";
 
 interface SignUpFormData {
   name: string;
@@ -257,12 +257,12 @@ export default function SignUpPage() {
       </div>
 
       {/* Right Side - Image */}
-      <div className="flex-1 relative bg-gradient-to-br from-gray-300 to-gray-400">
+      <div className="flex-1 relative bg-white">
         <Image
           src={banner}
           alt="Fashion Model"
           fill
-          className="object-cover"
+          className="object-contain"
           priority
         />
       </div>

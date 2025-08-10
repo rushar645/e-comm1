@@ -17,7 +17,7 @@ export default function AdminLayout({
           <DashboardSidebar isMobile={false} />
           <div className="flex-1 flex flex-col">
             <DashboardHeader />
-            <main className="flex-1 p-6">{children}</main>
+            <main className="flex-1 px-6">{children}</main>
           </div>
         </div>
         <Toaster />

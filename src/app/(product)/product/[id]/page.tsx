@@ -7,11 +7,11 @@ import { useParams } from 'next/navigation'
 import { Heart, Share2 } from "lucide-react"
 import { ProductGallery } from "@/components/product-gallery"
 import { SizeSelector } from "@/components/size-selector"
-// import { SimilarProducts } from "@/components/similar-products"
+import { SimilarProducts } from "@/components/similar-products"
 import { CategoryShowcase } from "@/components/category-showcase"
 import { Button } from "@/components/ui/button"
 import ProductLoading from "@/components/product-loading-skeleton"
-import { Breadcrumb, type BreadcrumbType } from "@/components/ui/breadcrumb"
+// import { Breadcrumb, type BreadcrumbType } from "@/components/ui/breadcrumb"
 import { Rating } from "@/components/ui/rating"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { TypographyH1, TypographyP, TypographySmall, TypographyH2 } from "@/components/ui/typography"
@@ -23,11 +23,13 @@ import SizeGuideModal from "@/components/size-guide-modal"
 import api from "@/lib/axios"
 import { Product } from "@/types"
 
+
 export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [product, setProduct] = useState<Product>()
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([])
   const { addItem } = useCart()
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist()
 
@@ -39,7 +41,7 @@ export default function ProductPage() {
     const fetchProduct = async() =>{
       try{
         const res = await api.get(`api/products/${productSku}`)
-        console.log("Fetching ka res 🔦", res)
+        // console.log("Fetching ka res 🔦", res)
       
         if(res.status != 200){
           console.log("No Product Fetched", res)
@@ -52,7 +54,22 @@ export default function ProductPage() {
         console.log("Error Fetching the one product ::", e)
       }
     }
+    
+    const fetchSimilarProducts = async() =>{
+      try {
+        const res = await api.get(`api/products?limit=5?category=${product?.category}`)
+
+        if(res.status != 200){
+          console.log("No Product Fetched", res)
+        }
+
+        setSimilarProducts(res.data.data)
+      } catch (error) {
+        
+      }
+    }
     fetchProduct();
+    fetchSimilarProducts();
   },[])
 
 
@@ -188,7 +205,7 @@ export default function ProductPage() {
             <TypographyP className="mb-2">Cloth type: {product.material}</TypographyP>
 
             {/* Rating */}
-{/* //TODO       <Rating value={product.rating} className="mb-4" /> */}
+     <Rating value={5} className="mb-4" />
 
             {/* Price */}
             <div className="mb-4">
@@ -200,11 +217,11 @@ export default function ProductPage() {
             </div>
 
             {/* Delivery */}
-            <div className="flex items-center mb-6">
-              <div className="w-6 h-6 mr-2 flex items-center justify-center">
+            <div className="flex items-center mb-2">
+              {/* <div className="w-6 h-6 mr-2 flex items-center justify-center">
                 <Image src="/placeholder.svg?height=24&width=24" width={24} height={24} alt="Delivery" />
               </div>
-              <TypographySmall>7 Days</TypographySmall>
+              <TypographySmall>7 Days</TypographySmall> */}
             </div>
 
             {/* Size Selection */}
@@ -298,13 +315,13 @@ export default function ProductPage() {
         {/* Similar Products */}
         <section className="mb-16">
           <TypographyH2 className="mb-6">Similar Product</TypographyH2>
-          {/* <SimilarProducts products={similarProducts} /> */}
+          <SimilarProducts products={similarProducts} />
         </section>
 
         {/* Explore Other Categories */}
         <section className="mb-16">
           <TypographyH2 className="mb-6">Explore other categories</TypographyH2>
-          <CategoryShowcase />
+          <CategoryShowcase category={product.category}/>
         </section>
       </div>
     </div>

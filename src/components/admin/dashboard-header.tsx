@@ -25,8 +25,7 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
   const { adminUsers, deleteAdminUser} = useAdmin()
 
   const userLogout = ()=>{
-    localStorage.setItem('user', '{}');
-    // deleteAdminUser(adminUsers[0].id)
+    deleteAdminUser(adminUsers[0].id)
     console.log("Adminss aree",adminUsers)
     router.push('/admin/login')
   }

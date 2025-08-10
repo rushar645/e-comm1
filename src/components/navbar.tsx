@@ -26,9 +26,9 @@ export function Navbar() {
   const { itemCount: wishlistItemCount } = useWishlist()
   const pathname = usePathname();
 
-  const isAdminPage = pathname === '/admin';
+  const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
   const isLoginPage = pathname ==='/login'
-  const isSignupPage = pathname ==='/singup'
+  const isSignupPage = pathname ==='/signup'
   const {user, setUser} = useUser();
 
   useEffect(()=>{

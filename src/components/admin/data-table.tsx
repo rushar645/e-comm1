@@ -22,7 +22,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   searchKey?: string
   searchPlaceholder?: string
-  loading:boolean
+  loading?:boolean
 }
 
 export function DataTable<TData, TValue>({

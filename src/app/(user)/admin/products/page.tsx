@@ -31,22 +31,23 @@ import Image from "next/image"
 import { useAdmin, type Product } from "@/contexts/admin-context"
 
 export default function ProductsPage() {
-  const { products, deleteProduct, updateProduct, loading } = useAdmin()
+  const { loading } = useAdmin()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-
+  const [products, setProducts] = useState<Product[]>([]);
+  
   const handleDelete = async (id: string) => {
     setDeletingId(id)
-    await deleteProduct(id)
+    // await deleteProduct(id)
     setDeletingId(null)
   }
 
   const handleStatusChange = async (id: string, status: Product["status"]) => {
-    await updateProduct(id, { status })
+    // await updateProduct(id, { status })
   }
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = products?.filter((product) => {
     if (selectedCategory && product.category !== selectedCategory) {
       return false
     }
@@ -56,7 +57,7 @@ export default function ProductsPage() {
     return true
   })
 
-  const categories = Array.from(new Set(products.map((p) => p.category)))
+  const categories = Array.from(new Set(products?.map((p) => p.category)))
   const statuses = [
     { value: "active", label: "Active" },
     { value: "draft", label: "Draft" },
