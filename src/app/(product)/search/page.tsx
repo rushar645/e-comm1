@@ -1,19 +1,25 @@
-import { Suspense } from "react"
+"use client"
+
+import { Suspense, useEffect, useState } from "react"
 import { ProductGrid } from "@/components/product-grid"
 // import { products } from "@/app/data/products"
 import { TypographyH1, TypographyP } from "@/components/ui/typography"
 import { ProductGridSkeleton } from "@/components/ui/skeleton"
 
-interface SearchPageProps {
-  searchParams?: {
-    q?: string
-  }
-}
 
 export default function SearchPage({
   searchParams,
-}: SearchPageProps) {
-  const query = searchParams?.q || ""
+}: {
+  searchParams: Promise<{ q?: string }>
+}) {
+
+  const [params, setParams] = useState<{ q?: string }>({})
+  useEffect(() => {
+    searchParams.then((resolved) => setParams(resolved))
+  }, [searchParams])
+
+  const query = params.q ?? ""
+
 
   // Filter products based on search query
   const filteredProducts = products.filter(
