@@ -4,12 +4,16 @@ import { ProductGrid } from "@/components/product-grid"
 import { TypographyH1, TypographyP } from "@/components/ui/typography"
 import { ProductGridSkeleton } from "@/components/ui/skeleton"
 
+interface SearchPageProps {
+  searchParams?: {
+    q?: string
+  }
+}
+
 export default function SearchPage({
   searchParams,
-}: {
-  searchParams: { q: string }
-}) {
-  const query = searchParams.q || ""
+}: SearchPageProps) {
+  const query = searchParams?.q || ""
 
   // Filter products based on search query
   const filteredProducts = products.filter(
