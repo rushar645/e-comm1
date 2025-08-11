@@ -23,7 +23,7 @@ export async function withAuth(
     }
 
     return handler(request, user)
-  } catch (error) {
-    return NextResponse.json({ error: error?.message }, { status: 401 })
+  } catch (error:unknown) {
+    return NextResponse.json({ error: error }, { status: 401 })
   }
 }
