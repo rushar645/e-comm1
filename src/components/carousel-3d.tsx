@@ -136,7 +136,7 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
                   id={product.id}
                   imageSrc={product.images[0]}
                   name={product.name}
-                  price={product.price.toString()}
+                  price={product.price}
                   numericPrice={product.price}
                   highlighted={index === activeIndex}
                   showRating={index === activeIndex}

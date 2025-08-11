@@ -60,7 +60,7 @@ export const newArrivalsData = [
 // Helper function to get product by ID
 export function getProductById(id: string | number) {
   // Convert id to number if it's a string
-  const numId = typeof id === "string" ? id : Number.parseInt(id, 10)  
+  const numId = id  
 
   // First check in newArrivalsData
   const product = newArrivalsData.find((p) => p.id === numId)

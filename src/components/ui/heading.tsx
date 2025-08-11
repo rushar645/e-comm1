@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
 import type React from "react" // Import React to declare JSX
+import type {JSX} from "react"
 
 interface HeadingProps {
   level: 1 | 2 | 3 | 4 | 5 | 6

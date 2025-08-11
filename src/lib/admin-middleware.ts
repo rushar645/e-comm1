@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
+import jwt, { type JwtPayload } from "jsonwebtoken"
 import { createServerClient } from "@/lib/supabase"
 
 interface AdminUser {
@@ -11,35 +11,43 @@ interface AdminUser {
   status: "active" | "inactive"
 }
 
+interface DecodedToken extends JwtPayload {
+  userId: string
+}
+
 export async function withAuth(
   request: NextRequest,
   handler: (req: NextRequest, user: AdminUser) => Promise<NextResponse>,
-  requiredRole?: "super_admin" | "admin" | "manager",
+  requiredRole?: AdminUser["role"],
 ) {
-  try { 
-    // Get token from cookie
+  try {
+    // Get token from cookies
     const token = request.cookies.get("auth-token")?.value
-
     if (!token) {
-      return NextResponse.json({ error: "Authentication required nahi mili" }, { status: 401 })
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
     }
 
-    // Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret")
-    // console.log("Decoded JWT TOKEN",decoded)
+    // Verify and decode token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as DecodedToken
+    if (!decoded.userId) {
+      return NextResponse.json({ error: "Invalid token payload" }, { status: 401 })
+    }
+
+    // Fetch admin user
     const supabase = createServerClient()
-    const { data, error } = await supabase
+    const { data: adminUser, error } = await supabase
       .from("admin_users")
       .select("*")
       .eq("id", decoded.userId)
       .eq("status", "active")
-    const adminUser = data as AdminUser | null
+      .single<AdminUser>()
+
     if (error) {
-      return NextResponse.json({ error: `Error Occured, ${error.message}` }, { status: 401 })
+      return NextResponse.json({ error: `Database error: ${error.message}` }, { status: 500 })
     }
 
-    if (!adminUser){
-      return NextResponse.json({error: "No Admin User Found"}, {status:401})
+    if (!adminUser) {
+      return NextResponse.json({ error: "Admin user not found" }, { status: 404 })
     }
 
     // Check role permissions
@@ -48,10 +56,10 @@ export async function withAuth(
         super_admin: 3,
         admin: 2,
         manager: 1,
-      }
+      } as const
 
-      const userLevel = roleHierarchy[adminUser.role as keyof typeof roleHierarchy] || 0
-      const requiredLevel = roleHierarchy[requiredRole] || 0
+      const userLevel = roleHierarchy[adminUser.role]
+      const requiredLevel = roleHierarchy[requiredRole]
 
       if (userLevel < requiredLevel) {
         return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 })
@@ -60,8 +68,11 @@ export async function withAuth(
 
     // Call the handler with authenticated user
     return await handler(request, adminUser)
-  } catch (error) {
-    console.error("Auth middleware error:", error)
+  } catch (err) {
+    console.error("Auth middleware error:", err)
+    if (err instanceof jwt.JsonWebTokenError) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+    }
     return NextResponse.json({ error: "Authentication failed" }, { status: 401 })
   }
 }

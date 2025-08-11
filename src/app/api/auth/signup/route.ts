@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     return response
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
     console.error("Signup error:", error)

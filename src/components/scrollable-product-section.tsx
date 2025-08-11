@@ -45,7 +45,7 @@ export function ScrollableProductSection({
               id={product.id}
               imageSrc={product.images[0]}
               name={product.name}
-              price={product.price.toString()}
+              price={product.price}
               numericPrice={product.price}
               showRating={showRating}
               category={product.category || category}

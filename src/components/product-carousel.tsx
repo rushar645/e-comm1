@@ -5,10 +5,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ProductCard } from "@/components/product-card"
 
 interface Product {
-  id: number
+  id: string
   name: string
   price: string
   imageSrc: string
+  sku: string
 }
 
 interface ProductCarouselProps {
@@ -39,7 +40,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
       >
         {products.map((product) => (
           <div key={product.id} className="shrink-0 snap-center" style={{ width: "240px" }}>
-            <ProductCard imageSrc={product.imageSrc} name={product.name} price={product.price} showRating={false} />
+            <ProductCard id={product.id} sku={product.sku} imageSrc={product.imageSrc} name={product.name} price={Number(product.price)} showRating={false} />
           </div>
         ))}
       </div>

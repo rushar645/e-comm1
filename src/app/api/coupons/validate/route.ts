@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: error.errors[0].message,
+          error: error.message,
         },
         { status: 400 },
       )

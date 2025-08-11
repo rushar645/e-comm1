@@ -118,8 +118,13 @@ export default function NewProductPage() {
 
       const response = await api.post("api/products", productData)
 
-      if (response.status !==200) {
+      if (response.status ==409) {
         // throw new Error(result.error || "Failed to create product")
+        toast({
+        title: "Error",
+        description: "Product with this SKU already exists",
+        variant: "warning",
+      })
       }
 
       toast({
@@ -129,12 +134,7 @@ export default function NewProductPage() {
 
       router.push("/admin/products")
     } catch (error) {
-      // console.log("Product creation error:", error)
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.response.data.error : "Failed to create product. Please try again.",
-        variant: "warning",
-      })
+      console.log("Product creation error:", error)
     } finally {
       setLoading(false)
     }

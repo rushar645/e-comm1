@@ -10,7 +10,7 @@ import { useWishlist } from "@/contexts/wishlist-context"
 
 interface ProductCardProps {
   id: string
-  imageSrc: string
+  imageSrc?: string
   name: string
   price: number
   highlighted?: boolean
@@ -42,6 +42,7 @@ export function ProductCard({
     e.preventDefault()
     e.stopPropagation()
     console.log(category)
+    if(imageSrc)
     addItem({
       sku,
       name,
@@ -58,7 +59,7 @@ export function ProductCard({
 
     if (isInWishlist(sku)) {
       removeFromWishlist(sku)
-    } else {
+    } else if(imageSrc){
       addToWishlist({
         sku,
         name,

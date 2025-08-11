@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
       .select("*")
       .eq("new_arrival", true)
       .order("created_at", { ascending: false })
-      .limit(7)
+      .limit(5)
 
     if (naError) {
       console.error("New arrivals fetch error:", naError)

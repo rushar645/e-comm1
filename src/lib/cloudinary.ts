@@ -63,8 +63,8 @@ export class CloudinaryService {
     } catch (error: unknown) {
       console.error("Cloudinary upload error:", error)
     
-      if (error?.message) {
-        throw new Error(`Cloudinary upload failed: ${error.message}`);
+      if (error) {
+        throw new Error(`Cloudinary upload failed: ${error}`);
       }
     
       throw new Error("Cloudinary upload failed with an unknown error.");

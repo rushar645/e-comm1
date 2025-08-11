@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     const { data: existingProduct } = await supabase.from("products").select("id").eq("sku", validatedData.sku).single()
 
     if (existingProduct) {
-      return NextResponse.json({ error: "Product with this SKU already exists" }, { status: 400 })
+      return NextResponse.json({ error: "Product with this SKU already exists" }, { status: 409 })
     }
 
     const { data: product, error } = await supabase.from("products").insert(validatedData).select().single()

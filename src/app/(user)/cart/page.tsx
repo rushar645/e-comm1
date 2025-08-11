@@ -30,10 +30,10 @@ export default function CartPage() {
     getSubtotal,
     getShippingCost,
     getTotal,
-    appliedDiscount,
-    discountAmount,
-    applyDiscount,
-    removeDiscount,
+    // appliedDiscount,
+    // discountAmount,
+    // applyDiscount,
+    // removeDiscount,
   } = useCart()
 
   const { addItem: addToWishlist, isInWishlist, removeItem:removeFromWishlist } = useWishlist()
@@ -112,13 +112,13 @@ export default function CartPage() {
     setIsApplyingDiscount(true)
     setDiscountError("")
 
-    const result = await applyDiscount(discountCode)
+    // const result = await applyDiscount(discountCode)
 
-    if (result.success) {
-      setDiscountCode("")
-    } else {
-      setDiscountError(result.message)
-    }
+    // if (result.success) {
+    //   setDiscountCode("")
+    // } else {
+    //   setDiscountError(result.message)
+    // }
 
     setIsApplyingDiscount(false)
   }
@@ -345,12 +345,12 @@ export default function CartPage() {
                 </div>
 
                 {/* Discount Display */}
-                {discountAmount > 0 && (
+                {/* {discountAmount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Discount ({appliedDiscount?.code})</span>
                     <span>-{formatCurrency(discountAmount)}</span>
                   </div>
-                )}
+                )} */}
 
                 {subtotal !=0 &&
                 <div className="flex justify-between">
@@ -384,12 +384,12 @@ export default function CartPage() {
                       setDiscountCode(e.target.value.toUpperCase())
                       setDiscountError("")
                     }}
-                    disabled={!!appliedDiscount}
+                    // disabled={!!appliedDiscount}
                   />
                   <Button
                     className="rounded-l-none bg-[#3A2723] hover:bg-[#5A3A33] text-white transition-all duration-200 hover:shadow-md active:scale-95"
                     onClick={handleApplyDiscount}
-                    disabled={isApplyingDiscount || !!appliedDiscount}
+                    // disabled={isApplyingDiscount || !!appliedDiscount}
                   >
                     {isApplyingDiscount ? (
                       <div className="flex items-center space-x-1">
@@ -402,7 +402,7 @@ export default function CartPage() {
                   </Button>
                 </div>
                 {discountError && <p className="text-sm text-red-600 mt-1">{discountError}</p>}
-                {appliedDiscount && (
+                {/* {appliedDiscount && (
                   <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded text-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-green-800 font-medium">{appliedDiscount.code} applied!</span>
@@ -412,7 +412,7 @@ export default function CartPage() {
                     </div>
                     <p className="text-green-600 text-xs mt-1">{appliedDiscount.description}</p>
                   </div>
-                )}
+                )} */}
               </div>
 
               <div className="mt-6 text-center">

@@ -76,6 +76,7 @@
     "sonner": "^2.0.6",
     "swr": "^2.3.4",
     "tailwind-merge": "^3.3.0",
+    "vaul": "^1.1.2",
     "zod": "^4.0.10"
   },
   "devDependencies": {
@@ -83,6 +84,7 @@
     "@netlify/next": "^1.4.9",
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

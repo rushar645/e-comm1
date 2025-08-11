@@ -5,6 +5,7 @@ import { ProductGrid } from "@/components/product-grid"
 // import { products } from "@/app/data/products"
 import { TypographyH1, TypographyP } from "@/components/ui/typography"
 import { ProductGridSkeleton } from "@/components/ui/skeleton"
+import { Product } from "@/types"
 
 
 export default function SearchPage({
@@ -19,6 +20,7 @@ export default function SearchPage({
   }, [searchParams])
 
   const query = params.q ?? ""
+  const products:Product[] = []
 
 
   // Filter products based on search query

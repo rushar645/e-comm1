@@ -17,6 +17,7 @@ export interface Product {
   stock: number
   status: "active" | "draft" | "out-of-stock"
   images: string[]
+  imageSrc?:string
   colors: string[]
   sizes: string[]
   material?: string
@@ -95,11 +96,12 @@ export interface Order {
   date: string
   trackingNumber?: string
 }
-
+ 
 export interface OrderItem {
   id: string
+  sku:string
   productId: string
-  name: string
+  product_name: string
   price: number
   quantity: number
   color?: string

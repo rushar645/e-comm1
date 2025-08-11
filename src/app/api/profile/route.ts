@@ -1,41 +1,49 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload, JsonWebTokenError } from "jsonwebtoken"
+import { createServerClient } from "@/lib/supabase"
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+const supabase = createServerClient()
+
+interface TokenPayload extends JwtPayload {
+  userId: string
+}
+
+function getUserIdFromToken(token: string): string {
+  const decoded = jwt.verify(
+    token,
+    process.env.JWT_SECRET || "fallback-secret"
+  ) as JwtPayload | string
+
+  if (typeof decoded === "string" || !("userId" in decoded)) {
+    throw new JsonWebTokenError("Invalid token payload")
+  }
+
+  return (decoded as TokenPayload).userId
+}
 
 export async function PUT(request: NextRequest) {
   try {
-    // Get token from cookies
     const token = request.cookies.get("auth-token")?.value
-
     if (!token) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 })
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") 
-    const userId = decoded.userId
+    const userId = getUserIdFromToken(token)
 
     const body = await request.json()
     const { name, email, phone, avatar } = body
 
-    // Validation
     if (!name?.trim()) {
       return NextResponse.json({ error: "Name is required" }, { status: 400 })
     }
-
     if (!email?.trim()) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 })
     }
-
-    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
     }
 
-    // Update customer profile
     const { data: customer, error } = await supabase
       .from("customers")
       .update({
@@ -66,17 +74,14 @@ export async function PUT(request: NextRequest) {
         email: customer.email,
         phone: customer.phone,
         avatar: customer.avatar_url
-          ? {
-              url: customer.avatar_url,
-              publicId: customer.avatar_public_id,
-            }
+          ? { url: customer.avatar_url, publicId: customer.avatar_public_id }
           : null,
       },
       message: "Profile updated successfully",
     })
   } catch (error) {
     console.error("Profile update error:", error)
-    if (error instanceof jwt.JsonWebTokenError) {
+    if (error instanceof JsonWebTokenError) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 })
     }
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
@@ -85,27 +90,28 @@ export async function PUT(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Get token from cookies
     const token = request.cookies.get("auth-token")?.value
-
     if (!token) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 })
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") 
-    const userId = decoded.userId
+    const userId = getUserIdFromToken(token)
 
-    // Get customer profile
-    const { data: customer, error } = await supabase.from("customers").select("*").eq("id", userId).single()
+    const { data: customer, error } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("id", userId)
+      .single()
 
     if (error) {
       console.error("Database error:", error)
       return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 })
     }
 
-    // Get order statistics
-    const { data: orders } = await supabase.from("orders").select("total, status").eq("customer_id", userId)
+    const { data: orders } = await supabase
+      .from("orders")
+      .select("total, status")
+      .eq("customer_id", userId)
 
     const totalOrders = orders?.length || 0
     const totalSpent = orders?.reduce((sum, order) => sum + (order.total || 0), 0) || 0
@@ -118,10 +124,7 @@ export async function GET(request: NextRequest) {
         email: customer.email,
         phone: customer.phone,
         avatar: customer.avatar_url
-          ? {
-              url: customer.avatar_url,
-              publicId: customer.avatar_public_id,
-            }
+          ? { url: customer.avatar_url, publicId: customer.avatar_public_id }
           : null,
         joinDate: new Date(customer.created_at).toLocaleDateString("en-US", {
           month: "long",
@@ -129,12 +132,12 @@ export async function GET(request: NextRequest) {
         }),
         totalOrders,
         totalSpent,
-        loyaltyPoints: Math.floor(totalSpent / 100), // 1 point per ₹100 spent
+        loyaltyPoints: Math.floor(totalSpent / 100),
       },
     })
   } catch (error) {
     console.error("Profile fetch error:", error)
-    if (error instanceof jwt.JsonWebTokenError) {
+    if (error instanceof JsonWebTokenError) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 })
     }
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

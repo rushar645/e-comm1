@@ -4,11 +4,11 @@ import Link from "next/link"
 import { Star, ShoppingCart } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
+// import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 interface ProductCardUIProps extends React.HTMLAttributes<HTMLDivElement> {
-  id: number | string
+  id: string
   name: string
   price: string
   imageSrc: string
@@ -29,9 +29,9 @@ export function ProductCardUI({
   imageSrc,
   category = "all",
   rating = 0,
-  isNew = false,
+  // isNew = false,
   isSale = false,
-  discount,
+  // discount,
   showQuickAdd = false,
   showRating = false,
   variant = "default",
@@ -60,10 +60,10 @@ export function ProductCardUI({
           />
 
           {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
+          {/* <div className="absolute top-2 left-2 flex flex-col gap-1">
             {isNew && <Badge variant="new">New</Badge>}
             {isSale && <Badge variant="sale">{discount || "Sale"}</Badge>}
-          </div>
+          </div> */}
           {category && <></>}
           {/* Quick Add Button */}
           {showQuickAdd && (

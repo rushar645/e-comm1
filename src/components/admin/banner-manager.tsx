@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { Heading } from "@/components/ui/heading"
-import { SingleImageUpload } from "@/components/ui/single-image-upload"
+import { SingleImageUpload, UploadedImage } from "@/components/ui/single-image-upload"
 // import Image from "next/image"
 
 import api from '@/lib/axios'
@@ -22,18 +22,11 @@ interface BannerManagerProps {
   initialData?: BannerData
 }
 
-interface Image
-  {
-    url: string
-    publicId: string
-    width: number
-    height: number
-  } 
 interface BannerData {
   id: string
   title: string
   subtitle: string
-  image: Image | null
+  image: UploadedImage | null
   buttonText: string
   buttonLink: string
   position: number
@@ -125,7 +118,7 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
     }
   }
 
-  const handleImageChange = (image:Image) => {
+  const handleImageChange = (image:UploadedImage | null) => {
     setBannerData((prev) => ({
       ...prev,
       image: image,

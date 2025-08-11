@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase"
+import { createServerClient } from "@/lib/supabase"
 import crypto from "crypto"
 
 export async function POST(request: NextRequest) {
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const event = JSON.parse(body)
-    const supabase = createClient()
+    const supabase = createServerClient()
 
     switch (event.event) {
       case "payment.captured":

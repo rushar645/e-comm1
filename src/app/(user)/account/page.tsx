@@ -11,12 +11,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Package, MapPin, Settings, Edit, Eye, Truck, CheckCircle, Clock, X } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
-// import { Camera } from "lucide-react"
-// import { SingleImageUpload } from "@/components/ui/single-image-upload"
-// import { UploadedImage } from "@/components/ui/single-image-upload"
 import { useUser } from "@/contexts/user-contexts"
 import { useRouter } from "next/navigation"
 import api from "@/lib/axios"
+import { Address, Order } from "@/types"
+// import { Camera } from "lucide-react"
+// import { SingleImageUpload } from "@/components/ui/single-image-upload"
+// import { UploadedImage } from "@/components/ui/single-image-upload"
 
 
 const defaultFormData = {
@@ -58,8 +59,8 @@ export default function AccountPage() {
   const [showAvatarUpload, setShowAvatarUpload] = useState(false)
   const [formData, setFormData] = useState(defaultFormData)
   const [wishlistItems, setWishlistItems] = useState<WishListItem[]>(defaultWishList)
-  const [orderHistory, setOrderHistory] = useState([])
-  const [addresses, setAdresses] = useState([])
+  const [orderHistory, setOrderHistory] = useState<Order[]>([])
+  const [addresses, setAdresses] = useState<Address[]>([])
   
   const { toast } = useToast()
   const router = useRouter();
@@ -340,8 +341,8 @@ export default function AccountPage() {
                           <Label htmlFor="phone">Phone Number</Label>
                           <Input
                             id="phone"
-                            value={`+91 ${formData.phone}`}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: Number(e.target.value) })}
                             disabled={!isEditing}
                           />
                         </div>
@@ -403,7 +404,7 @@ export default function AccountPage() {
                                 <div key={item.sku} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                                   <Image
                                     src={item.image || "/placeholder.svg"}
-                                    alt={item.name}
+                                    alt={item.product_name}
                                     width={60}
                                     height={60}
                                     className="rounded-md object-cover"

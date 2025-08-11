@@ -1,12 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createRazorpayOrder } from "@/lib/razorpay"
-import { createClient } from "@/lib/supabase"
-import { cookies } from "next/headers"
+import { createServerClient } from "@/lib/supabase"
+// import { cookies } from "next/headers"
 
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
+    // const cookieStore = cookies()
+    const supabase = createServerClient()
 
     // Get authenticated user
     const {

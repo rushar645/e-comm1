@@ -10,13 +10,15 @@ const updateCustomerSchema = z.object({
   gender: z.enum(["male", "female", "other"]).optional(),
   status: z.enum(["active", "inactive"]).optional(),
   newsletter_subscribed: z.boolean().optional(),
-  sms_updates: z.boolean().optional(),
+  sms_updates: z.boolean().optional(), 
   customize_size: z.any().optional(), // Accept JSON for customize_size
 })
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: {params: Promise<{id:string}>}) {
   try {
     const supabase = createServerClient()
+    console.log(request.method)
+    const {id} = await params
 
     const { data: customer, error } = await supabase
       .from("customers")
@@ -25,7 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         customer_addresses (*),
         orders (*)
       `)
-      .eq("id", params.id)
+      .eq("id", id)
       .single()
 
     if (error || !customer) {
@@ -50,10 +52,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: {params: Promise<{id:string}>}) {
   try {
     const body = await request.json()
     const validatedData = updateCustomerSchema.parse(body)
+    const {id} = await params
 
     const supabase = createServerClient()
 
@@ -63,7 +66,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         ...validatedData,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single()
 

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { X, Tag, Info } from "lucide-react"
+import { Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,11 +19,11 @@ export default function CheckoutPage() {
     getSubtotal,
     getShippingCost,
     getTotal,
-    appliedDiscount,
-    discountAmount,
-    shippingDiscount,
-    applyDiscount,
-    removeDiscount,
+    // appliedDiscount,
+    // discountAmount,
+    // shippingDiscount,
+    // applyDiscount,
+    // removeDiscount,
   } = useCart()
 
   const [couponCode, setCouponCode] = useState("")
@@ -53,23 +53,23 @@ export default function CheckoutPage() {
     setIsApplyingCoupon(true)
     setCouponError("")
 
-    const result = await applyDiscount(couponCode)
+    // const result = await applyDiscount(couponCode)
 
-    if (result.success) {
-      setCouponCode("")
-      setShowAvailableCoupons(false)
-    } else {
-      setCouponError(result.message)
-    }
+    // if (result.success) {
+    //   setCouponCode("")
+    //   setShowAvailableCoupons(false)
+    // } else {
+    //   setCouponError(result.message)
+    // }
 
     setIsApplyingCoupon(false)
   }
 
-  const handleRemoveDiscount = () => {
-    removeDiscount()
-    setCouponCode("")
-    setCouponError("")
-  }
+  // const handleRemoveDiscount = () => {
+  //   // removeDiscount()
+  //   setCouponCode("")
+  //   setCouponError("")
+  // }
 
   const handleUseCoupon = (code: string) => {
     setCouponCode(code)
@@ -263,7 +263,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Applied Discount Display */}
-            {appliedDiscount && (
+            {/* {appliedDiscount && (
               <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                 </div>
                 <p className="text-xs text-green-600 mt-1">{appliedDiscount.description}</p>
               </div>
-            )}
+            )} */}
 
             {/* Coupon Code */}
             <div className="mb-6">
@@ -294,11 +294,12 @@ export default function CheckoutPage() {
                     setCouponError("")
                   }}
                   className="flex-1 h-12"
-                  disabled={!!appliedDiscount}
+                  // disabled={!!appliedDiscount}
                 />
                 <Button
                   onClick={handleApplyCoupon}
-                  disabled={isApplyingCoupon || !!appliedDiscount}
+                  // disabled={isApplyingCoupon || !!appliedDiscount}
+                  disabled={false}
                   className="bg-[#3A2723] hover:bg-[#5A3A33] text-white px-6 h-12 transition-all duration-200 hover:shadow-md active:scale-95 whitespace-nowrap"
                 >
                   {isApplyingCoupon ? (
@@ -314,7 +315,7 @@ export default function CheckoutPage() {
 
               {couponError && <p className="text-sm text-red-600 mb-2">{couponError}</p>}
 
-              {!appliedDiscount && (
+              {/* {!appliedDiscount && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -323,10 +324,11 @@ export default function CheckoutPage() {
                 >
                   {showAvailableCoupons ? "Hide" : "View"} available coupons
                 </Button>
-              )}
+              )} */}
 
               {/* Available Coupons */}
-              {showAvailableCoupons && !appliedDiscount && (
+              {/* {showAvailableCoupons && !appliedDiscount && ( */}
+              {showAvailableCoupons && (
                 <div className="mt-3 space-y-2 max-h-48 overflow-y-auto">
                   {DISCOUNT_CODES.filter((code) => code.isActive).map((discount) => (
                     <div
@@ -355,12 +357,12 @@ export default function CheckoutPage() {
               </div>
 
               {/* Discount Display */}
-              {discountAmount > 0 && (
+              {/* {discountAmount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount ({appliedDiscount?.code})</span>
                   <span>-₹{discountAmount.toFixed(2)}</span>
                 </div>
-              )}
+              )} */}
 
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-1">
@@ -370,11 +372,11 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  {shippingDiscount > 0 && (
+                  {/* {shippingDiscount > 0 && (
                     <div className="text-xs text-gray-500 line-through">
                       ₹{(shipping + shippingDiscount).toFixed(2)}
                     </div>
-                  )}
+                  )} */}
                   <span className={`font-medium ${shipping === 0 ? "text-green-600" : ""}`}>
                     {shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}
                   </span>
@@ -387,11 +389,11 @@ export default function CheckoutPage() {
               </div>
 
               {/* Savings Display */}
-              {(discountAmount > 0 || shippingDiscount > 0) && (
+              {/* {(discountAmount > 0 || shippingDiscount > 0) && (
                 <div className="text-center text-sm text-green-600 bg-green-50 p-2 rounded">
                   You saved ₹{(discountAmount + shippingDiscount).toFixed(2)} on this order!
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
