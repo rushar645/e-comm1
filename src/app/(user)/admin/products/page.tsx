@@ -31,7 +31,8 @@ import Image from "next/image"
 import { useAdmin, type Product } from "@/contexts/admin-context"
 
 export default function ProductsPage() {
-  const { loading } = useAdmin()
+  // const { loading } = useAdmin()
+  const loading = false
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -41,10 +42,12 @@ export default function ProductsPage() {
     setDeletingId(id)
     // await deleteProduct(id)
     setDeletingId(null)
+    setProducts([])
   }
 
   const handleStatusChange = async (id: string, status: Product["status"]) => {
     // await updateProduct(id, { status })
+    console.log(id,status)
   }
 
   const filteredProducts = products?.filter((product) => {
@@ -273,7 +276,8 @@ export default function ProductsPage() {
             )}
           </div>
 
-          {loading.products ? (
+          {/* {loading.products ? ( */}
+          {loading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-8 w-8 animate-spin" />
               <span className="ml-2">Loading products...</span>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+// import { useState, useEffect } from "react"
 import { User, LogOut } from "lucide-react"
 import {
   DropdownMenu,
@@ -39,11 +39,11 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
       <div className="flex-1">
         <div>
           { title && <h1 className="text-xl font-semibold">Admin</h1>}
-          {/* {description && <p className="text-sm text-muted-foreground">hrloo</p>} */}
+          {description && <p className="text-sm text-muted-foreground">hrloo</p>}
         </div>
       </div>
 
-      {/* {action && <div className="mr-4">{action}</div>} */}
+      {action && <div className="mr-4">{action}</div>}
 
       <div className="flex items-center space-x-4">
         <div className="relative">

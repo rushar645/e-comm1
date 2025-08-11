@@ -7,7 +7,7 @@ import React from "react"
 import { Product } from "@/types"
 
 import api from "@/lib/axios"
-import { se } from "date-fns/locale"
+// import { se } from "date-fns/locale"
 
 
 type Category ={
@@ -59,7 +59,7 @@ export default function HomePageProducts() {
           <h2 className="text-2xl font-serif text-[#3A3A3A]">Shop by Style</h2>
           <p className="text-[#5A5A5A]">Find the perfect outfit for every occasion</p>
         </div>
-        {data.categories.map((section, i) => (
+        {data.categories.map((section) => (
           <div
             key={section.category.id}
             className="mb-12"

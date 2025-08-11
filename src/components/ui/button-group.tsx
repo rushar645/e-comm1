@@ -10,7 +10,7 @@ export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
-  ({ className, variant = "default", size = "default", orientation = "horizontal", ...props }, ref) => {
+  ({ className, orientation = "horizontal", ...props }, ref) => {
     return (
       <div
         className={cn(
@@ -29,9 +29,8 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
 )
 ButtonGroup.displayName = "ButtonGroup"
 
-export interface ButtonGroupItemProps extends ButtonProps {}
 
-const ButtonGroupItem = React.forwardRef<HTMLButtonElement, ButtonGroupItemProps>(({ className, ...props }, ref) => {
+const ButtonGroupItem = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, ...props }, ref) => {
   return <Button className={cn("rounded-none", className)} ref={ref} {...props} />
 })
 ButtonGroupItem.displayName = "ButtonGroupItem"

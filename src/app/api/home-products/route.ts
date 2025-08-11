@@ -16,7 +16,7 @@ interface CategoriesData {
 export async function GET(request: NextRequest) {
   try {
     const supabase = createServerClient()
-
+    console.log(request.method)
     // 1. Fetch categories
     const { data: categories, error: catError } = await supabase
       .from("product_categories")

@@ -479,6 +479,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         description: "Admin user added successfully",
       })
     } catch (error) {
+      console.log(error)
       toast({
         title: "Error",
         description: "Failed to add admin user",
@@ -498,6 +499,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         description: "Admin user updated successfully",
       })
     } catch (error) {
+      console.log(error)
       toast({
         title: "Error",
         description: "Failed to update admin user",
@@ -517,6 +519,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         description: "Admin user deleted successfully",
       })
     } catch (error) {
+      console.log(error)
       toast({
         title: "Error",
         description: "Failed to delete admin user",

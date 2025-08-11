@@ -19,9 +19,10 @@ interface ToastState extends ToastProps {
 
 // Create a simple toast system
 const toasts: ToastState[] = []
-let listeners: ((toasts: ToastState[]) => void)[] = []
+type Listener = (toasts: ToastState[]) => void
 
-function notify(listeners: Function[]) {
+let listeners: Listener[] = []
+function notify(listeners: Listener[]) {
   listeners.forEach((listener) => listener([...toasts]))
 }
 

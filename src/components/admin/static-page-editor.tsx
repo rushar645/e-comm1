@@ -120,8 +120,9 @@ We may collect the following types of personal data when you interact with our w
       toast({
         title: "Error",
         description: "Failed to save page. Please try again.",
-        variant: "destructive",
+        variant: "warning",
       })
+      console.log(error)
     } finally {
       setLoading(false)
     }

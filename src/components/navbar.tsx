@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 import { useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
-import { toast } from "./ui/use-toast"
+// import { toast } from "./ui/use-toast"
 import { usePathname } from 'next/navigation'
 
 import logo from "@/images/logo.png"

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { playfairDisplay } from "@/app/layout"
+// import { playfairDisplay } from "@/app/layout"
 import { lightenHexColor } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"

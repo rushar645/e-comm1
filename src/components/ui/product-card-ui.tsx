@@ -64,7 +64,7 @@ export function ProductCardUI({
             {isNew && <Badge variant="new">New</Badge>}
             {isSale && <Badge variant="sale">{discount || "Sale"}</Badge>}
           </div>
-
+          {category && <></>}
           {/* Quick Add Button */}
           {showQuickAdd && (
             <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

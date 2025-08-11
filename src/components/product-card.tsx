@@ -41,7 +41,7 @@ export function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-
+    console.log(category)
     addItem({
       sku,
       name,

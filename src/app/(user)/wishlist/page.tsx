@@ -6,11 +6,11 @@ import Link from "next/link"
 import { X } from "lucide-react"
 // import { Button } from "@/components/ui/button"
 import { useWishlist } from "@/contexts/wishlist-context"
-import { useCart } from "@/contexts/cart-context"
+// import { useCart } from "@/contexts/cart-context"
 
 export default function WishlistPage() {
   const { items: wishlistItems, removeItem } = useWishlist()
-  const { addItem } = useCart()
+  // const { addItem } = useCart()
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {

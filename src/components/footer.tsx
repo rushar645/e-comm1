@@ -12,7 +12,7 @@ import paytm from "@/images/payments/paytm.png"
 
 import { usePathname } from 'next/navigation'
 
-const footer = () => {
+const Footer = () => {
 
   const pathname = usePathname();
 
@@ -180,4 +180,4 @@ const footer = () => {
   )
 }
 
-export default footer
+export default Footer

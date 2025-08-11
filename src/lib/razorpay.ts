@@ -1,5 +1,5 @@
 import Razorpay from "razorpay"
-import crypto from "crypto"
+// import crypto from "crypto"
 
 if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
   throw new Error("Razorpay credentials are not configured")
@@ -47,17 +47,17 @@ export async function createRazorpayOrder(options: RazorpayOrderOptions) {
 }
 
 // Verify Razorpay payment signature
-export function verifyRazorpaySignature(orderId: string, paymentId: string, signature: string): boolean {
-  try {
-    const crypto = require("crypto")
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(`${orderId}|${paymentId}`)
-      .digest("hex")
+// export function verifyRazorpaySignature(orderId: string, paymentId: string, signature: string): boolean {
+//   try {
+//     const crypto = require("crypto")
+//     const expectedSignature = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(`${orderId}|${paymentId}`)
+//       .digest("hex")
 
-    return expectedSignature === signature
-  } catch (error) {
-    console.error("Error verifying Razorpay signature:", error)
-    return false
-  }
-}
+//     return expectedSignature === signature
+//   } catch (error) {
+//     console.error("Error verifying Razorpay signature:", error)
+//     return false
+//   }
+// }
