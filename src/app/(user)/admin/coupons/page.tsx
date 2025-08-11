@@ -12,15 +12,15 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Modal } from "@/components/ui/modal"
-import { useToast } from "@/components/ui/use-toast"
-import { Plus, Edit, Trash2, Copy, Calendar, Percent, Tag, Users } from "lucide-react"
+// import { useToast } from "@/components/ui/use-toast"
+import { Plus, Edit, Trash2, Calendar } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Coupon } from "@/contexts/admin-context"
 import api from "@/lib/axios"
 
 export default function CouponsPage() {
-  const {  addCoupon, updateCoupon } = useAdmin()
-  const { toast } = useToast()
+  // const {  addCoupon, updateCoupon } = useAdmin()
+  // const { toast } = useToast()
   const router = useRouter()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -48,6 +48,7 @@ export default function CouponsPage() {
         setCoupons(res.data.data || [])
       } catch (err:unknown) {
         setError( "Failed to fetch coupons")
+        console.log(err)
         console.log(error)
       } finally {
         setLoading(false)
@@ -321,7 +322,7 @@ export default function CouponsPage() {
               <Label htmlFor="type">Discount Type</Label>
               <Select
                 value={formData.type}
-                onValueChange={(value) => setFormData({ ...formData, type: value as any })}
+                onValueChange={(value) => setFormData({ ...formData, type: value as "percentage" | "fixed" | "free_shipping" })}
               >
                 <SelectTrigger><SelectValue placeholder="Select discount type" /></SelectTrigger>
                 <SelectContent>

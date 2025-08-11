@@ -78,8 +78,8 @@ export default function LoginPage() {
         console.log("Welcome User customer",res.data.user)
         setUser(res.data.user)
       }
-    } catch (err: any) {
-      setErrors(err?.response?.data?.message || "Login failed");
+    } catch (err: unknown) {
+      setErrors({emailOrPhone:"Login failed"});
     } finally {
       setIsLoading(false);
     }

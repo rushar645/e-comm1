@@ -25,15 +25,15 @@ export async function withAuth(
     }
 
     // Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret")
     // console.log("Decoded JWT TOKEN",decoded)
     const supabase = createServerClient()
-    const { data: adminUser, error } = await supabase
+    const { data, error } = await supabase
       .from("admin_users")
       .select("*")
       .eq("id", decoded.userId)
       .eq("status", "active")
-
+    const adminUser = data as AdminUser | null
     if (error) {
       return NextResponse.json({ error: `Error Occured, ${error.message}` }, { status: 401 })
     }

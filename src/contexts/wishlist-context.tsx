@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { toast } from "@/components/ui/use-toast"
-import { createBrowserClient } from "@/lib/supabase"
+// import { createBrowserClient } from "@/lib/supabase"
 import { useUser } from "./user-contexts"
 
 import api from "@/lib/axios" 
@@ -29,7 +29,7 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<WishlistItem[]>([])
-  const { user, setUser } = useUser()
+  const { user} = useUser()
 
   useEffect(() => {
     if (user?.wishlist) {
@@ -38,11 +38,11 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   }, [user?.wishlist])
  
   // Update wishlist in the DB, no await (fire-and-forget style)
-  const updateWishlistInDB = (updatedItems: WishlistItem[]) => {
+  const updateWishlistInDB = async(updatedItems: WishlistItem[]) => {
     if (!user?.id) return
 
     try{
-      const res = api.put("api/updatewish", {id:user.id, wishlist:updatedItems})
+      await api.put("api/updatewish", {id:user.id, wishlist:updatedItems})
     }
     catch(e){
       console.log(e)

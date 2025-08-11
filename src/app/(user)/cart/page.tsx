@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Plus, ShoppingCart, Lock, Trash2, Heart, Minus } from "lucide-react"
-import { Navbar } from "@/components/navbar"
+// import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"

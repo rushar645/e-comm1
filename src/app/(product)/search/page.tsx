@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import { ProductGrid } from "@/components/product-grid"
-import { products } from "@/app/data/products"
+// import { products } from "@/app/data/products"
 import { TypographyH1, TypographyP } from "@/components/ui/typography"
 import { ProductGridSkeleton } from "@/components/ui/skeleton"
 
@@ -24,7 +24,7 @@ export default function SearchPage({
       <div className="mb-8">
         <TypographyH1>Search Results</TypographyH1>
         <TypographyP>
-          {filteredProducts.length} results for "{query}"
+          {filteredProducts.length} results for &quot;{query}&quot;
         </TypographyP>
       </div>
 

@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { User, Package, Heart, MapPin, Settings, Edit, Eye, Truck, CheckCircle, Clock, X } from "lucide-react"
+import { User, Package, MapPin, Settings, Edit, Eye, Truck, CheckCircle, Clock, X } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
 // import { Camera } from "lucide-react"
@@ -105,7 +105,7 @@ export default function AccountPage() {
     }
 
     fetchData()
-  }, [user, loading])
+  }, [user, loading, router])
 
   useEffect(()=>{
     if(!user){
@@ -128,7 +128,7 @@ export default function AccountPage() {
     }
 
     fetchAddresses()
-  },[user])
+  },[user, loading])
 
   const handleSaveProfile = async () => {
     try {

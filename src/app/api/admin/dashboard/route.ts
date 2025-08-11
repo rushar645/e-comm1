@@ -1,9 +1,17 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@/lib/supabase"
 
+interface ProductStats {
+  id: string
+  name: string
+  sales: number
+  revenue: number
+}
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = createServerClient()
+    console.log(request)
 
     // Get total sales
     const { data: salesData } = await supabase.from("orders").select("total").eq("payment_status", "paid")
@@ -47,7 +55,7 @@ export async function GET(request: NextRequest) {
       .limit(100)
 
     // Calculate top products
-    const productStats: Record<string, any> = {}
+    const productStats: Record<string, ProductStats> = {}
     topProductsData?.forEach((item) => {
       if (!productStats[item.product_id]) {
         productStats[item.product_id] = {
@@ -61,8 +69,8 @@ export async function GET(request: NextRequest) {
       productStats[item.product_id].revenue += item.price * item.quantity
     })
 
-    const topProducts = Object.values(productStats)
-      .sort((a: any, b: any) => b.revenue - a.revenue)
+    const topProducts:ProductStats[] = Object.values(productStats)
+      .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 5)
 
     return NextResponse.json({

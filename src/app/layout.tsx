@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import {Playfair_Display, Poppins} from "next/font/google";
 import "./globals.css";
 
-import AuthProvider from "@/components/session-provider"; // 👈 this is your wrapper
-import { ThemeWrapper } from "@/components/theme-wrapper";
+// import AuthProvider from "@/components/session-provider"; // 👈 this is your wrapper
+// import { ThemeWrapper } from "@/components/theme-wrapper";
 import { CartProvider } from "@/contexts/cart-context";
 import { WishlistProvider } from "@/contexts/wishlist-context";
 import { Toaster } from "@/components/ui/use-toast";

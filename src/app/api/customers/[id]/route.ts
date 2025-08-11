@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { createServerClient } from "@/lib/supabase"
+import { Order } from "@/types"
 
 const updateCustomerSchema = z.object({
   name: z.string().min(1).optional(),
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     // Calculate stats
     const totalOrders = customer.orders?.length || 0
-    const totalSpent = customer.orders?.reduce((sum: number, order: any) => sum + order.total, 0) || 0
+    const totalSpent = customer.orders?.reduce((sum: number, order: Order) => sum + order.total, 0) || 0
 
     return NextResponse.json({
       success: true,

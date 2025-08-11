@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { CloudinaryService } from "@/lib/cloudinary"
+import { CloudinaryService, UploadOptions } from "@/lib/cloudinary"
 import { withAuth } from "@/lib/admin-middleware"
 
 export async function POST(request: NextRequest) {
-  return withAuth(request, async (req, user) => {
+  return withAuth(request, async (req) => {
     try {
       const formData = await req.formData()
       const file = formData.get("file") as File
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(bytes)
 
       // Prepare upload options
-      const uploadOptions: any = {
+      const uploadOptions:UploadOptions = {
         folder: `dress-dexterity/${folder}`,
         quality: "auto",
         format: "webp",

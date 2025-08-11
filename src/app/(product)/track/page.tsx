@@ -100,9 +100,25 @@ const mockTrackingData = {
   },
 }
 
+interface Timeline {
+    status: string;
+    date: string;
+    time: string;
+    location: string;
+    completed: boolean;
+}
+
+interface Tracking {
+  orderId: string;
+  status: string;
+  estimatedDelivery: string;
+  currentLocation: string;
+  timeline: Timeline[]
+  }
+
 export default function TrackOrderPage() {
   const [trackingNumber, setTrackingNumber] = useState("")
-  const [trackingData, setTrackingData] = useState<any>(null)
+  const [trackingData, setTrackingData] = useState<Tracking | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
@@ -111,7 +127,7 @@ export default function TrackOrderPage() {
       toast({
         title: "Error",
         description: "Please enter a tracking number",
-        variant: "destructive",
+        variant: "warning",
       })
       return
     }
@@ -127,7 +143,7 @@ export default function TrackOrderPage() {
         toast({
           title: "Order Not Found",
           description: "Please check your tracking number and try again",
-          variant: "destructive",
+          variant: "warning",
         })
         setTrackingData(null)
       }
@@ -246,7 +262,7 @@ export default function TrackOrderPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {trackingData.timeline.map((event: any, index: number) => (
+                    {trackingData.timeline.map((event: Timeline, index: number) => (
                       <div key={index} className="flex items-start gap-4">
                         <div className="flex flex-col items-center">
                           <div

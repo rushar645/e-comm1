@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { X, ShoppingCart } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { X } from "lucide-react"
+// import { Button } from "@/components/ui/button"
 import { useWishlist } from "@/contexts/wishlist-context"
 import { useCart } from "@/contexts/cart-context"
 
@@ -21,17 +21,17 @@ export default function WishlistPage() {
     removeItem(id)
   }
 
-  const handleAddToCart = (item: any) => {
-    console.log(item)
-    addItem({
-      sku: item.sku,
-      name: item.name,
-      price: item.price,
-      imageSrc: item.imageSrc,
-      color: "",
-      size: "M",
-    })
-  }
+  // const handleAddToCart = (item: any) => {
+  //   console.log(item)
+  //   addItem({
+  //     sku: item.sku,
+  //     name: item.name,
+  //     price: item.price,
+  //     imageSrc: item.imageSrc,
+  //     color: "",
+  //     size: "M",
+  //   })
+  // }
 
   if (!isClient) {
     return (

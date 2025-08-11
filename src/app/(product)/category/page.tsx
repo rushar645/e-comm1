@@ -4,8 +4,8 @@ import { useState } from "react"
 import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { ProductGrid } from "@/components/product-grid"
-import { PaymentMethods } from "@/components/payment-methods"
-import { SocialLinks } from "@/components/social-links"
+// import { PaymentMethods } from "@/components/payment-methods"
+// import { SocialLinks } from "@/components/social-links"
 import { FilterSidebar, type FilterState } from "@/components/filter-sidebar"
 import { SortDropdown } from "@/components/sort-dropdown"
 // import { products } from "@/app/data/products"
@@ -28,7 +28,7 @@ const availableFilters = {
 
 export default function CategoryPage() {
   const [products, setProducts] = useState([{}])
-  // State for filters
+  
   const [filters, setFilters] = useState<FilterState>({
     priceRange: { min: 0, max: 300 },
     colors: [],
@@ -77,6 +77,7 @@ export default function CategoryPage() {
     }
 
     setFilteredProducts(filtered)
+    setProducts(filtered)
 
     // Calculate active filter count
     let count = 0

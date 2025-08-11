@@ -2,8 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { createServerClient } from "@/lib/supabase"
 import { verifyPassword, createSession } from "@/lib/auth"
-import { PublicUser, AdminUser, CustomerUser } from "@/types/user"
-import {cookies} from 'next/headers';
+import {  AdminUser, CustomerUser } from "@/types/user"
+// import {cookies} from 'next/headers';
 
 
 const loginSchema = z.object({

@@ -38,7 +38,7 @@ type RecentOrder = {
   total?: number
   amount?: number
   status?: string
-  items?: number | any[]
+  items?: number
 }
 
 type TopProduct = {
@@ -150,6 +150,7 @@ export default function AdminDashboard() {
         }
       } catch (e) {
         setError("Failed to load data")
+        console.log(e)
       }
       setLoading(false)
     }

@@ -6,20 +6,20 @@ import { use } from "react"
 import { ProductGrid } from "@/components/product-grid"
 import { FilterSidebar, type FilterState } from "@/components/filter-sidebar"
 import { SortDropdown } from "@/components/sort-dropdown"
-import { capitalizeFirstLetter } from "@/lib/utils"
 import { ProductGridSkeleton } from "@/components/ui/skeleton"
 import api from "@/lib/axios"
+import { Product } from "@/types"
 
-interface Product {
-  id: number | string
-  name: string
-  price: string
-  numericPrice: number
-  imageSrc: string
-  colors?: string[]
-  fabric?: string
-  sku?:string
-}
+// interface Product {
+//   id: number | string
+//   name: string
+//   price: string
+//   numericPrice: number
+//   imageSrc: string
+//   colors?: string[]
+//   fabric?: string
+//   sku?:string
+// }
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   // Get the category from the URL
@@ -46,14 +46,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         const data = res.data.data
         console.log("Fetched Images :",data[0].images[0])
         setAllProducts(
-          data.map((p: any, i: number) => ({
+          data.map((p: Product) => ({
             id: p.id,
             name: p.name,
             price: typeof p.price === "string" ? p.price : `\$${p.price}`,
-            numericPrice: typeof p.price === "number" ? p.price : Number(p.price.replace(/[^0-9.]/g, "")),
+            numericPrice: p.price,
             imageSrc: p.images[0] || "/placeholder.svg?height=300&width=240",
             colors: p.colors || [],
-            fabric: p.fabric || "",
+            fabric: p.material || "",
             sku:p.sku
           }))
         )
@@ -61,7 +61,8 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         // setAllProducts(data);
 
       } catch (err) {
-        setError(err.message || "Could not load products")
+        setError("Could not load products")
+        console.log("Error Fethching Cates", err)
       } finally {
         setLoading(false)
       }
@@ -109,14 +110,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     let filtered = allProducts
     filtered = filtered.filter(
       (product) =>
-        product.numericPrice >= filters.priceRange.min &&
-        product.numericPrice <= filters.priceRange.max
+        product.price >= filters.priceRange.min &&
+        product.price <= filters.priceRange.max
     )
     if (filters.colors.length > 0) {
       filtered = filtered.filter((product) => product.colors?.some((color) => filters.colors.includes(color)))
     }
     if (filters.fabrics.length > 0) {
-      filtered = filtered.filter((product) => product.fabric && filters.fabrics.includes(product.fabric))
+      filtered = filtered.filter((product) => product.material && filters.fabrics.includes(product.material))
     }
     setFilteredProducts(filtered)
 

@@ -99,7 +99,6 @@ export default function ForgotPasswordPage() {
                   setError("")
                 }}
                 className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]"
-                error={!!error}
               />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             </div>

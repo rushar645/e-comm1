@@ -30,15 +30,16 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 }
 
 // Generate JWT token
-export function generateToken(payload: any): string {
+export function generateToken(payload: {userType:string, userId:string}): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
 }
 
 // Verify JWT token
-export function verifyToken(token: string): any {
+export function verifyToken(token: string){
   try {
     return jwt.verify(token, JWT_SECRET)
   } catch (error) {
+    console.log(error)
     return null
   }
 }
@@ -98,7 +99,9 @@ export async function validateSession(token: string, userType: "customer" | "adm
       phone:user.phone,
       role: userType,
     }
+    
   } catch (error) {
+    console.log(error)
     return null
   }
 }

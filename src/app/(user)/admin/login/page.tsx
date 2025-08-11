@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+// import Link from "next/link";
 import Image from "next/image";
 import api from "@/lib/axios";
 import { useAdmin } from "@/contexts/admin-context";
 import loginImage from '@/images/admin_login/login.png'
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import { AxiosError } from "axios";
 
 
 interface LoginFormData {
@@ -26,7 +27,7 @@ interface LoginFormData {
 interface FormErrors {
   emailOrPhone?: string;
   password?: string;
-  userType:string;
+  userType?:string;
 }
 
 const defaultFormErrors:FormErrors = {
@@ -55,6 +56,7 @@ export default function LoginPage() {
       return;
     else 
       setIsUserLoggedIn(true); 
+    setMessage("")
   }, []);
 
   const validateForm = (): boolean => {
@@ -104,8 +106,9 @@ export default function LoginPage() {
         })
 
       }
-    } catch (err: any) {
-      setErrors(err?.response?.data?.message || "Login failed");
+    } catch (err) {
+      setErrors({emailOrPhone:"Login failed"});
+      console.log(err)
     } finally {
       setIsLoading(false);
     }

@@ -65,7 +65,7 @@ export default function ProductPage() {
 
         setSimilarProducts(res.data.data)
       } catch (error) {
-        
+        console.log(error)
       }
     }
     fetchProduct();

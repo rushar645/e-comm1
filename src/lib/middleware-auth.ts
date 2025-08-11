@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { validateSession } from "./auth"
+import { AuthUser, validateSession } from "./auth"
 
 export async function withAuth(
   request: NextRequest,
-  handler: (request: NextRequest, user: any) => Promise<NextResponse>,
+  handler: (request: NextRequest, user: AuthUser) => Promise<NextResponse>,
   userType: "customer" | "admin" = "customer",
 ) {
   try {
@@ -24,6 +24,6 @@ export async function withAuth(
 
     return handler(request, user)
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 401 })
+    return NextResponse.json({ error: error?.message }, { status: 401 })
   }
 }

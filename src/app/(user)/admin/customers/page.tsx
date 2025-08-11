@@ -9,15 +9,15 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Modal } from "@/components/ui/modal"
-import { useToast } from "@/components/ui/use-toast"
+// import { useToast } from "@/components/ui/use-toast"
 import { Eye, Mail, Phone, Calendar, ShoppingBag, DollarSign, Filter } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Customer } from "@/contexts/admin-context"
 import Link from "next/link"
 
 export default function CustomersPage() {
-  const { customers, updateCustomerStatus, loading } = useAdmin()
-  const { toast } = useToast()
+  const { customers, updateCustomerStatus} = useAdmin()
+  // const { toast } = useToast()
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all")

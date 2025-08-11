@@ -102,14 +102,14 @@ export default function SignUpPage() {
         });
 
         if (signInResponse?.error) {
-          setErrors(signInResponse.error);
+          setErrors({name:"Login failed"});
         } else {
           router.push("/");
         }
       }
 
-    } catch (err: any) {
-      setErrors(err?.response?.data?.message || "Login failed");
+    } catch (err: unknown) {
+      setErrors({ name:"Login failed"});
     } finally {
       setIsLoading(false);
     }
@@ -153,7 +153,7 @@ export default function SignUpPage() {
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]"
-                  error={!!errors.name}
+                  // error={!!errors.name}
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -167,7 +167,7 @@ export default function SignUpPage() {
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]"
-                  error={!!errors.phone}
+                  // error={!!errors.phone}
                 />
                 {errors.phone && (
                   <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
@@ -181,7 +181,7 @@ export default function SignUpPage() {
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723]"
-                  error={!!errors.email}
+                  // error={!!errors.email}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -197,7 +197,7 @@ export default function SignUpPage() {
                     handleInputChange("password", e.target.value)
                   }
                   className="h-14 text-base rounded-2xl border-gray-300 focus:border-[#3A2723] focus:ring-[#3A2723] pr-12"
-                  error={!!errors.password}
+                  // error={!!errors.password}
                 />
                 <button
                   type="button"

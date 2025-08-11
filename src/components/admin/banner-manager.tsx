@@ -1,6 +1,6 @@
 "use client"
-import { useState, useEffect } from "react"
-import { ArrowLeft, Save, Eye } from "lucide-react"
+import { useState} from "react"
+import { ArrowLeft, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { Heading } from "@/components/ui/heading"
 import { SingleImageUpload } from "@/components/ui/single-image-upload"
-import Image from "next/image"
+// import Image from "next/image"
 
 import api from '@/lib/axios'
 
@@ -22,16 +22,18 @@ interface BannerManagerProps {
   initialData?: BannerData
 }
 
-interface BannerData {
-  id: string
-  title: string
-  subtitle: string
-  image: {
+interface Image
+  {
     url: string
     publicId: string
     width: number
     height: number
-  } | null
+  } 
+interface BannerData {
+  id: string
+  title: string
+  subtitle: string
+  image: Image | null
   buttonText: string
   buttonLink: string
   position: number
@@ -123,16 +125,16 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
     }
   }
 
-  const handleImageChange = (image: any) => {
+  const handleImageChange = (image:Image) => {
     setBannerData((prev) => ({
       ...prev,
       image: image,
     }))
   }
 
-  const handlePreview = () => {
-    window.open("/", "_blank")
-  }
+  // const handlePreview = () => {
+  //   window.open("/", "_blank")
+  // }
 
   return (
     <div className="space-y-6">
