@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     // Store order in database
     const { error: dbError } = await supabase.from("payment_orders").insert({
       user_id: user.id,
-      razorpay_order_id: result.order.id,
+      razorpay_order_id: result.order?.id,
       amount: amount,
       currency: currency,
       status: "created",

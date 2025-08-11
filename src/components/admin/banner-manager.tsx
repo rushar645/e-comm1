@@ -19,6 +19,7 @@ import api from '@/lib/axios'
 interface BannerManagerProps {
   bannerId: string
   onBack: () => void
+  initialData?: BannerData
 }
 
 interface BannerData {
@@ -42,24 +43,28 @@ interface BannerData {
   lastModified: string
 }
 
-export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
+export function BannerManager({ bannerId, onBack, initialData }: BannerManagerProps) {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [bannerData, setBannerData] = useState<BannerData>({
-    id: bannerId,
-    title: "",
-    subtitle: "",
-    image: null,
-    buttonText: "Shop Now",
-    buttonLink: "/category",
-    position: 1,
-    isActive: true,
-    backgroundColor: "#aaa",
-    textColor: "#3A3A3A",
-    buttonColor: "#FF6B35",
-    alignment: "left",
-    lastModified: new Date().toISOString().split("T")[0],
-  })
+
+  const [bannerData, setBannerData] = useState<BannerData>(
+    initialData ?? {
+      id: bannerId,
+      title: "",
+      subtitle: "",
+      image: null,
+      buttonText: "Shop Now",
+      buttonLink: "/category",
+      position: 1,
+      isActive: true,
+      backgroundColor: "#aaa",
+      textColor: "#3A3A3A",
+      buttonColor: "#FF6B35",
+      alignment: "left",
+      lastModified: new Date().toISOString().split("T")[0],
+    }
+  )
+
 
   const handleSave = async () => {
     setLoading(true)
@@ -150,10 +155,10 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handlePreview} className="flex items-center gap-2 bg-transparent">
+          {/* <Button variant="outline" onClick={handlePreview} className="flex items-center gap-2 bg-transparent">
             <Eye className="h-4 w-4" />
             Preview
-          </Button>
+          </Button> */}
           <Button onClick={handleSave} disabled={loading} className="flex items-center gap-2">
             <Save className="h-4 w-4" />
             {loading ? "Saving..." : "Save Banner"}
@@ -172,7 +177,9 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
             <CardContent>
               <div
                 className="relative w-full h-78 rounded-lg overflow-hidden bg-amber-400"
-                style={{ backgroundColor: bannerData.backgroundColor }}
+                style={{
+                  background: `linear-gradient(to bottom, white, ${bannerData.backgroundColor})`
+                }}                
               >
                 {bannerData.image && (
                   // <Image
@@ -183,7 +190,7 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
 
                   //   className="absolute inset-0 w-full h-full object-cover"
                   // />
-                  <img className="ml-40 object-contain w-full h-full" src={bannerData.image.url}/>
+                  <img className="ml-50 object-contain w-full h-full" src={bannerData.image.url}/>
                 )}
                 <div className="absolute inset-0 bg-opacity-20" />
                 <div
@@ -195,14 +202,14 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
                         : "text-left items-start"
                   }`}
                 >
-                  <h2 className="text-xl font-bold mb-2 w-[45%]" style={{ color: bannerData.textColor }}>
+                  <h2 className="text-2xl font-bold mb-2 w-[55%]" style={{ color: bannerData.textColor }}>
                     {bannerData.title || "Banner Title"}
                   </h2> 
-                  <p className="text-sm mb-4" style={{ color: bannerData.textColor }}>
+                  <p className="text-sm mb-4 w-[68%]" style={{ color: bannerData.textColor }}>
                     {bannerData.subtitle || "Banner subtitle"}
                   </p>
                   <button
-                    className="px-6 py-2 rounded-lg text-white font-medium"
+                    className="px-10 py-2 rounded-md text-white text-sm font-medium"
                     style={{ backgroundColor: bannerData.buttonColor }}
                   >
                     {bannerData.buttonText}
@@ -303,7 +310,7 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="1">1 (First)</SelectItem>
                     <SelectItem value="2">2</SelectItem>
                     <SelectItem value="3">3</SelectItem>
@@ -323,9 +330,9 @@ export function BannerManager({ bannerId, onBack }: BannerManagerProps) {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="left">Left</SelectItem>
-                    <SelectItem value="center">Center</SelectItem>
+                    {/* <SelectItem value="center">Center</SelectItem> */}
                     <SelectItem value="right">Right</SelectItem>
                   </SelectContent>
                 </Select>
