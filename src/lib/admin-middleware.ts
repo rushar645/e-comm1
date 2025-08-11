@@ -28,7 +28,7 @@ export async function withAuth(
     }
 
     // Verify and decode token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as DecodedToken
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken
     if (!decoded.userId) {
       return NextResponse.json({ error: "Invalid token payload" }, { status: 401 })
     }

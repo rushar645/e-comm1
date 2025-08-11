@@ -11,7 +11,7 @@ interface TokenPayload extends JwtPayload {
 function getUserIdFromToken(token: string): string {
   const decoded = jwt.verify(
     token,
-    process.env.JWT_SECRET || "fallback-secret"
+    process.env.JWT_SECRET!
   ) as JwtPayload | string
 
   if (typeof decoded === "string" || !("userId" in decoded)) {
