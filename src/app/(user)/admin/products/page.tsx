@@ -28,7 +28,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, MoreHorizontal, Edit, Trash2, Eye, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { useAdmin, type Product } from "@/contexts/admin-context"
+import { type Product } from "@/contexts/admin-context"
 
 export default function ProductsPage() {
   // const { loading } = useAdmin()
