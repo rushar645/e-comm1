@@ -1,15 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-export default function OrderDetailPage({ params }: { params: { id: string } }) {
+export default function OrderDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
+
+  useEffect(() => {
+    params.then((p) => setResolvedParams(p))
+  }, [params])
+
   const [status, setStatus] = useState<
     "pending" | "shipped" | "delivered" | "cancelled"
   >("pending")
 
   // Sample order data
   const order = {
-    id: params.id,
+    id: resolvedParams?.id,
     date: "June 5, 2023",
     customer: {
       name: "Priya Sharma",
