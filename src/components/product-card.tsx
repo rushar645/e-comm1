@@ -78,9 +78,10 @@ export function ProductCard({
         <div className="relative aspect-[4/5] overflow-hidden group">
           <Image
             src={imageSrc || "/placeholder.svg"}
-            fill 
+            width={250}
+            height={20}
             alt={name}
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-cover "
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
           />
 
@@ -120,7 +121,7 @@ export function ProductCard({
 
         <div className="p-3 bg-brand-light">
           <h3 className="text-sm font-medium text-brand-gray text-center line-clamp-2">{name}</h3>
-          <p className="text-sm text-brand-orange text-center font-medium mt-1">{numericPrice}</p>
+          <p className="text-sm text-brand-orange text-center font-medium mt-1">₹{numericPrice}</p>
 
           {showRating && (
             <div className="flex items-center justify-center mt-1">

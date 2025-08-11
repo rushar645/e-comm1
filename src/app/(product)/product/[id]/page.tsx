@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
+// import Image from "next/image"
 import { useParams } from 'next/navigation'
 
 import { Heart, Share2 } from "lucide-react"
@@ -49,6 +49,7 @@ export default function ProductPage() {
 
         setProduct(res.data.data)
         console.log("Product Dataa", res.data.data)
+        setSelectedColor("")
       }
       catch(e){
         console.log("Error Fetching the one product ::", e)

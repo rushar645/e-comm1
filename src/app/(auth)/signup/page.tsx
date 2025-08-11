@@ -110,6 +110,7 @@ export default function SignUpPage() {
 
     } catch (err: unknown) {
       setErrors({ name:"Login failed"});
+      console.log("Error signing up", err)
     } finally {
       setIsLoading(false);
     }

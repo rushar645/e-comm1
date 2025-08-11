@@ -41,11 +41,11 @@ const menuItems = [
     href: "/admin/products",
     icon: <Package className="h-5 w-5" />,
   },
-  {
-    title: "Customers",
-    href: "/admin/customers",
-    icon: <Users className="h-5 w-5" />,
-  },
+  // {
+  //   title: "Customers",
+  //   href: "/admin/customers",
+  //   icon: <Users className="h-5 w-5" />,
+  // },
   {
     title: "Home Page Banner",
     href: "/admin/cms",

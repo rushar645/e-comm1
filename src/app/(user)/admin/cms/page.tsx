@@ -33,7 +33,7 @@ export default function CMSPage() {
   useEffect(()=>{
     async function fetchHomepage(){
       try{
-        const res = await api.get('api/admin/banners')
+        const res = await api.get('/api/admin/banners')
         setHomepageBanner(res.data.data)
         console.log("Home Page Banner", res)
       }  

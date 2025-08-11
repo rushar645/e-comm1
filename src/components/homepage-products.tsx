@@ -7,10 +7,17 @@ import React from "react"
 import { Product } from "@/types"
 
 import api from "@/lib/axios"
+import { se } from "date-fns/locale"
 
+
+type Category ={
+  id:string
+  name:string
+  slug:string
+}
 
 type CategorySection = {
-  category: string
+  category: Category
   products: Product[]
 }
 
@@ -33,6 +40,7 @@ export default function HomePageProducts() {
   if (isLoading) return <div className="py-8 text-center">Loading...</div>
   if (error) return <div className="py-8 text-center text-red-500">Failed to load products.</div>
   if (!data) return null
+  console.log(data)
 
   return (
     <>
@@ -51,21 +59,20 @@ export default function HomePageProducts() {
           <h2 className="text-2xl font-serif text-[#3A3A3A]">Shop by Style</h2>
           <p className="text-[#5A5A5A]">Find the perfect outfit for every occasion</p>
         </div>
-        {data.categories.map(section => (
+        {data.categories.map((section, i) => (
           <div
-            key={section.category}
-            id={section.category.replace(/\s+/g, '-').toLowerCase()}
+            key={section.category.id}
             className="mb-12"
           >
             <div className="flex items-center mb-4">
-              <h3 className="text-xl font-serif text-[#3A3A3A]">{section.category}</h3>
+              <h3 className="text-xl font-serif text-[#3A3A3A]">{section.category.name}</h3>
               <div className="grow ml-4 border-t border-gray-300"></div>
             </div>
             <div className="bg-[#799e9a] bg-opacity-10 p-4 rounded-md">
               <ScrollableProductSection
                 products={section.products}
                 showRating={true}
-                category={section.category}
+                category={section.category.name}
               />
             </div>
           </div>

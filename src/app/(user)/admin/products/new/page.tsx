@@ -129,10 +129,10 @@ export default function NewProductPage() {
 
       router.push("/admin/products")
     } catch (error) {
-      console.error("Product creation error:", error)
+      // console.log("Product creation error:", error)
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create product. Please try again.",
+        description: error instanceof Error ? error.response.data.error : "Failed to create product. Please try again.",
         variant: "warning",
       })
     } finally {

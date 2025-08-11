@@ -78,7 +78,7 @@ export function ImageUpload({
         console.error("Upload error:", error)
         toast({
           title: `Upload failed`,
-          description: `Upload failed bcoz ${error}`,
+          description: `Upload failed bcoz ${error?.response?.data.error}`,
           variant: "warning",
         })
       } finally {

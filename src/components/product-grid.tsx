@@ -33,7 +33,7 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {products.map((product) => (
-        <ProductCard key={product.id} id={product.id} name={product.name} price={product.price} numericPrice={product.price} colors={product.colors} fabric={product.material} imageSrc={product.images[0]} sku={product.sku}/>
+        <ProductCard key={product.id} id={product.id} name={product.name} price={product.price} numericPrice={product.price} colors={product.colors} fabric={product.material} imageSrc={product.imageSrc} sku={product.sku}/>
       ))}
     </div>
   )

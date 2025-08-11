@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
           .select("*")
           .eq("category", cat.slug)
           .order("units_sold", { ascending: false })
-          .limit(5)
+          .limit(8)
       )
 
       // Run all product fetches concurrently:

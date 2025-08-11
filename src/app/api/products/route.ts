@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const supabase = createServerClient()
     let query = supabase.from("products").select("*", { count: "exact" })
 
-    // Apply filters
+    // Apply filters 
     if (category) {
       query = query.eq("category", category)
     }

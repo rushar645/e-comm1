@@ -39,18 +39,16 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       setLoading(true)
       setError(null) 
       try {
-        
         const res = await api.get(`/api/products?category=${encodeURIComponent(category.slug)}`)
-        console.log("result of products fetch", res)
+        console.log("result of products fetch", res.data.data)
         
         const data = res.data.data
-        console.log("Fetched Images :",data[0].images[0])
+        // console.log("Fetched Images :",data[0].images[0])
         setAllProducts(
           data.map((p: Product) => ({
             id: p.id,
             name: p.name,
-            price: typeof p.price === "string" ? p.price : `\$${p.price}`,
-            numericPrice: p.price,
+            price: p.price,
             imageSrc: p.images[0] || "/placeholder.svg?height=300&width=240",
             colors: p.colors || [],
             fabric: p.material || "",
@@ -62,6 +60,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
       } catch (err) {
         setError("Could not load products")
+        console.log("ERror loading products..", err)
         console.log("Error Fethching Cates", err)
       } finally {
         setLoading(false)
@@ -83,7 +82,6 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   const availableFilters = {
     priceRange: { min: 0, max: 10000 },
-    // ... rest as before ...
     colors: [
       { name: "Red", value: "#FF5733" },
       { name: "Blue", value: "#3498DB" },
@@ -100,7 +98,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const handleFilterChange = (newFilters: FilterState) => setFilters(newFilters)
   const clearFilters = () =>
     setFilters({
-      priceRange: { min: 0, max: 300 },
+      priceRange: { min: 0, max: 10000 },
       colors: [],
       fabrics: [],
     })

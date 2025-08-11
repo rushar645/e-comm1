@@ -72,7 +72,7 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
     const interval = setInterval(() => {
       nextSlide()
     }, autoSlideInterval)
-    console.log(banners)
+    // console.log(banners)
     return () => clearInterval(interval)
   }, [banners, nextSlide, autoSlideInterval])
   
@@ -119,10 +119,12 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
     <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
       <div
         className="flex justify-center items-center transition-transform duration-800 ease-in-out"
-        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }} 
       >
         {banners.map((banner, index) => (
-          <div key={index} className={`w-full shrink-0 h-[80vh]`} style={{backgroundColor:banner.background_color}}>
+          <div key={index} className={`w-full shrink-0 h-[80vh]`} style={{
+            background: `linear-gradient(to bottom, white, ${banner.background_color})`
+          }}>
             <div className={`container mx-auto px-4 flex flex-col ${banner.alignment == "left"?"md:flex-row":"md:flex-row-reverse"} items-center`}>
               <div className={`md:w-1/2 space-y-6 z-10 ${banner.alignment == "left"?"":"md:pl-28"}`}>
                 <h1 className={`text-3xl md:text-6xl lg:text-7xl font-playfair-display`} style={{color:banner.text_color}}>{banner.title}</h1>

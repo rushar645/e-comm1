@@ -80,6 +80,7 @@ export default function LoginPage() {
       }
     } catch (err: unknown) {
       setErrors({emailOrPhone:"Login failed"});
+      console.log("Login error",err)
     } finally {
       setIsLoading(false);
     }
