@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import React from "react"
 import { useRouter, usePathname } from 'next/navigation'
-import { useAdmin } from "@/contexts/admin-context"
+import axiosInstance from "@/lib/axios"
+import { useUser } from "@/contexts/user-contexts"
+// import { useAdmin } from "@/contexts/admin-context"
 interface DashboardHeaderProps {
   title?: string
   description?: string
@@ -22,12 +24,19 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
   const router = useRouter()
   const pathname = usePathname()
   const isLoginPage = pathname === '/admin/login'
-  const { adminUsers, deleteAdminUser} = useAdmin()
+  const { setUser} = useUser()
 
-  const userLogout = ()=>{
-    deleteAdminUser(adminUsers[0].id)
-    console.log("Adminss aree",adminUsers)
-    router.push('/admin/login')
+  const logOut = async() =>{
+    try{
+      const res = await axiosInstance.post("api/auth/logout")
+      if (res.status == 200){
+        setUser(null);
+        router.push('/admin/login');
+      }
+    }
+    catch(e){
+      console.log("Error Logging Out", e)
+    }
   }
 
   if(isLoginPage){
@@ -71,7 +80,7 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
             
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer flex items-center text-red-600">
-              <button className='flex cursor-pointer' onClick={userLogout}>
+              <button className='flex cursor-pointer' onClick={logOut}>
               <LogOut className="mr-2 h-4 w-4"/><span>Log out</span>
               </button>
             </DropdownMenuItem>

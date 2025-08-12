@@ -46,7 +46,7 @@ const fetcher = (url: string) =>
   api.get<BannerResponse>(url).then(res => res.data)
 
 export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
-  
+
   // const [banners, setBanners] = useState<Banner[]>([{}])
   const [currentSlide, setCurrentSlide] = useState(0)
 
@@ -58,12 +58,12 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
 
   const banners = data?.data.filter(b => b.is_active) || []
 
-  
-  
+
+
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev === banners.length - 1 ? 0 : prev + 1))
   }, [banners.length])
-  
+
   const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev === 0 ? banners.length - 1 : prev - 1))
   }, [banners.length])
@@ -75,15 +75,15 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
     // console.log(banners)
     return () => clearInterval(interval)
   }, [banners, nextSlide, autoSlideInterval])
-  
 
 
-  if (isLoading) return(
+
+  if (isLoading) return (
     <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
       <div className="flex transition-transform duration-800 ease-in-out">
         {/* Single skeleton slide — could duplicate if needed */}
         <div className="w-full shrink-0 h-[80vh] bg-gray-200 animate-pulse">
-          <div className="container mx-auto px-4 flex flex-col md:flex-row items-center h-full">
+          <div className="container mx-px-4 flex flex-col md:flex-row items-center h-full">
             {/* Text section */}
             <div className="md:w-1/2 space-y-6 z-10">
               <div className="h-10 md:h-14 lg:h-16 bg-gray-300 rounded w-3/4"></div>
@@ -92,7 +92,7 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
             </div>
 
             {/* Image section */}
-            <div className="md:w-1/2 mt-6 md:mt-0 flex justify-center">
+            <div className="md:w-1/2 mt-6 md:mt-0 flex">
               <div className="w-[441.5px] h-[450px] bg-gray-300 rounded"></div>
             </div>
           </div>
@@ -114,25 +114,100 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
   if (error) return <div className="py-8 text-center text-red-500">Failed to load Banners</div>
   if (!data) return null
 
-  
+
+  // return (
+  //   <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
+  //     <div
+  //       className="flex transition-transform duration-800 ease-in-out"
+  //       style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+  //     >
+  //       {banners.map((banner, index) => (
+  //         <div key={index} className={`w-full shrink-0 h-[80vh]`} 
+  //              style={{background: `linear-gradient(to bottom, #0000, ${banner.background_color})`}}>
+  //           <div className={`container mx-auto px-4 flex flex-col ${banner.alignment == "left"?"md:flex-row":"md:flex-row-reverse"} items-center`}>
+  //             <div className={`md:w-1/2 space-y-6 z-10 ${banner.alignment == "left"?"":"md:pl-28"}`}>
+  //               <h1 className={`text-3xl md:text-6xl lg:text-7xl font-playfair-display`} style={{color:banner.text_color}}>{banner.title}</h1>
+  //               <p className="text-lg" style={{color:banner.text_color}}>{banner.subtitle}</p>
+
+  //               <Link href={`${banner.button_link}`}>
+  //                 <Button
+  //                   className="rounded px-6 py-2 text-white transition-colors duration-300"
+  //                   style={{
+  //                     backgroundColor: banner.button_color,
+  //                   }}
+  //                   onMouseEnter={(e) => {
+  //                     e.currentTarget.style.backgroundColor = lightenHexColor(banner.button_color, 0.15);
+  //                   }}
+  //                   onMouseLeave={(e) => {
+  //                     e.currentTarget.style.backgroundColor = banner.button_color;
+  //                   }}
+  //                 >
+  //                   {banner.button_text}
+  //                 </Button>
+  //               </Link>
+
+  //             </div>
+  //             <div className="md:w-1/2 mt-6 md:mt-0">
+  //               <Image
+  //                 src={banner.image_url || "/placeholder.svg"}
+  //                 width={441.5}
+  //                 height={450}
+  //                 alt="Hero banner"
+  //                 className="w-full h-auto"
+  //                 priority={index === 0}
+  //               />
+  //             </div>
+  //           </div>
+  //         </div>
+  //       ))}
+  //     </div>
+
+  //     <button
+  //       onClick={prevSlide}
+  //       className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md z-10"
+  //       aria-label="Previous slide"
+  //     >
+  //       <ChevronLeft className="h-6 w-6 text-[#3A3A3A]" />
+  //     </button>
+  //     <button
+  //       onClick={nextSlide}
+  //       className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md z-10"
+  //       aria-label="Next slide"
+  //     >
+  //       <ChevronRight className="h-6 w-6 text-[#3A3A3A]" />
+  //     </button>
+
+  //     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+  //       {banners.map((_, index) => (
+  //         <button
+  //           key={index}
+  //           onClick={() => setCurrentSlide(index)}
+  //           className={`w-2.5 h-2.5 rounded-full ${currentSlide === index ? "bg-[#8B4513]" : "bg-[#D0B090]"}`}
+  //           aria-label={`Go to slide ${index + 1}`}
+  //         />
+  //       ))}
+  //     </div>
+  //   </div>
+  // )
   return (
     <div className="relative overflow-hidden rounded-lg shadow-md mx-4">
       <div
-        className="flex justify-center items-center transition-transform duration-800 ease-in-out"
-        style={{ transform: `translateX(-${currentSlide * 100}%)` }} 
+        className="flex items-center transition-transform duration-800 ease-in-out"
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {banners.map((banner, index) => (
-          <div key={index} className={`w-full shrink-0 h-[80vh]`} style={{
-            background: `linear-gradient(to bottom, white, ${banner.background_color})`
+          <div key={index} className={`w-full shrink-0 h-[80vh] flex `} style={{
+            background: `linear-gradient(to bottom, #0000, ${banner.background_color})`
           }}>
-            <div className={`container mx-auto px-4 flex flex-col ${banner.alignment == "left"?"md:flex-row":"md:flex-row-reverse"} items-center`}>
-              <div className={`md:w-1/2 space-y-6 z-10 ${banner.alignment == "left"?"":"md:pl-28"}`}>
-                <h1 className={`text-3xl md:text-6xl lg:text-7xl font-playfair-display`} style={{color:banner.text_color}}>{banner.title}</h1>
-                <p className="text-lg" style={{color:banner.text_color}}>{banner.subtitle}</p>
+            <div className={`container mx-auto px-4 flex flex-col ${banner.alignment == "left" ? "md:flex-row" : "md:flex-row-reverse"} items-center`}>
+              <div className={`md:w-1/2 space-y-6 z-10 flex flex-col items-center md:items-start ${banner.alignment == "left" ? "" : "md:pl-28"}`}>
+                <h1 className={`text-4xl md:text-6xl :text-7xl font-playfair-display`} style={{ color: banner.text_color }}>{banner.title}</h1>
+                <p className="text-lg" style={{ color: banner.text_color }}>{banner.subtitle}</p>
+
 
                 <Link href={`${banner.button_link}`}>
                   <Button
-                    className="rounded px-6 py-2 text-white transition-colors duration-300"
+                    className="mx-auto rounded px-16 py-6 text-lg text-white transition-colors duration-300"
                     style={{
                       backgroundColor: banner.button_color,
                     }}
@@ -147,8 +222,9 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
                   </Button>
                 </Link>
 
+
               </div>
-              <div className="md:w-1/2 mt-6 md:mt-0">
+              <div className=" md:w-1/2 mt-6 md:mt-0">
                 <Image
                   src={banner.image_url || "/placeholder.svg"}
                   width={441.5}
@@ -163,20 +239,22 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
         ))}
       </div>
 
+
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md z-10"
+        className="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md z-10"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="h-6 w-6 text-[#3A3A3A]" />
+        <ChevronLeft className=" h-6 w-6 text-[#3A3A3A]" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md z-10"
+        className="hidden sm:block absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-md z-10"
         aria-label="Next slide"
       >
         <ChevronRight className="h-6 w-6 text-[#3A3A3A]" />
       </button>
+
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
         {banners.map((_, index) => (

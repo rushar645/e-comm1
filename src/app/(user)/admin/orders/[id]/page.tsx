@@ -1,5 +1,7 @@
 "use client"
 
+import { useUser } from "@/contexts/user-contexts"
+import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
 export default function OrderDetailPage({
@@ -34,7 +36,16 @@ export default function OrderDetailPage({
     },
     status: status,
   }
+  const { user } = useUser();
+  const router = useRouter();
 
+  if(user?.role == "customer" || !user){
+    router.push("/admin/login")
+    return(
+      <div></div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="p-6 max-w-xl mx-auto bg-white rounded-xl shadow-md space-y-4">
       <h1 className="text-2xl font-bold">Order Details</h1>

@@ -258,7 +258,7 @@ export default function SignUpPage() {
       </div>
 
       {/* Right Side - Image */}
-      <div className="flex-1 relative bg-white">
+      <div className="none md:flex-1 relative bg-white">
         <Image
           src={banner}
           alt="Fashion Model"

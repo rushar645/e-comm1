@@ -7,7 +7,7 @@ export async function withAuth(
   userType: "customer" | "admin" = "customer",
 ) {
   try {
-    console.log("Request wali cookie",request.cookies)
+    // console.log("Request wali cookie",request.cookies)
     
     const token =
       request.cookies.get("auth-token")?.value || request.headers.get("authorization")?.replace("Bearer ", "")
@@ -17,7 +17,7 @@ export async function withAuth(
     }
 
     const user = await validateSession(token, userType)
-    console.log("User also",user)
+    // console.log("User also",user)
     if (!user) {
       return NextResponse.json({ error: "Invalid or expired session" }, { status: 401 })
     }

@@ -8,10 +8,9 @@ interface ProductStats {
   revenue: number
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = createServerClient()
-    console.log(request)
 
     // Get total sales
     const { data: salesData } = await supabase.from("orders").select("total").eq("payment_status", "paid")

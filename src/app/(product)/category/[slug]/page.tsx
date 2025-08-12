@@ -40,7 +40,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       setError(null) 
       try {
         const res = await api.get(`/api/products?category=${encodeURIComponent(category.slug)}`)
-        console.log("result of products fetch", res.data.data)
+        // console.log("result of products fetch", res.data.data)
         
         const data = res.data.data
         // console.log("Fetched Images :",data[0].images[0])
@@ -61,7 +61,6 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       } catch (err) {
         setError("Could not load products")
         console.log("ERror loading products..", err)
-        console.log("Error Fethching Cates", err)
       } finally {
         setLoading(false)
       }
@@ -118,6 +117,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       filtered = filtered.filter((product) => product.material && filters.fabrics.includes(product.material))
     }
     setFilteredProducts(filtered)
+    // console.log("The product data   da", filteredProducts)
 
     let count = 0
     if (

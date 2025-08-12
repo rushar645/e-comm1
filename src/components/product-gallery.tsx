@@ -34,7 +34,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
       </div>
 
       {/* Main Image */}
-      <div className="relative h-[500px] w-full order-1 lg:order-2">
+      <div className="relative h-158 lg:h-210 w-full order-1 lg:order-2">
         <Image
           src={images[selectedImage] || "/placeholder.svg"}
           fill

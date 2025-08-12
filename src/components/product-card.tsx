@@ -70,7 +70,7 @@ export function ProductCard({
   }
 
   return (
-    <Link href={`/product/${sku}`} className="block w-full">
+    <Link href={`/product/${sku}`} className="block shrink-0 snap-center group">
       <div
         className={`bg-white rounded-lg overflow-hidden transition-all duration-300 ${
           highlighted ? "shadow-xl" : "shadow-sm hover:shadow-md"
@@ -79,7 +79,7 @@ export function ProductCard({
         <div className="relative aspect-[4/5] overflow-hidden group">
           <Image
             src={imageSrc || "/placeholder.svg"}
-            width={250}
+            width={280}
             height={20}
             alt={name}
             className="object-cover "
@@ -98,9 +98,9 @@ export function ProductCard({
           </button>
 
           {/* Add to cart overlay - Hidden on mobile, shown on hover for desktop */}
-          <div className="absolute inset-0 bg-black/20 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/20 opacity-0 md:group-hover:opacity-100 flex transition-all duration-300 items-center justify-center">
             <Button
-              className="bg-white text-brand-gray hover:bg-brand-light shadow-md text-xs px-3 py-2"
+              className="bg-white text-brand-gray hover:bg-brand-light shadow-md text-xs px-3 py-2 hidden md:flex"
               onClick={handleAddToCart}
             >
               <ShoppingCart className="size-3 mr-1" />
@@ -111,7 +111,7 @@ export function ProductCard({
           {/* Mobile Add to Cart Button */}
           <div className="md:hidden absolute bottom-2 left-2 right-2">
             <Button
-              className="w-full bg-brand-brown hover:bg-brand-brown/90 text-white text-xs py-2"
+              className="w-full bg-[#ffffff4f] hover:bg-brand-brown/90 text-white text-xs py-2"
               onClick={handleAddToCart}
             >
               <ShoppingCart className="size-3 mr-1" />
@@ -121,7 +121,7 @@ export function ProductCard({
         </div>
 
         <div className="p-3 bg-brand-light">
-          <h3 className="text-sm font-medium text-brand-gray text-center line-clamp-2">{name}</h3>
+          <h3 className="text-sm font-medium text-brand-gray text-center line-clamp-1">{name}</h3>
           <p className="text-sm text-brand-orange text-center font-medium mt-1">₹{numericPrice}</p>
 
           {showRating && (

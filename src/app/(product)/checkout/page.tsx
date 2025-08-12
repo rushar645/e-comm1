@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Info } from "lucide-react"
@@ -12,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useCart } from "@/contexts/cart-context"
 import { DISCOUNT_CODES } from "@/lib/discount-utils"
+import { useUser } from "@/contexts/user-contexts"
 
 export default function CheckoutPage() {
   const {
@@ -25,6 +27,8 @@ export default function CheckoutPage() {
     // applyDiscount,
     // removeDiscount,
   } = useCart()
+  const {user} = useUser()
+  const router = useRouter()
 
   const [couponCode, setCouponCode] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
@@ -76,7 +80,14 @@ export default function CheckoutPage() {
     setShowAvailableCoupons(false)
     setCouponError("")
   }
-
+  if(!user){
+    router.push('/login')
+    return(
+      <div className="h-screen">
+      </div>
+    )
+  }
+  else
   return (
     <div className="min-h-screen bg-white">
 
@@ -128,9 +139,35 @@ export default function CheckoutPage() {
                         <SelectValue placeholder="State" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
-                        <SelectItem value="delhi">Delhi</SelectItem>
-                        <SelectItem value="mumbai">Mumbai</SelectItem>
-                        <SelectItem value="bangalore">Bangalore</SelectItem>
+                        <SelectItem value="andhra-pradesh">Andhra Pradesh</SelectItem>
+                          <SelectItem value="arunachal-pradesh">Arunachal Pradesh</SelectItem>
+                          <SelectItem value="assam">Assam</SelectItem>
+                          <SelectItem value="bihar">Bihar</SelectItem>
+                          <SelectItem value="chhattisgarh">Chhattisgarh</SelectItem>
+                          <SelectItem value="goa">Goa</SelectItem>
+                          <SelectItem value="gujarat">Gujarat</SelectItem>
+                          <SelectItem value="haryana">Haryana</SelectItem>
+                          <SelectItem value="himachal-pradesh">Himachal Pradesh</SelectItem>
+                          <SelectItem value="jharkhand">Jharkhand</SelectItem>
+                          <SelectItem value="karnataka">Karnataka</SelectItem>
+                          <SelectItem value="kerala">Kerala</SelectItem>
+                          <SelectItem value="madhya-pradesh">Madhya Pradesh</SelectItem>
+                          <SelectItem value="maharashtra">Maharashtra</SelectItem>
+                          <SelectItem value="manipur">Manipur</SelectItem>
+                          <SelectItem value="meghalaya">Meghalaya</SelectItem>
+                          <SelectItem value="mizoram">Mizoram</SelectItem>
+                          <SelectItem value="nagaland">Nagaland</SelectItem>
+                          <SelectItem value="odisha">Odisha</SelectItem>
+                          <SelectItem value="punjab">Punjab</SelectItem>
+                          <SelectItem value="rajasthan">Rajasthan</SelectItem>
+                          <SelectItem value="sikkim">Sikkim</SelectItem>
+                          <SelectItem value="tamil-nadu">Tamil Nadu</SelectItem>
+                          <SelectItem value="telangana">Telangana</SelectItem>
+                          <SelectItem value="tripura">Tripura</SelectItem>
+                          <SelectItem value="uttar-pradesh">Uttar Pradesh</SelectItem>
+                          <SelectItem value="uttarakhand">Uttarakhand</SelectItem>
+                          <SelectItem value="west-bengal">West Bengal</SelectItem>
+
                       </SelectContent>
                     </Select>
                   </div>
@@ -788,15 +825,7 @@ export default function CheckoutPage() {
 //             </div>
 
 //             {paymentMethod === "razorpay" ? (
-//               <RazorpayPayment
-//                 amount={totalAmount}
-//                 orderData={orderData}
-//                 onSuccess={handlePaymentSuccess}
-//                 onError={handlePaymentError}
-//                 disabled={items.length === 0 || !validateShippingAddress()}
-//               >
-//                 Pay ₹{totalAmount.toFixed(2)}
-//               </RazorpayPayment>
+//               
 //             ) : (
 //               <Button
 //                 onClick={handleCODOrder}

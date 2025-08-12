@@ -13,11 +13,10 @@ interface CategoriesData {
   products: Product[]
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = createServerClient()
-    console.log(request.method)
-    // 1. Fetch categories
+
     const { data: categories, error: catError } = await supabase
       .from("product_categories")
       .select("id, name, slug")

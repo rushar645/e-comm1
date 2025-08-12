@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import api from "@/lib/axios"
+import { useUser } from "@/contexts/user-contexts"
 
 export default function NewCouponPage() {
   const router = useRouter()
@@ -58,13 +59,13 @@ export default function NewCouponPage() {
         is_active: isActive,
       };
       
-      console.log("Submitting coupon data:", JSON.stringify(couponData, null, 2));
+      // console.log("Submitting coupon data:", JSON.stringify(couponData, null, 2));
       
       const res = await api.post('api/coupons', couponData);
       
 
       if(res.status == 200) {
-        console.log("Created Coupon")
+        // console.log("Created Coupon")
         router.push("/admin/coupons")
       }
     }
@@ -110,7 +111,16 @@ export default function NewCouponPage() {
         break
     }
   }
+  const { user } = useUser();
+  // const router = useRouter();
 
+  if(user?.role == "customer" || !user){
+    router.push("/admin/login")
+    return(
+      <div></div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

@@ -29,6 +29,8 @@ import { Plus, MoreHorizontal, Edit, Trash2, Eye, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { type Product } from "@/contexts/admin-context"
+import { useUser } from "@/contexts/user-contexts"
+import { useRouter } from "next/navigation"
 
 export default function ProductsPage() {
   // const { loading } = useAdmin()
@@ -45,9 +47,9 @@ export default function ProductsPage() {
     setProducts([])
   }
 
-  const handleStatusChange = async (id: string, status: Product["status"]) => {
+  const handleStatusChange = async (_id: string, _status: Product["status"]) => {
     // await updateProduct(id, { status })
-    console.log(id,status)
+    // console.log(id,status)
   }
 
   const filteredProducts = products?.filter((product) => {
@@ -210,7 +212,16 @@ export default function ProductsPage() {
       ),
     },
   ]
+  const { user } = useUser();
+  const router = useRouter();
 
+  if(user?.role == "customer" || !user){
+    router.push("/admin/login")
+    return(
+      <div></div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">

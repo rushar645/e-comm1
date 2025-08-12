@@ -7,8 +7,8 @@ const JWT_EXPIRES_IN = "7d"
 
 export interface AuthUser {
   id: string
-  name: string
-  email: string
+  name?: string
+  email?: string
   role?: "customer" | "admin"
   phone?: number
 }
@@ -84,21 +84,41 @@ export async function validateSession(token: string, userType: "customer" | "adm
     if (!session) return null
 
     // Get user data
-    const { data: user } = await supabase
+    if (userType == "customer"){
+
+      const { data: user } = await supabase
       .from(userTable)
       .select("id, name, email, phone")
       .eq("id", session[columnName])
       .single()
-
-    if (!user) return null
-
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      phone:user.phone,
-      role: userType,
+      
+      if (!user) return null
+  
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone:user.phone,
+        role: userType,
+      }
     }
+    if (userType == "admin"){
+
+      const { data: user } = await supabase
+      .from(userTable)
+      .select("id")
+      .eq("id", session[columnName])
+      .single()
+      
+      if (!user) return null
+  
+      return {
+        id: user.id,
+        role: userType,
+      }
+    }
+
+    return null
     
   } catch (error) {
     console.log(error)

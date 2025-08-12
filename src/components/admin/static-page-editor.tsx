@@ -116,13 +116,13 @@ We may collect the following types of personal data when you interact with our w
         title: "Success",
         description: `Page "${pageData.title}" has been saved successfully.`,
       })
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Failed to save page. Please try again.",
         variant: "warning",
       })
-      console.log(error)
+      // console.log(error)
     } finally {
       setLoading(false)
     }

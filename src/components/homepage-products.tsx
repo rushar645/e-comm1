@@ -40,7 +40,7 @@ export default function HomePageProducts() {
   if (isLoading) return <div className="py-8 text-center">Loading...</div>
   if (error) return <div className="py-8 text-center text-red-500">Failed to load products.</div>
   if (!data) return null
-  console.log(data)
+  // console.log(data)
 
   return (
     <>

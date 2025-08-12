@@ -14,10 +14,9 @@ const updateCustomerSchema = z.object({
   customize_size: z.any().optional(), // Accept JSON for customize_size
 })
 
-export async function GET(request: NextRequest, { params }: {params: Promise<{id:string}>}) {
+export async function GET(_request: NextRequest, { params }: {params: Promise<{id:string}>}) {
   try {
     const supabase = createServerClient()
-    console.log(request.method)
     const {id} = await params
 
     const { data: customer, error } = await supabase

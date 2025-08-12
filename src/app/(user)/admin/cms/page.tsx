@@ -12,6 +12,8 @@ import Image  from "next/image"
 import { HomepageBanner } from "@/types"
 
 import api from "@/lib/axios"
+import { useUser } from "@/contexts/user-contexts"
+import { useRouter } from "next/navigation"
 export default function CMSPage() {
 
   const [editingBanner, setEditingBanner] = useState<string | null>(null)
@@ -35,7 +37,7 @@ export default function CMSPage() {
       try{
         const res = await api.get('/api/admin/banners')
         setHomepageBanner(res.data.data)
-        console.log("Home Page Banner", res)
+        // console.log("Home Page Banner", res)
       }  
       catch(e){
         console.log("Cannot fetch banner", e)
@@ -49,7 +51,16 @@ export default function CMSPage() {
   if (editingBanner) {
     return <BannerManager bannerId={editingBanner} onBack={() => setEditingBanner(null)} />
   }
+  const { user } = useUser();
+  const router = useRouter();
 
+   if(user?.role == "customer" || !user){
+    router.push("/admin/login")
+    return(
+      <div></div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

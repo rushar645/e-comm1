@@ -29,7 +29,7 @@ export function ContactForm() {
     setIsSubmitting(true)
     try {
       // In a real app, this would call a server action
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1050))
       setFormSuccess("Thank you for your message! We'll get back to you soon.")
       console.log(data)
       reset()

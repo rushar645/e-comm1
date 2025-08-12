@@ -75,7 +75,7 @@ export default function LoginPage() {
       if (res.status === 200) {
         
         router.push("/"); 
-        console.log("Welcome User customer",res.data.user)
+        console.log("Welcome Dear Customer",res.data.user)
         setUser(res.data.user)
       }
     } catch (err: unknown) {
@@ -202,7 +202,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Image */}
-      <div className="flex-1 relative bg-white h-screen">
+      <div className="none md:flex-1 relative bg-white h-screen">
         <Image
           src={loginPageImge}
           alt="Fashion Model"

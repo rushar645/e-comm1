@@ -56,33 +56,34 @@ export function SingleImageUpload({
 
         if (width) formData.append("width", width.toString())
         if (height) formData.append("height", height.toString())
-
+        console.log("File is hereee", [...formData.entries()])
         const response = await api.post("api/upload/image", formData, {withCredentials: true,
           headers: {
             "Content-Type":"multipart/form-data"
-          }
+          } 
         })
 
-        const result = await response.data
+        const result = response.data
+        console.log("Image result", result)
 
         if (response.status !=200) {
           throw new Error(result.error || "Upload failed")
         }
 
         // Delete old image if exists
-        if (image?.publicId) {
-          try {
-            await fetch("/api/upload/delete", {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ publicId: image.publicId }),
-            })
-          } catch (error) {
-            console.error("Failed to delete old image:", error)
-          }
-        }
+        // if (image?.publicId) {
+        //   try {
+        //     await fetch("/api/upload/delete", {
+        //       method: "DELETE",
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //       },
+        //       body: JSON.stringify({ publicId: image.publicId }),
+        //     })
+        //   } catch (error) {
+        //     console.error("Failed to delete old image:", error)
+        //   }
+        // }
 
         setImage(result.data)
         onImageChange(result.data)
@@ -120,7 +121,7 @@ export function SingleImageUpload({
 
     setDeleting(true)
 
-    try {
+    try { 
       const response = await fetch("/api/upload/delete", {
         method: "DELETE",
         headers: {
@@ -206,7 +207,7 @@ export function SingleImageUpload({
                 <Camera className="h-8 w-8 text-gray-400" />
                 <div>
                   <p className="text-sm font-medium">{isDragActive ? "Drop image here" : "Click to upload"}</p>
-                  <p className="text-xs text-gray-500 mt-1">PNG, JPG, WebP up to 10MB</p>
+                  <p className="text-xs text-gray-500 mt-1">PNG, JPG, WebP up to 20MB</p>
                 </div>
               </div>
             )}

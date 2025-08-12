@@ -17,6 +17,7 @@ import { Plus, Edit, Trash2, Calendar } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Coupon } from "@/contexts/admin-context"
 import api from "@/lib/axios"
+import { useUser } from "@/contexts/user-contexts"
 
 export default function CouponsPage() {
   // const {  addCoupon, updateCoupon } = useAdmin()
@@ -49,7 +50,6 @@ export default function CouponsPage() {
       } catch (err:unknown) {
         setError( "Failed to fetch coupons")
         console.log(err)
-        console.log(error)
       } finally {
         setLoading(false)
       }
@@ -236,7 +236,16 @@ export default function CouponsPage() {
     },
   ]
   
+  const { user } = useUser();
+  // const router = useRouter();
 
+  if(user?.role == "customer" || !user){
+    router.push("/admin/login")
+    return(
+      <div></div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="space-y-6">
       <DashboardHeader

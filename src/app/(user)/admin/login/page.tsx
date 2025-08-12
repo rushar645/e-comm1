@@ -11,10 +11,11 @@ import { useRouter } from "next/navigation";
 // import Link from "next/link";
 import Image from "next/image";
 import api from "@/lib/axios";
-import { useAdmin } from "@/contexts/admin-context";
+// import { useAdmin } from "@/contexts/admin-context";
 import loginImage from '@/images/admin_login/login.png'
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import { useUser } from "@/contexts/user-contexts";
 // import { AxiosError } from "axios";
 
 
@@ -37,7 +38,7 @@ const defaultFormErrors:FormErrors = {
 }
 
 export default function LoginPage() {
-  const { addAdminUser, adminUsers } = useAdmin()
+  const { setUser, user } = useUser()
 
   const router = useRouter();
   // const searchParams = useSearchParams();
@@ -52,12 +53,14 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<FormErrors>(defaultFormErrors);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   useEffect(() => {
-    if (adminUsers)
+    if (user){
+      setIsUserLoggedIn(false); 
       return;
+    }
     else 
-      setIsUserLoggedIn(true); 
+      setIsUserLoggedIn(false); 
     setMessage("")
-  }, []);
+  }, [user]);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = defaultFormErrors;
@@ -96,19 +99,12 @@ export default function LoginPage() {
       if (res.status === 200) {
         
         router.push("/admin"); 
-        await addAdminUser({
-          id:"1",
-          name:"admin",
-          email: formData.emailOrPhone,
-          role: "admin",
-          permissions: ["all"],
-          isActive: true,
-        })
+        setUser(res.data.user)
 
       }
-    } catch (err) {
+    } catch (_err) {
       setErrors({emailOrPhone:"Login failed"});
-      console.log(err)
+      console.log(_err)
     } finally {
       setIsLoading(false);
     }
@@ -233,6 +229,6 @@ export default function LoginPage() {
           priority
         />
       </div>
-    </div>
+    </div> 
   );
 }

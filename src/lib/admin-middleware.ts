@@ -35,12 +35,13 @@ export async function withAuth(
 
     // Fetch admin user
     const supabase = createServerClient()
+    console.log("This si hte sueers",decoded)
     const { data: adminUser, error } = await supabase
       .from("admin_users")
       .select("*")
       .eq("id", decoded.userId)
       .eq("status", "active")
-      .single<AdminUser>()
+      .single()
 
     if (error) {
       return NextResponse.json({ error: `Database error: ${error.message}` }, { status: 500 })

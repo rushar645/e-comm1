@@ -27,7 +27,7 @@ export interface UploadOptions {
   height?: number
   crop?: string
 }
-
+ 
 export class CloudinaryService {
   /**
    * Upload image to Cloudinary
@@ -41,8 +41,8 @@ export class CloudinaryService {
         ...options,
       }
 
-      console.log("Uploading to Cloudinary with options:", defaultOptions)
-      console.log("File string starts with:", file.slice(0, 30))
+      // console.log("Uploading to Cloudinary with options:", defaultOptions)
+      // console.log("File string starts with:", file.slice(0, 30))
 
       const result = await cloudinary.uploader.upload(file, defaultOptions)
 

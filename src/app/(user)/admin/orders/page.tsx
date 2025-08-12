@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input"
 
 import { useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/admin/data-table"
 import type { ColumnDef } from "@tanstack/react-table"
@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Eye } from "lucide-react"
+import { useUser } from "@/contexts/user-contexts"
 
 // Sample order data
 type Order = {
@@ -273,7 +274,16 @@ export default function OrdersPage() {
     delivered: orders.filter((o) => o.status === "delivered").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
   }
+  const { user } = useUser();
+  const router = useRouter();
 
+  if(user?.role == "customer" || !user){
+    router.push("/admin/login")
+    return(
+      <div></div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="space-y-6">
       <div>

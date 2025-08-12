@@ -28,6 +28,8 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useUser } from "@/contexts/user-contexts"
+import { useRouter } from "next/navigation"
 
 type RecentOrder = {
   id: string
@@ -168,7 +170,16 @@ export default function AdminDashboard() {
     sales: prod.sales,
     revenue: prod.revenue,
   }))
+  const { user } = useUser();
+  const router = useRouter();
 
+  if(user?.role == "customer" || !user){
+    // router.push("/admin/login")
+    return(
+      <div>{user&& <p>user</p>}hjvbjhb</div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="space-y-6">
       <div>

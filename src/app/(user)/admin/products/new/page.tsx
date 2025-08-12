@@ -13,6 +13,7 @@ import { ImageUpload } from "@/components/ui/image-upload"
 import { useToast } from "@/components/ui/use-toast"
 
 import api from "@/lib/axios";
+import { useUser } from "@/contexts/user-contexts"
 
 interface UploadedImage {
   url: string
@@ -167,7 +168,16 @@ export default function NewProductPage() {
       setErrors((prev) => ({ ...prev, images: "" }))
     }
   }
+  const { user } = useUser();
+  // const router = useRouter();
 
+  if(user?.role == "customer" || !user){
+    router.push("/admin/login")
+    return(
+      <div></div>
+    )
+  }
+  else if(user?.role == "admin")
   return (
     <div className="space-y-6">
       {/* Header */}

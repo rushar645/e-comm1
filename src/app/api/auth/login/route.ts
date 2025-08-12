@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServerClient()
     const userType = validatedData.userType === "customer" ? "customers" : "admin_users"
-    console.log(validatedData.userType)
+    // console.log(validatedData.userType)
 
     let select = "id, name, email, phone, password, status, role, cart, wishlist"
     if (userType == "admin_users"){

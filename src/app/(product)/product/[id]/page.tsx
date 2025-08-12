@@ -48,7 +48,7 @@ export default function ProductPage() {
         }
 
         setProduct(res.data.data)
-        console.log("Product Dataa", res.data.data)
+        // console.log("Product Dataa", res.data.data)
         setSelectedColor("")
       }
       catch(e){

@@ -119,6 +119,7 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
   }
 
   const handleImageChange = (image:UploadedImage | null) => {
+    console.log("Here is the image", image)
     setBannerData((prev) => ({
       ...prev,
       image: image,
@@ -127,7 +128,7 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
 
   // const handlePreview = () => {
   //   window.open("/", "_blank")
-  // }
+  // } 
 
   return (
     <div className="space-y-6">
@@ -275,8 +276,8 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
                 onImageChange={handleImageChange}
                 folder="banners"
                 existingImage={bannerData.image}
-                width={442}
-                height={450}
+                width={1350}
+                height={1324.5}
                 className="w-full"
               />
             </CardContent>
@@ -399,6 +400,73 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
           </Card>
         </div>
       </div>
+      <div className="flex flex-col">
+  {/* Banner Preview - fixed at top */}
+  <div className="w-[80%] mx-auto sticky top-0 z-50">
+    <Card>
+      <CardHeader>
+        <CardTitle>Banner Preview</CardTitle>
+        <CardDescription>See how your banner will look on the homepage</CardDescription>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div
+          className="relative w-full h-78 rounded-none overflow-hidden"
+          style={{
+            background: `linear-gradient(to bottom, white, ${bannerData.backgroundColor})`
+          }}
+        >
+          {bannerData.image && (
+            <img
+              className="object-cover w-full h-full"
+              src={bannerData.image.url}
+              alt={bannerData.title}
+            />
+          )}
+          <div className="absolute inset-0 bg-opacity-20" />
+          <div
+            className={`absolute inset-0 flex flex-col justify-center p-8 ${
+              bannerData.alignment === "center"
+                ? "text-center items-center"
+                : bannerData.alignment === "right"
+                  ? "text-right items-end"
+                  : "text-left items-start"
+            }`}
+          >
+            <h2
+              className="text-2xl font-bold mb-2 max-w-[55%]"
+              style={{ color: bannerData.textColor }}
+            >
+              {bannerData.title || "Banner Title"}
+            </h2>
+            <p
+              className="text-sm mb-4 max-w-[68%]"
+              style={{ color: bannerData.textColor }}
+            >
+              {bannerData.subtitle || "Banner subtitle"}
+            </p>
+            <button
+              className="px-10 py-2 rounded-md text-white text-sm font-medium"
+              style={{ backgroundColor: bannerData.buttonColor }}
+            >
+              {bannerData.buttonText}
+            </button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+
+  {/* Settings section */}
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+    {/* Left space or other content */}
+    <div></div>
+
+    {/* Banner Settings */}
+    <div className="space-y-6">
+      {/* All your settings cards here */}
+    </div>
+  </div>
+</div>
     </div>
   )
 }

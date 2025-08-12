@@ -27,7 +27,7 @@ export default function Home() {
         <section className="container mx-auto py-8 px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="flex items-center space-x-2">
-              <div className="w-16 h-16 bg-[#FFF2E6] rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-12 h-12 bg-[#FFF2E6] rounded-full flex items-center justify-center">
                 <Image
                   src={img1}
                   width={48}
@@ -36,7 +36,7 @@ export default function Home() {
                   className="object-contain"
                 />
               </div>
-              <div className="text-center">
+              <div>
                 <h3 className="font-medium text-[#3A3A3A]">Women & Men Led</h3>
                 <p className="text-xs text-[#5A5A5A]">Fashion crafted by leaders, driven by creativity</p>
               </div>

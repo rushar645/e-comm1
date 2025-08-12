@@ -4,7 +4,7 @@ import { withAuth } from "@/lib/admin-middleware"
 
 export async function POST(request: NextRequest) {
   return withAuth(request, async (req) => {
-    try {
+    try { 
       const formData = await req.formData()
       const file = formData.get("file") as File
       const folder = (formData.get("folder") as string) || "general"
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Validate file size (max 10MB)
-      const maxSize = 10 * 1024 * 1024 // 10MB
+      const maxSize = 20 * 1024 * 1024 // 10MB
       if (file.size > maxSize) {
         return NextResponse.json({ error: "File size too large. Maximum size is 10MB." }, { status: 400 })
       }
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
         },
       })
     } catch (error) {
-      console.error("Image upload error:", error)
-      return NextResponse.json({ error: `Failed to upload image, ${error}` }, { status: 500 })
+      console.log("Image upload he nahi hui:", error)
+      return NextResponse.json({ error: `Failed to upload imageese, ${error}` }, { status: 469 })
     }
   })
 }

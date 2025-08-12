@@ -4,12 +4,12 @@ import { DashboardSidebar } from "@/components/admin/dashboard-sidebar"
 import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Toaster } from "@/components/ui/use-toast";
 
-
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <AdminProvider>
       <div className="min-h-screen bg-gray-50">
