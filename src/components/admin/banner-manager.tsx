@@ -162,255 +162,18 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Banner Preview */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Banner Preview</CardTitle>
-              <CardDescription>See how your banner will look on the homepage</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                className="relative w-full h-78 rounded-lg overflow-hidden bg-amber-400"
-                style={{
-                  background: `linear-gradient(to bottom, white, ${bannerData.backgroundColor})`
-                }}                
-              >
-                {bannerData.image && (
-                  // <Image
-                  //   src={bannerData.image.url || "/placeholder.svg"}
-                  //   alt={bannerData.title}
-                  //   width={200}
-                  //   height={100}
-
-                  //   className="absolute inset-0 w-full h-full object-cover"
-                  // />
-                  <img className="ml-50 object-contain w-full h-full" src={bannerData.image.url}/>
-                )}
-                <div className="absolute inset-0 bg-opacity-20" />
-                <div
-                  className={`absolute inset-0 flex flex-col justify-center p-8 ${
-                    bannerData.alignment === "center"
-                      ? "text-center items-center"
-                      : bannerData.alignment === "right"
-                        ? "text-right items-end"
-                        : "text-left items-start"
-                  }`}
-                >
-                  <h2 className="text-2xl font-bold mb-2 w-[55%]" style={{ color: bannerData.textColor }}>
-                    {bannerData.title || "Banner Title"}
-                  </h2> 
-                  <p className="text-sm mb-4 w-[68%]" style={{ color: bannerData.textColor }}>
-                    {bannerData.subtitle || "Banner subtitle"}
-                  </p>
-                  <button
-                    className="px-10 py-2 rounded-md text-white text-sm font-medium"
-                    style={{ backgroundColor: bannerData.buttonColor }}
-                  >
-                    {bannerData.buttonText}
-                  </button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Banner Settings */}
-        <div className="space-y-6">
-          {/* Content Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Content</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title *</Label>
-                <Input
-                  id="title"
-                  value={bannerData.title}
-                  onChange={(e) => setBannerData((prev) => ({ ...prev, title: e.target.value }))}
-                  placeholder="Enter banner title"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="subtitle">Subtitle</Label>
-                <Textarea
-                  id="subtitle"
-                  value={bannerData.subtitle}
-                  onChange={(e) => setBannerData((prev) => ({ ...prev, subtitle: e.target.value }))}
-                  placeholder="Enter banner subtitle"
-                  rows={2}
-                />
-              </div>
-              <div>
-                <Label htmlFor="buttonText">Button Text</Label>
-                <Input
-                  id="buttonText"
-                  value={bannerData.buttonText}
-                  onChange={(e) => setBannerData((prev) => ({ ...prev, buttonText: e.target.value }))}
-                  placeholder="Shop Now"
-                />
-              </div>
-              <div>
-                <Label htmlFor="buttonLink">Button Link</Label>
-                <Input
-                  id="buttonLink"
-                  value={bannerData.buttonLink}
-                  onChange={(e) => setBannerData((prev) => ({ ...prev, buttonLink: e.target.value }))}
-                  placeholder="/category/new-arrivals"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Image Upload */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Banner Image *</CardTitle>
-              <CardDescription>Upload a high-quality banner image (recommended: 450x400px)</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <SingleImageUpload
-                onImageChange={handleImageChange}
-                folder="banners"
-                existingImage={bannerData.image}
-                width={1350}
-                height={1324.5}
-                className="w-full"
-              />
-            </CardContent>
-          </Card>
-
-          {/* Display Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Display Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="isActive">Active</Label>
-                <Switch
-                  id="isActive"
-                  checked={bannerData.isActive}
-                  onCheckedChange={(checked) => setBannerData((prev) => ({ ...prev, isActive: checked }))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="position">Position</Label>
-                <Select
-                  value={bannerData.position.toString()}
-                  onValueChange={(value) => setBannerData((prev) => ({ ...prev, position: Number.parseInt(value) }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="1">1 (First)</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3</SelectItem>
-                    <SelectItem value="4">4</SelectItem>
-                    <SelectItem value="5">5 (Last)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="alignment">Text Alignment</Label>
-                <Select
-                  value={bannerData.alignment}
-                  onValueChange={(value: "left" | "center" | "right") =>
-                    setBannerData((prev) => ({ ...prev, alignment: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="left">Left</SelectItem>
-                    {/* <SelectItem value="center">Center</SelectItem> */}
-                    <SelectItem value="right">Right</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Style Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Colors</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="backgroundColor">Background Color</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="backgroundColor"
-                    type="color"
-                    value={bannerData.backgroundColor}
-                    onChange={(e) => setBannerData((prev) => ({ ...prev, backgroundColor: e.target.value }))}
-                    className="w-16 h-10"
-                  />
-                  <Input
-                    value={bannerData.backgroundColor}
-                    onChange={(e) => setBannerData((prev) => ({ ...prev, backgroundColor: e.target.value }))}
-                    placeholder="#FFF2E6"
-                    className="flex-1"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="textColor">Text Color</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="textColor"
-                    type="color"
-                    value={bannerData.textColor}
-                    onChange={(e) => setBannerData((prev) => ({ ...prev, textColor: e.target.value }))}
-                    className="w-16 h-10"
-                  />
-                  <Input
-                    value={bannerData.textColor}
-                    onChange={(e) => setBannerData((prev) => ({ ...prev, textColor: e.target.value }))}
-                    placeholder="#3A3A3A"
-                    className="flex-1"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="buttonColor">Button Color</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="buttonColor"
-                    type="color"
-                    value={bannerData.buttonColor}
-                    onChange={(e) => setBannerData((prev) => ({ ...prev, buttonColor: e.target.value }))}
-                    className="w-16 h-10"
-                  />
-                  <Input
-                    value={bannerData.buttonColor}
-                    onChange={(e) => setBannerData((prev) => ({ ...prev, buttonColor: e.target.value }))}
-                    placeholder="#FF6B35"
-                    className="flex-1"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-      <div className="flex flex-col">
+      
+      <div className="flex flex-col items-center">
   {/* Banner Preview - fixed at top */}
-  <div className="w-[80%] mx-auto sticky top-0 z-50">
-    <Card>
-      <CardHeader>
+  <div className="w-[max(80%,720px)] h-[60vh] mx-auto top-0 z-50">
+    <Card className="h-full">
+      <CardHeader className="bg-white rounded-2xl h-[100px]">
         <CardTitle>Banner Preview</CardTitle>
         <CardDescription>See how your banner will look on the homepage</CardDescription>
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent className="p-0 h-[calc(100%-100px)]">
         <div
-          className="relative w-full h-78 rounded-none overflow-hidden"
+          className="relative w-full h-full rounded-2xl overflow-hidden"
           style={{
             background: `linear-gradient(to bottom, white, ${bannerData.backgroundColor})`
           }}
@@ -457,16 +220,198 @@ export function BannerManager({ bannerId, onBack, initialData }: BannerManagerPr
   </div>
 
   {/* Settings section */}
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-    {/* Left space or other content */}
-    <div></div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4 w-full">
 
-    {/* Banner Settings */}
-    <div className="space-y-6">
-      {/* All your settings cards here */}
+
+      {/* Banner Settings */}
+      {/* <div className="space-y-6">
+        
+        <div className="space-y-6"> */}
+            {/* Content Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Content</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="title">Title *</Label>
+                  <Input
+                    id="title"
+                    value={bannerData.title}
+                    onChange={(e) => setBannerData((prev) => ({ ...prev, title: e.target.value }))}
+                    placeholder="Enter banner title"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="subtitle">Subtitle</Label>
+                  <Textarea
+                    id="subtitle"
+                    value={bannerData.subtitle}
+                    onChange={(e) => setBannerData((prev) => ({ ...prev, subtitle: e.target.value }))}
+                    placeholder="Enter banner subtitle"
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="buttonText">Button Text</Label>
+                  <Input
+                    id="buttonText"
+                    value={bannerData.buttonText}
+                    onChange={(e) => setBannerData((prev) => ({ ...prev, buttonText: e.target.value }))}
+                    placeholder="Shop Now"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="buttonLink">Button Link</Label>
+                  <Input
+                    id="buttonLink"
+                    value={bannerData.buttonLink}
+                    onChange={(e) => setBannerData((prev) => ({ ...prev, buttonLink: e.target.value }))}
+                    placeholder="/category/new-arrivals"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Style Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Colors</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="backgroundColor">Background Color</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="backgroundColor"
+                      type="color"
+                      value={bannerData.backgroundColor}
+                      onChange={(e) => setBannerData((prev) => ({ ...prev, backgroundColor: e.target.value }))}
+                      className="w-16 h-10"
+                    />
+                    <Input
+                      value={bannerData.backgroundColor}
+                      onChange={(e) => setBannerData((prev) => ({ ...prev, backgroundColor: e.target.value }))}
+                      placeholder="#FFF2E6"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="textColor">Text Color</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="textColor"
+                      type="color"
+                      value={bannerData.textColor}
+                      onChange={(e) => setBannerData((prev) => ({ ...prev, textColor: e.target.value }))}
+                      className="w-16 h-10"
+                    />
+                    <Input
+                      value={bannerData.textColor}
+                      onChange={(e) => setBannerData((prev) => ({ ...prev, textColor: e.target.value }))}
+                      placeholder="#3A3A3A"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="buttonColor">Button Color</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="buttonColor"
+                      type="color"
+                      value={bannerData.buttonColor}
+                      onChange={(e) => setBannerData((prev) => ({ ...prev, buttonColor: e.target.value }))}
+                      className="w-16 h-10"
+                    />
+                    <Input
+                      value={bannerData.buttonColor}
+                      onChange={(e) => setBannerData((prev) => ({ ...prev, buttonColor: e.target.value }))}
+                      placeholder="#FF6B35"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Image Upload */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Banner Image *</CardTitle>
+                <CardDescription>Upload a high-quality banner image (recommended: 450x400px)</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <SingleImageUpload
+                  onImageChange={handleImageChange}
+                  folder="banners"
+                  existingImage={bannerData.image}
+                  width={1350}
+                  height={1324.5}
+                  className="w-full"
+                />
+              </CardContent>
+            </Card>
+
+            {/* Display Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Display Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="isActive">Active</Label>
+                  <Switch
+                    id="isActive"
+                    checked={bannerData.isActive}
+                    onCheckedChange={(checked) => setBannerData((prev) => ({ ...prev, isActive: checked }))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="position">Position</Label>
+                  <Select
+                    value={bannerData.position.toString()}
+                    onValueChange={(value) => setBannerData((prev) => ({ ...prev, position: Number.parseInt(value) }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="1">1 (First)</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="5">5 (Last)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="alignment">Text Alignment</Label>
+                  <Select
+                    value={bannerData.alignment}
+                    onValueChange={(value: "left" | "center" | "right") =>
+                      setBannerData((prev) => ({ ...prev, alignment: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="left">Left</SelectItem>
+                      {/* <SelectItem value="center">Center</SelectItem> */}
+                      <SelectItem value="right">Right</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        {/* </div>
+      </div> */}
     </div>
   </div>
-</div>
-    </div>
+
   )
 }
