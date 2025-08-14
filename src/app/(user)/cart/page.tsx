@@ -138,7 +138,7 @@ export default function CartPage() {
 
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-serif text-[#3A3A3A]">
-          My Cart <span className="text-lg font-normal text-gray-500">Available Piece</span>
+          My Cart
         </h1>
 
         {cartItems.length > 0 && (
@@ -187,12 +187,12 @@ export default function CartPage() {
                           className="mt-2"
                         />
 
-                        <div className="w-24 h-24 bg-gray-200 relative">
+                        <div className="w-18 h-24 bg-gray-200 relative">
                           <Image
                             src={item.imageSrc || "/placeholder.svg?height=96&width=96"}
                             alt={item.name}
                             fill
-                            className="object-cover"
+                            className="object-contain"
                           />
                         </div>
 
@@ -209,10 +209,10 @@ export default function CartPage() {
                                   className="text-xs text-[#5A5A5A] hover:text-[#8B4513] flex items-center gap-1"
                                   onClick={() => handleAddToWishlist(item)}
                                 >
-                                  <Heart className="h-3 w-3 mr-1" />
-                                  Add to wishlist
+                                  <Heart className={`size-4 ${isInWishlist(item.sku) ? "fill-red-500 stroke-red-500" : ""}`} />
+                                  {isInWishlist(item.sku)? "":"Add to wishlist"}
                                 </button>
-                              </div>
+                              </div> 
                             </div>
 
                             <div className="text-right">
@@ -222,13 +222,13 @@ export default function CartPage() {
 
                           <div className="flex justify-end items-center mt-4">
                             <div className="flex items-center border rounded-md">
-                              <button
+                              {item.quantity == 1 && <button
                                 className="px-2 py-1 border-r cursor-pointer"
                                 onClick={() => removeItem(item.sku)}
                                 aria-label="Remove Item"
                               >
                                 <Trash2 className="h-4 w-4 text-red-500" />
-                              </button>
+                              </button>}
                               {item.quantity > 1 && <button
                                 className="px-2 py-1 border-r cursor-pointer disabled:cursor-not-allowed"
                                 onClick={() => updateQuantity(item.sku, item.quantity - 1)}

@@ -94,7 +94,7 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
   }
 
   return (
-    <div className="relative py-16">
+    <div className="relative pt-16">
       {/* 3D Carousel Container */}
       <div
         className="carousel-3d-container"

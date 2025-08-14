@@ -46,7 +46,7 @@ export function SortDropdown({ onChange }: SortDropdownProps = {}) {
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-48 mt-1 bg-white border border-gray-300 rounded-md shadow-lg" role="listbox">
+        <div className="absolute z-20 w-48 mt-1 bg-white border border-gray-300 rounded-md shadow-lg" role="listbox">
           {options.map((option) => (
             <button
               key={option.value}

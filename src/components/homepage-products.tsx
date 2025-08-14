@@ -46,8 +46,8 @@ export default function HomePageProducts() {
     <>
       {/* New Arrivals */}
       <section className="container mx-auto py-12 px-4">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-serif text-[#3A3A3A]">New Arrivals</h2>
+        <div className="text-center">
+          <h2 className="text-4xl font-serif text-[#3A3A3A]">New Arrivals</h2>
           <p className="text-[#5A5A5A]">Explore Our Latest Collection in 3D</p>
         </div>
         <Carousel3D products={data.new_arrivals} />
@@ -56,7 +56,7 @@ export default function HomePageProducts() {
       {/* Shop by Style - Categories */}
       <section className="container mx-auto py-12 px-4">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-serif text-[#3A3A3A]">Shop by Style</h2>
+          <h2 className="text-4xl font-serif text-[#3A3A3A]">Shop by Style</h2>
           <p className="text-[#5A5A5A]">Find the perfect outfit for every occasion</p>
         </div>
         {data.categories.map((section) => (

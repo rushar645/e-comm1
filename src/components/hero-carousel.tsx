@@ -196,7 +196,7 @@ export function HeroCarousel({ autoSlideInterval = 5000 }: HeroCarouselProps) {
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {banners.map((banner, index) => (
-          <div key={index} className={`w-full shrink-0 h-[80vh] flex `} style={{
+          <div key={index} className={`w-full shrink-0 h-[87vh] flex `} style={{
             background: `linear-gradient(to bottom, #0000, ${banner.background_color})`
           }}>
             <div className={`container mx-auto px-4 flex flex-col ${banner.alignment == "left" ? "md:flex-row" : "md:flex-row-reverse"} items-center`}>

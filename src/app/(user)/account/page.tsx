@@ -282,23 +282,23 @@ export default function AccountPage() {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="flex w-full">
                   <TabsTrigger value="profile" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
+                    <User className="h-6 w-6 scale-130 sm:scale-100" />
                     <span className="hidden sm:inline">Profile</span>
                   </TabsTrigger>
                   <TabsTrigger value="orders" className="flex items-center gap-2">
-                    <Package className="h-4 w-4" />
+                    <Package className="h-6 w-6 scale-130 sm:scale-100" />
                     <span className="hidden sm:inline">Orders</span>
                   </TabsTrigger>
                   {/* <TabsTrigger value="wishlist" className="flex items-center gap-2">
-                    <Heart className="h-4 w-4" />
+                    <Heart className="h-10 w-10" />
                     <span className="hidden sm:inline">Wishlist</span>
                   </TabsTrigger> */}
                   <TabsTrigger value="addresses" className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
+                    <MapPin className="h-6 w-6 scale-130 sm:scale-100" />
                     <span className="hidden sm:inline">Addresses</span>
                   </TabsTrigger>
                   <TabsTrigger value="settings" className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
+                    <Settings className="h-6 w-6 scale-130 sm:scale-100" />
                     <span className="hidden sm:inline">Settings</span>
                   </TabsTrigger>
                 </TabsList>
