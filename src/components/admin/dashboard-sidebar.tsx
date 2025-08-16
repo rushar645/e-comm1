@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button"
 //import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
+import { useUser } from "@/contexts/user-contexts"
 //import { usePathname } from "next/navigation"
 
 interface DashboardSidebarProps {
@@ -76,9 +77,10 @@ const menuItems = [
 export function DashboardSidebar({ isMobile = false }: DashboardSidebarProps) {
   const pathname = usePathname()
   // const [open, setOpen] = useState(false)
+  const {user} = useUser();
   const isLoginPage = pathname === '/admin/login';
 
-  if (isLoginPage) {
+  if (isLoginPage || user?.role !="admin") {
     return <div></div>
   }
   else

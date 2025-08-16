@@ -8,7 +8,7 @@ export default function AboutPage() {
           {/* Header */}
           <div className="text-center space-y-4">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">About Us - Dress Dexterity</h1>
-            <h2 className="text-xl text-orange-500 font-medium">Where Artistry Meets Attire</h2>
+            <h2 className="text-xl text-[#3E2723] font-medium">Where Artistry Meets Attire</h2>
             <p className="text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Dress Dexterity isn&apos;t just a fashion label—it&apos;s a canvas where heritage, craftsmanship, and contemporary
               charm blend into one. We design not just for your wardrobe, but for your moments— big or small, bold or
@@ -17,10 +17,10 @@ export default function AboutPage() {
           </div>
 
           {/* Our Story */}
-          <Card className="border-l-4 border-orange-500">
+          <Card className="border-l-4 border-[#3E2723]">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-1">
+                <div className="w-8 h-8 bg-[#3E2723] rounded-full flex items-center justify-center shrink-0 mt-1">
                   <span className="text-orange-600 text-sm">📖</span>
                 </div>
                 <div className="space-y-3">
@@ -30,7 +30,7 @@ export default function AboutPage() {
                       Born out of a desire to bridge the gap between tradition and trend, Dress Dexterity was founded
                       with one mission:
                     </p>
-                    <p className="text-orange-500 italic">To redefine ethnic wear for the modern woman.</p>
+                    <p className="text-[#3E2723] italic">To redefine ethnic wear for the modern woman.</p>
                     <p>
                       What started as a small boutique concept has now grown into a full-fledged fashion destination,
                       offering thoughtfully designed Indian wear with a global appeal. Whether you&apos;re dressing for a
@@ -44,7 +44,7 @@ export default function AboutPage() {
           </Card>
 
           {/* Our Essence */}
-          <Card className="border-l-4 border-orange-500">
+          <Card className="border-l-4 border-[#3E2723]">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-1">
@@ -84,11 +84,11 @@ export default function AboutPage() {
           </Card>
 
           {/* Our Craftsmanship */}
-          <Card className="border-l-4 border-orange-500">
+          <Card className="border-l-4 border-[#3E2723]">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-1">
-                  <span className="text-orange-600 text-sm">🎭</span>
+                <div className="w-8 h-8 bg-[#3E2723] rounded-full flex items-center justify-center shrink-0 mt-1">
+                  <span className="text-[#3E2723] text-sm">🎭</span>
                 </div>
                 <div className="space-y-3">
                   <h3 className="text-xl font-semibold text-gray-900">Our Craftsmanship</h3>
@@ -109,11 +109,11 @@ export default function AboutPage() {
           </Card>
 
           {/* Our Values */}
-          <Card className="border-l-4 border-orange-500">
+          <Card className="border-l-4 border-[#3E2723]">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-1">
-                  <span className="text-orange-600 text-sm">💎</span>
+                  <span className="text-[#3E2723] text-sm">💎</span>
                 </div>
                 <div className="space-y-3">
                   <h3 className="text-xl font-semibold text-gray-900">Our Values</h3>
@@ -137,7 +137,7 @@ export default function AboutPage() {
           </Card>
 
           {/* Behind the Name */}
-          <Card className="border-l-4 border-orange-500">
+          <Card className="border-l-4 border-[#3E2723]">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-1">
@@ -155,7 +155,7 @@ export default function AboutPage() {
           </Card>
 
           {/* Connect With Us */}
-          <Card className="border-l-4 border-orange-500">
+          <Card className="border-l-4 border-[#3E2723]">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-1">
@@ -181,7 +181,7 @@ export default function AboutPage() {
           </Card>
 
           {/* Final Thought */}
-          <Card className="border-l-4 border-orange-500">
+          <Card className="border-l-4 border-[#3E2723]">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center shrink-0 mt-1">

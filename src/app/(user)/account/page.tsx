@@ -72,13 +72,16 @@ export default function AccountPage() {
         router.push('/')
       return
     }
+    if(user?.role=="admin"){
+      router.push('/')
+    }
     const fetchData = async () => {
       try {
         const res = await api.get(`api/customers/${user.id}/orders`)
         const { data } = res.data
         // console.log(data)
         // console.log(user)
-
+        if(user.role == "customer")
         setFormData({
           id: user.id,
           name: user.name,

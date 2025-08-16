@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/admin/data-table"
@@ -277,8 +277,15 @@ export default function OrdersPage() {
   const { user } = useUser();
   const router = useRouter();
 
-  if(user?.role == "customer" || !user){
-    router.push("/admin/login")
+  useEffect(()=>{
+
+    if(user?.role == "customer" || !user)
+      router.push("/admin/login")
+
+  },[router,user])
+
+
+   if(user?.role == "customer" || !user){
     return(
       <div></div>
     )

@@ -111,8 +111,8 @@ export function Navbar() {
                 <Link href="/" className="flex-shrink-0">
                   <Image
                     src={logo}
-                    width={100}
-                    height={90}
+                    width={200}
+                    height={190}
                     alt="Dress Dexterity Logo"
                     priority
                     className="h-16 w-auto pl-6"

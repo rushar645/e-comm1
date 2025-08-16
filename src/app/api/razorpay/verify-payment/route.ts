@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
-// import { verifyRazorpaySignature } from "@/lib/razorpay"
+import { verifyRazorpaySignature } from "@/lib/razorpay"
 import { createServerClient } from "@/lib/supabase"
+import { validateSession } from "@/lib/auth"
 // import { cookies } from "next/headers"
 
 export async function POST(request: NextRequest) {
@@ -9,12 +10,16 @@ export async function POST(request: NextRequest) {
     const supabase = createServerClient()
 
     // Get authenticated user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser()
+    const token = request.cookies.get("auth-token")?.value
 
-    if (userError || !user) {
+    if (!token) {
+      return NextResponse.json({ error: "No session found" }, { status: 402 })
+    }
+
+    // Try customer first, then admin
+    let user = await validateSession(token, "customer")
+
+    if (!user) {
       return NextResponse.json({ success: false, message: "Authentication required" }, { status: 401 })
     }
 
@@ -26,8 +31,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify payment signature
-    // const isValidSignature = verifyRazorpaySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)
-    const isValidSignature = true
+    const isValidSignature = verifyRazorpaySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)
+    // const isValidSignature = true
     if (!isValidSignature) {
       return NextResponse.json({ success: false, message: "Invalid payment signature" }, { status: 400 })
     }

@@ -172,7 +172,7 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
             key={index}
             onClick={() => goToSlide(index)}
             className={`w-3 h-3 rounded-full transition-colors ${
-              index === activeIndex ? "bg-[#8B4513]" : "bg-[#D0B090]"
+              index === activeIndex ? "bg-[#9B7A6A]" : "bg-[#D0B090]"
             }`}
             aria-label={`Go to product ${index + 1}`}
             aria-current={index === activeIndex ? "true" : "false"}

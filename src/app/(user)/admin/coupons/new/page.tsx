@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Calendar, Check, Percent, RefreshCw, Tag, Truck } from "lucide-react"
 import Link from "next/link"
@@ -114,8 +114,15 @@ export default function NewCouponPage() {
   const { user } = useUser();
   // const router = useRouter();
 
-  if(user?.role == "customer" || !user){
-    router.push("/admin/login")
+  useEffect(()=>{
+
+    if(user?.role == "customer" || !user)
+      router.push("/admin/login")
+
+  },[router,user])
+
+
+   if(user?.role == "customer" || !user){
     return(
       <div></div>
     )

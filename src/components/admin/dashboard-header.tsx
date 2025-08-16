@@ -24,7 +24,7 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
   const router = useRouter()
   const pathname = usePathname()
   const isLoginPage = pathname === '/admin/login'
-  const { setUser} = useUser()
+  const { user, setUser} = useUser()
 
   const logOut = async() =>{
     try{
@@ -39,7 +39,7 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
     }
   }
 
-  if(isLoginPage){
+  if(isLoginPage || user?.role!="admin"){
     return <></>
   }
   else
@@ -61,7 +61,7 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
             
           </button>
         </div>
-
+        {user?.role == "admin" &&
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center text-sm bg-gray-100 rounded-full p-1 focus:outline-none">
@@ -86,6 +86,7 @@ export function DashboardHeader({title, description, action}: DashboardHeaderPro
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+}
       </div>
     </header>
   )

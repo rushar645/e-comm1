@@ -2,9 +2,10 @@
 
 import { createContext, useContext, useState, useEffect } from "react"
 import { CustomerUser } from "@/types/user"
+import { AdminUser } from "@/types"
 
 type UserContextType = {
-  user: CustomerUser | null
+  user: CustomerUser | AdminUser |null
   setUser: (user: CustomerUser | null) => void
   loading: boolean
 }
@@ -12,7 +13,7 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<CustomerUser | null>(null)
+  const [user, setUser] = useState<CustomerUser | AdminUser | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

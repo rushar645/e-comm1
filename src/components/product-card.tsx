@@ -126,11 +126,11 @@ export function ProductCard({
 
           {showRating && (
             <div className="flex items-center justify-center mt-1">
-              <div className="flex">
+              {/* <div className="flex">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star key={star} className="size-3 fill-current text-yellow-400" />
                 ))}
-              </div>
+              </div> */}
             </div>
           )}
 

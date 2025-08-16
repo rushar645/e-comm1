@@ -39,8 +39,15 @@ export default function OrderDetailPage({
   const { user } = useUser();
   const router = useRouter();
 
-  if(user?.role == "customer" || !user){
-    router.push("/admin/login")
+  useEffect(()=>{
+
+    if(user?.role == "customer" || !user)
+      router.push("/admin/login")
+
+  },[router,user])
+
+
+   if(user?.role == "customer" || !user){
     return(
       <div></div>
     )

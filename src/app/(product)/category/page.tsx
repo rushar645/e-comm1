@@ -173,7 +173,7 @@ const Page = () => {
   const router = useRouter();
 
   useEffect(()=>{
-    router.push("/category/lehenga")
+    router.push("/category/long-dress")
   },[router])
   return (
     <div className="container mx-auto px-4 py-8">

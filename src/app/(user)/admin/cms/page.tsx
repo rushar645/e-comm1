@@ -54,8 +54,15 @@ export default function CMSPage() {
   const { user } = useUser();
   const router = useRouter();
 
+  useEffect(()=>{
+
+    if(user?.role == "customer" || !user)
+      router.push("/admin/login")
+
+  },[router,user])
+
+
    if(user?.role == "customer" || !user){
-    router.push("/admin/login")
     return(
       <div></div>
     )

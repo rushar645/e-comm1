@@ -129,11 +129,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Update coupon usage if applicable
-    if (validatedData.coupon_code) {
-      await supabase.rpc("increment_coupon_usage", {
-        coupon_code: validatedData.coupon_code,
-      })
-    }
+    // if (validatedData.coupon_code) {
+    //   await supabase.rpc("increment_coupon_usage", {
+    //     coupon_code: validatedData.coupon_code,
+    //   })
+    // }
 
     return NextResponse.json(
       {
