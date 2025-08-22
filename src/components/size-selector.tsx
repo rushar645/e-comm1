@@ -55,7 +55,7 @@ export function SizeSelector({
             key={size}
             type="button"
             variant="outline"
-            className={`${size === "Customize" ? "px-4 h-10" : "h-10 w-10"} rounded-md p-0 ${
+            className={`${size === "Customize" ? "w-26 h-10" : "h-10 w-10"} rounded-md p-0 ${
               currentSelectedSize === size || (currentSelectedSize === "Custom" && size === "Customize")
                 ? "bg-[#3A2723] text-white border-[#3A2723]"
                 : "border-gray-300 text-[#3A3A3A] hover:bg-gray-100"

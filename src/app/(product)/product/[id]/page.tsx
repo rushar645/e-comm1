@@ -275,7 +275,7 @@ export default function ProductPage() {
               <AccordionItem value="details">
                 <AccordionTrigger>Product Details</AccordionTrigger>
                 <AccordionContent>
-                 j
+                 {product.description}
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="reviews">

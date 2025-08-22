@@ -24,9 +24,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { amount, currency = "INR", receipt, notes } = body
+    const { amount, currency = "INR", notes } = body
+    const receipt = `order_${Date.now()}`
 
-    if (!amount || !receipt) {
+    if (!amount) {
       return NextResponse.json({ success: false, message: "Amount and receipt are required" }, { status: 400 })
     }
 

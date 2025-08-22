@@ -42,7 +42,7 @@ export default function CheckoutPage() {
 
   const handlePayNow = async () => {
     setIsProcessing(true)
-    // Simulate payment processing
+    // Simulate payment processing 
     await new Promise((resolve) => setTimeout(resolve, 2000))
     setIsProcessing(false)
     // Handle payment logic here
@@ -167,7 +167,6 @@ export default function CheckoutPage() {
                           <SelectItem value="uttar-pradesh">Uttar Pradesh</SelectItem>
                           <SelectItem value="uttarakhand">Uttarakhand</SelectItem>
                           <SelectItem value="west-bengal">West Bengal</SelectItem>
-
                       </SelectContent>
                     </Select>
                   </div>
