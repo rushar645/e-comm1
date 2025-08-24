@@ -234,7 +234,7 @@ export default function ProductPage() {
                 </button>
               </div>
               <SizeSelector
-                sizes={["XS", "S", "M", "L", "XL"]}
+                sizes={product.sizes}
                 selectedSize={selectedSize}
                 onChange={handleSizeSelect}
               />

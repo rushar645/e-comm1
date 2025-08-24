@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Search, Package, Truck, CheckCircle, Clock, MapPin, Phone, Mail } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import Link from "next/link"
 
 // Mock tracking data
 const mockTrackingData = {
@@ -101,11 +102,11 @@ const mockTrackingData = {
 }
 
 interface Timeline {
-    status: string;
-    date: string;
-    time: string;
-    location: string;
-    completed: boolean;
+  status: string;
+  date: string;
+  time: string;
+  location: string;
+  completed: boolean;
 }
 
 interface Tracking {
@@ -114,7 +115,7 @@ interface Tracking {
   estimatedDelivery: string;
   currentLocation: string;
   timeline: Timeline[]
-  }
+}
 
 export default function TrackOrderPage() {
   const [trackingNumber, setTrackingNumber] = useState("")
@@ -182,13 +183,11 @@ export default function TrackOrderPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-[#3A3A3A] mb-2">Track Your Order</h1>
+            <h1 className="text-3xl font-bold text-[#3A3A3A] mb-2"><Link href="https://www.dtdc.in/trace.asp">Track Your Order</Link></h1>
             <p className="text-[#5A5A5A]">Enter your tracking number to get real-time updates</p>
           </div>
 
@@ -211,10 +210,12 @@ export default function TrackOrderPage() {
                   />
                 </div>
                 <div className="flex items-end">
-                  <Button onClick={handleTrackOrder} disabled={isLoading}>
-                    <Search className="h-4 w-4 mr-2" />
-                    {isLoading ? "Tracking..." : "Track Order"}
-                  </Button>
+                  <Link href={"https://www.dtdc.in/trace.asp"}>
+                    <Button onClick={handleTrackOrder} disabled={isLoading}>
+                      <Search className="h-4 w-4 mr-2" />
+                      {isLoading ? "Tracking..." : "Track Order"}
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </CardContent>
@@ -266,9 +267,8 @@ export default function TrackOrderPage() {
                       <div key={index} className="flex items-start gap-4">
                         <div className="flex flex-col items-center">
                           <div
-                            className={`p-2 rounded-full ${
-                              event.completed ? "bg-white border-2 border-orange-500" : "bg-gray-100"
-                            }`}
+                            className={`p-2 rounded-full ${event.completed ? "bg-white border-2 border-orange-500" : "bg-gray-100"
+                              }`}
                           >
                             {getStatusIcon(event.status, event.completed)}
                           </div>
@@ -322,7 +322,7 @@ export default function TrackOrderPage() {
           )}
 
           {/* Sample Tracking Numbers */}
-          <Card className="mt-8">
+          {/* <Card className="mt-8">
             <CardHeader>
               <CardTitle>Try Sample Tracking Numbers</CardTitle>
               <CardDescription>Use these sample tracking numbers to see the tracking in action</CardDescription>
@@ -359,7 +359,7 @@ export default function TrackOrderPage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { Info } from "lucide-react"
+import { Currency, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useCart } from "@/contexts/cart-context"
 import { DISCOUNT_CODES } from "@/lib/discount-utils"
 import { useUser } from "@/contexts/user-contexts"
+import api from "@/lib/axios"
 
 export default function CheckoutPage() {
   const {
@@ -41,11 +42,18 @@ export default function CheckoutPage() {
   const total = getTotal()
 
   const handlePayNow = async () => {
-    setIsProcessing(true)
-    // Simulate payment processing 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsProcessing(false)
-    // Handle payment logic here
+    try {
+      setIsProcessing(true)
+      const response = await api.post("/api/razorpay/create-order", {amount:total, currency:"INR", notes: {}})
+      if (response.status == 200)
+      alert("order placed")
+      
+    } catch (error) {
+      console.log(error)
+      
+    } finally{
+      setIsProcessing(false)
+    }
   }
 
   const handleApplyCoupon = async () => {

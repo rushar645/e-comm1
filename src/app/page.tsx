@@ -72,7 +72,7 @@ export default function Home() {
         </section>
 
         <section>
-          <HomePageProducts/>
+          <HomePageProducts />
         </section>
 
         {/* Testimonials */}
@@ -82,25 +82,41 @@ export default function Home() {
             <p className="text-[#3E2723]">Style, comfort, and confidence—loved by our customers</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="flex px-2 pt-12 overflow-x-scroll scrollbar-hide md:grid md:grid-cols-3 gap-8">
             <TestimonialCard
-              name="Rohan Malhotra"
-              imageSrc="/placeholder.svg?height=40&width=40"
+              name="Riya Malhotra"
+              _imageSrc="/placeholder.svg?height=40&width=40"
               testimonial="Love this sustainable approach to fashion. The quality is amazing and the designs are timeless."
             />
             <TestimonialCard
               name="Aisha Verma"
-              imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc="/placeholder.svg?height=40&width=40"
               testimonial="Absolutely love the sustainable designs! The fabric quality is amazing and the styles are so versatile."
             />
             <TestimonialCard
               name="Meera Iyer"
-              imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc="/placeholder.svg?height=40&width=40"
               testimonial="The dresses are stunning! Perfect for special occasions and everyday wear. Will definitely shop again."
             />
+            <TestimonialCard
+              name="Tanisha Sharma"
+              _imageSrc="/placeholder.svg?height=40&width=40"
+              testimonial="Beautiful collection! The fabric feels premium and the fit is just perfect."
+            />
+            <TestimonialCard
+              name="Deepali Tyagi"
+              _imageSrc="/placeholder.svg?height=40&width=40"
+              testimonial="Great experience! Fast delivery and the dress looked even better in person."
+            />
+            <TestimonialCard
+              name="Suman Dharawi"
+              _imageSrc="/placeholder.svg?height=40&width=40"
+              testimonial="Lovely designs at such affordable prices. I’ve already recommended to friends."
+            />
+
           </div>
 
-          <div className="flex justify-center mt-8">
+          <div className="flex md:hidden justify-center mt-8">
             <div className="flex space-x-2">
               {[1, 2, 3].map((dot) => (
                 <div key={dot} className={`w-2 h-2 rounded-full ${dot === 1 ? "bg-[#8B4513]" : "bg-[#D0B090]"}`}></div>

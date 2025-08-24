@@ -14,17 +14,19 @@ interface Carousel3DProps {
 
 export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3000 }: Carousel3DProps) {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
+  const [screenSize, setScreenSize] = useState<"mobile" | "tablet" | "desktop">("desktop")
 
-  // Check if we're on mobile
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+    const checkScreen = () => {
+      if (window.innerWidth < 768) setScreenSize("mobile")
+      else if (window.innerWidth < 1024) setScreenSize("tablet")
+      else setScreenSize("desktop")
     }
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
+    checkScreen()
+    window.addEventListener("resize", checkScreen)
+    return () => window.removeEventListener("resize", checkScreen)
   }, [])
+
 
   const totalItems = products.length
 
@@ -53,8 +55,7 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
 
   // Calculate position and styles for each item
   const getItemStyles = (index: number) => {
-    if (isMobile) {
-      // Simplified layout for mobile
+    if (screenSize === "mobile") {
       return {
         zIndex: index === activeIndex ? 10 : 5,
         opacity: index === activeIndex ? 1 : 0.7,
@@ -62,29 +63,29 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
       }
     }
 
-    // For desktop, create a 3D carousel effect
+    // Tweak values for tablet vs desktop
+    const spacing = screenSize === "tablet" ? 180 : 250
+    const depth = screenSize === "tablet" ? 100 : 150
+    const angle = screenSize === "tablet" ? 30 : 45
+    const scaleFactor = screenSize === "tablet" ? 0.15 : 0.2
+
     const totalVisible = Math.min(5, totalItems)
     const middleIndex = Math.floor(totalVisible / 2)
 
-    // Calculate the position relative to the active item
     let position = index - activeIndex
-
-    // Handle wrapping for circular carousel
     if (position < -middleIndex) position += totalItems
     if (position > middleIndex) position -= totalItems
 
-    // Only show a certain number of items
     if (Math.abs(position) > middleIndex) {
       return { display: "none" }
     }
 
-    // Calculate 3D transforms
-    const translateZ = -Math.abs(position) * 150 // Z distance (depth)
-    const translateX = position * 250 // X position (side to side)
-    const rotateY = position * 45 // Y rotation (facing angle)
-    const scale = 1 - Math.abs(position) * 0.2 // Size scaling
-    const opacity = 1 - Math.abs(position) * 0.3 // Opacity
-    const zIndex = middleIndex - Math.abs(position) // Layer order
+    const translateZ = -Math.abs(position) * depth
+    const translateX = position * spacing
+    const rotateY = position * angle
+    const scale = 1 - Math.abs(position) * scaleFactor
+    const opacity = 1 - Math.abs(position) * 0.3
+    const zIndex = middleIndex - Math.abs(position)
 
     return {
       zIndex,
@@ -92,6 +93,7 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
       transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
     }
   }
+
 
   return (
     <div className="relative pt-16">
@@ -101,7 +103,7 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
         style={{
           perspective: "1000px",
           perspectiveOrigin: "center",
-          height: isMobile ? "400px" : "500px",
+          height: screenSize=="mobile" ? "400px" : "500px",
         }}
       >
         <div
@@ -119,9 +121,10 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
           {products.map((product, index) => (
             <div
               key={product.id}
-              className="carousel-3d-item transition-all duration-500 ease-in-out absolute"
+              className="transition-all duration-500 ease-in-out absolute"
               style={{
                 width: "240px",
+                padding: screenSize == "mobile" ? "15px" : "0px",
                 cursor: index !== activeIndex ? "pointer" : "default",
                 ...getItemStyles(index),
               }}
@@ -171,9 +174,8 @@ export function Carousel3D({ products, autoRotate = true, autoRotateInterval = 3
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-colors ${
-              index === activeIndex ? "bg-[#9B7A6A]" : "bg-[#D0B090]"
-            }`}
+            className={`w-3 h-3 rounded-full transition-colors ${index === activeIndex ? "bg-[#9B7A6A]" : "bg-[#D0B090]"
+              }`}
             aria-label={`Go to product ${index + 1}`}
             aria-current={index === activeIndex ? "true" : "false"}
           />

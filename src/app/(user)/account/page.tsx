@@ -15,6 +15,7 @@ import { useUser } from "@/contexts/user-contexts"
 import { useRouter } from "next/navigation"
 import api from "@/lib/axios"
 import { Address, Order } from "@/types"
+import Link from "next/link"
 // import { Camera } from "lucide-react"
 // import { SingleImageUpload } from "@/components/ui/single-image-upload"
 // import { UploadedImage } from "@/components/ui/single-image-upload"
@@ -395,7 +396,7 @@ export default function AccountPage() {
                                   {order.trackingNumber && (
                                     <Button variant="outline" size="sm">
                                       <Truck className="h-4 w-4 mr-2" />
-                                      Track Order
+                                      <Link href="https://www.dtdc.in/trace.asp">Track Your Order</Link>
                                     </Button>
                                   )}
                                 </div>

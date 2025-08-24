@@ -1,19 +1,19 @@
-import Image from "next/image"
+// import Image from "next/image"
 import { Star } from "lucide-react"
 
 interface TestimonialCardProps {
   name: string
-  imageSrc: string
+  _imageSrc: string
   testimonial: string
 }
 
-export function TestimonialCard({ name, imageSrc, testimonial }: TestimonialCardProps) {
+export function TestimonialCard({ name, _imageSrc, testimonial }: TestimonialCardProps) {
   return (
-    <div className="text-center">
+    <div className="text-center sm:min-w-[25vw] min-w-[40vw]">
       <div className="flex justify-center mb-2">
-        <div className="w-12 h-12 bg-[#F0D0B5] rounded-full flex items-center justify-center">
+        {/* <div className="w-12 h-12 bg-[#F0D0B5] rounded-full flex items-center justify-center">
           <Image src={imageSrc || "/placeholder.svg"} width={40} height={40} alt={name} className="rounded-full" />
-        </div>
+        </div> */}
       </div>
       <h3 className="font-medium text-[#3A3A3A]">{name}</h3>
       <div className="flex justify-center my-2">
