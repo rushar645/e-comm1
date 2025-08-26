@@ -389,15 +389,21 @@ export default function AccountPage() {
                               <div className="flex items-center gap-4">
                                 <span className="font-semibold text-lg">₹{order.total.toLocaleString()}</span>
                                 <div className="flex gap-2">
-                                  <Button variant="outline" size="sm">
+                                  {/* <Button variant="outline" size="sm">
                                     <Eye className="h-4 w-4 mr-2" />
                                     View Details
-                                  </Button>
-                                  {order.trackingNumber && (
-                                    <Button variant="outline" size="sm">
+                                  </Button> */}
+                                  {order.tracking_number && (
+                                    <>
+                                    <Button variant="outline"  size="sm">
                                       <Truck className="h-4 w-4 mr-2" />
-                                      <Link href="https://www.dtdc.in/trace.asp">Track Your Order</Link>
+                                      <a target="blank" href="https://www.dtdc.in/trace.asp">Track Your Order</a>
                                     </Button>
+                                    <Button variant="outline" size="sm">
+                                    <MapPin className="h-6 w-6 scale-130 sm:scale-100 mr-2" />
+                                      Tracking ID: {order.tracking_number}
+                                    </Button>
+                                    </>
                                   )}
                                 </div>
                               </div>
@@ -408,13 +414,13 @@ export default function AccountPage() {
                                 <div key={item.sku} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                                   <Image
                                     src={item.image || "/placeholder.svg"}
-                                    alt={item.product_name}
+                                    alt={item.name}
                                     width={60}
                                     height={60}
                                     className="rounded-md object-cover"
                                   />
                                   <div className="flex-1 min-w-0">
-                                    <h4 className="font-medium text-sm truncate">{item.product_name}</h4>
+                                    <h4 className="font-medium text-sm truncate">{item.name}</h4>
                                     <p className="text-xs text-[#5A5A5A]">
                                       {item.color} • {item.size} • Qty: {item.quantity}
                                     </p>

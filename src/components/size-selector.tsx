@@ -2,22 +2,25 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { CustomSizeForm, type CustomMeasurements } from "./custom-size-form"
+import { CustomSizeForm } from "./custom-size-form"
+import { CustomSize } from "@/contexts/cart-context"
 
 interface SizeSelectorProps {
   sizes?: string[]
   selectedSize?: string | null
   onChange?: (size: string) => void
+  handleCustomSize?: (size:CustomSize) => void
 }
 
 export function SizeSelector({
   sizes = ["XS", "S", "M", "L", "XL"],
   selectedSize = null,
   onChange,
+  handleCustomSize
 }: SizeSelectorProps) {
   const [internalSelectedSize, setInternalSelectedSize] = useState<string | null>(selectedSize)
   const [isCustomFormOpen, setIsCustomFormOpen] = useState(false)
-  const [customMeasurements, setCustomMeasurements] = useState<CustomMeasurements | null>(null)
+  const [customMeasurements, setCustomMeasurements] = useState<CustomSize | null>(null)
 
   const handleSizeSelect = (size: string) => {
     if (size === "Customize") {
@@ -32,10 +35,11 @@ export function SizeSelector({
     }
   }
 
-  const handleCustomMeasurements = (measurements: CustomMeasurements) => {
+  const handleCustomMeasurements = (measurements: CustomSize) => {
     setCustomMeasurements(measurements)
-    if (onChange) {
+    if (onChange && handleCustomSize && customMeasurements) {
       onChange("Custom")
+      handleCustomSize(customMeasurements)
     } else {
       setInternalSelectedSize("Custom")
     }

@@ -17,6 +17,18 @@ export interface CartItem {
   color?: string
   size?: string
   quantity: number
+  customSize: CustomSize | null
+}
+
+export interface CustomSize{
+  unit: "inch" | "cm",
+  mori:string,
+  waist:string,
+  chest:string,
+  armhole:string,
+  shoulder:string,
+  dressLength:string,
+  sleeveLength:string
 }
 
 export interface CartContextType {
@@ -44,7 +56,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const shippingCost = 99
   const freeShippingThreshold = 1999
 
-  const { user } = useUser()
+  const { user, cart } = useUser()
 
 
   useEffect(() => {
@@ -68,7 +80,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   
       try {
         // const res = await api.get(`/api/user-cart?id=${user.id}`)
-        const userCart = user.cart
+        const userCart = cart
   
         if (Array.isArray(userCart) && userCart.length > 0) {
           // Use user cart from backend
@@ -96,9 +108,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   
 
   useEffect(() => {
-    if (!user?.id) {
+
       localStorage.setItem("cart", JSON.stringify(items))
-    }
   }, [items, user?.id])
 
 
@@ -126,7 +137,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setItems((prev) => {
       const existing = prev.find(
         (p) =>
-          p.sku === item.sku
+          item.sku === p.sku  
       )
 
       let updated: CartItem[]
@@ -144,12 +155,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       updateCartInDB(updated)
       return updated
     })
-    if (flag == 1)
-      toast({
-        title: "Item added in your cart",
-        description: `${item.name} is added to your cart`,
-        link:"/cart"
-      })
+    // if (flag == 1)
+    //   toast({
+    //     title: "Item added in your cart",
+    //     description: `${item.name} is added to your cart`,
+    //     link:"/cart"
+    //   })
   }
 
   const removeItem = (sku: string) => {

@@ -34,7 +34,7 @@ const menuItems = [
   },
   {
     title: "Orders",
-    href: "/admin/orders",
+    href: "/admin/orders?status=pending",
     icon: <ShoppingCart className="h-5 w-5" />,
   },
   {

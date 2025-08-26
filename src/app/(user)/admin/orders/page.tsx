@@ -12,143 +12,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Eye } from "lucide-react"
 import { useUser } from "@/contexts/user-contexts"
+import { fetchOrders } from "@/lib/api"
 
 // Sample order data
 type Order = {
   id: string
-  customer: {
-    name: string
-    email: string
-  }
+  customer_id:string
   date: string
   total: number
   status: "pending" | "shipped" | "delivered" | "cancelled"
-  paymentStatus: "paid" | "pending" | "failed"
+  payment_status: "paid" | "pending" | "failed"
   items: number
 }
 
-const orders: Order[] = [
-  {
-    id: "ORD-001",
-    customer: {
-      name: "Priya Sharma",
-      email: "priya.sharma@example.com",
-    },
-    date: "2023-06-01",
-    total: 4500,
-    status: "delivered",
-    paymentStatus: "paid",
-    items: 2,
-  },
-  {
-    id: "ORD-002",
-    customer: {
-      name: "Rahul Patel",
-      email: "rahul.patel@example.com",
-    },
-    date: "2023-06-02",
-    total: 3200,
-    status: "shipped",
-    paymentStatus: "paid",
-    items: 1,
-  },
-  {
-    id: "ORD-003",
-    customer: {
-      name: "Ananya Singh",
-      email: "ananya.singh@example.com",
-    },
-    date: "2023-06-03",
-    total: 7800,
-    status: "pending",
-    paymentStatus: "pending",
-    items: 3,
-  },
-  {
-    id: "ORD-004",
-    customer: {
-      name: "Vikram Mehta",
-      email: "vikram.mehta@example.com",
-    },
-    date: "2023-06-03",
-    total: 2100,
-    status: "cancelled",
-    paymentStatus: "failed",
-    items: 1,
-  },
-  {
-    id: "ORD-005",
-    customer: {
-      name: "Neha Gupta",
-      email: "neha.gupta@example.com",
-    },
-    date: "2023-06-04",
-    total: 5600,
-    status: "pending",
-    paymentStatus: "pending",
-    items: 2,
-  },
-  {
-    id: "ORD-006",
-    customer: {
-      name: "Arjun Kumar",
-      email: "arjun.kumar@example.com",
-    },
-    date: "2023-06-05",
-    total: 9200,
-    status: "shipped",
-    paymentStatus: "paid",
-    items: 4,
-  },
-  {
-    id: "ORD-007",
-    customer: {
-      name: "Kavita Reddy",
-      email: "kavita.reddy@example.com",
-    },
-    date: "2023-06-06",
-    total: 3800,
-    status: "delivered",
-    paymentStatus: "paid",
-    items: 2,
-  },
-  {
-    id: "ORD-008",
-    customer: {
-      name: "Sanjay Verma",
-      email: "sanjay.verma@example.com",
-    },
-    date: "2023-06-07",
-    total: 6500,
-    status: "pending",
-    paymentStatus: "pending",
-    items: 3,
-  },
-  {
-    id: "ORD-009",
-    customer: {
-      name: "Meera Joshi",
-      email: "meera.joshi@example.com",
-    },
-    date: "2023-06-08",
-    total: 4200,
-    status: "shipped",
-    paymentStatus: "paid",
-    items: 2,
-  },
-  {
-    id: "ORD-010",
-    customer: {
-      name: "Rajesh Khanna",
-      email: "rajesh.khanna@example.com",
-    },
-    date: "2023-06-09",
-    total: 8100,
-    status: "delivered",
-    paymentStatus: "paid",
-    items: 3,
-  },
-]
 
 // Table columns
 const columns: ColumnDef<Order>[] = [
@@ -166,13 +42,13 @@ const columns: ColumnDef<Order>[] = [
     header: "Customer",
     cell: ({ row }) => (
       <div>
-        <div>{row.original.customer.name}</div>
-        <div className="text-xs text-gray-500">{row.original.customer.email}</div>
+        <div>{row.original.customer_id}</div>
+        {/* <div className="text-xs text-gray-500">{row.original.customer.email}</div> */}
       </div>
     ),
   },
   {
-    accessorKey: "date",
+    accessorKey: "created_at",
     header: "Date",
   },
   {
@@ -206,7 +82,7 @@ const columns: ColumnDef<Order>[] = [
     accessorKey: "paymentStatus",
     header: "Payment",
     cell: ({ row }) => {
-      const status = row.original.paymentStatus
+      const status = row.original.payment_status
       return (
         <Badge
           variant="outline"
@@ -218,15 +94,12 @@ const columns: ColumnDef<Order>[] = [
                 : "border-red-500 text-red-600"
           }
         >
-          {status.charAt(0).toUpperCase() + status.slice(1)}
+          {status?.charAt(0).toUpperCase() + status?.slice(1)}
         </Badge>
       )
     },
   },
-  {
-    accessorKey: "items",
-    header: "Items",
-  },
+  ,
   {
     id: "actions",
     cell: ({ row }) => (
@@ -242,6 +115,24 @@ const columns: ColumnDef<Order>[] = [
 export default function OrdersPage() {
   const searchParams = useSearchParams()
   const statusFilter = searchParams.get("status")
+  const [orders, setOrders] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadOrders() {
+      setLoading(true)
+      try {
+        const data = await fetchOrders({ page: 1, limit: 10, status: "pending" })
+        setOrders(data.data) // `data.data` because your API returns { success, data, pagination }
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadOrders()
+  }, [])
 
   const [dateRange, setDateRange] = useState<{
     from: string
@@ -284,8 +175,9 @@ export default function OrdersPage() {
 
   },[router,user])
 
+  if (loading) return <p>Loading...</p>
 
-   if(user?.role == "customer" || !user){
+  else if(user?.role == "customer" || !user){
     return(
       <div></div>
     )
@@ -382,7 +274,7 @@ export default function OrdersPage() {
           <DataTable
             columns={columns}
             data={filteredOrders}
-            searchKey="customer.name"
+            searchKey="customer_id"
             searchPlaceholder="Search by customer..."
           />
         </CardContent>

@@ -28,7 +28,7 @@ export default function CheckoutPage() {
     // applyDiscount,
     // removeDiscount,
   } = useCart()
-  const {user} = useUser()
+  const {user, loading} = useUser()
   const router = useRouter()
 
   const [couponCode, setCouponCode] = useState("")
@@ -88,7 +88,7 @@ export default function CheckoutPage() {
     setShowAvailableCoupons(false)
     setCouponError("")
   }
-  if(!user){
+  if(!user && !loading){
     router.push('/login')
     return(
       <div className="h-screen">

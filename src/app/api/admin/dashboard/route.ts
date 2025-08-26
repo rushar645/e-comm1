@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest) {
       .from("orders")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(5)
+      .limit(10)
 
     // Get top products
     const { data: topProductsData } = await supabase

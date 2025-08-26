@@ -3,11 +3,13 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import { CustomerUser } from "@/types/user"
 import { AdminUser } from "@/types"
+import { CartContextType } from "./cart-context"
 
 type UserContextType = {
   user: CustomerUser | AdminUser |null
   setUser: (user: CustomerUser | null) => void
   loading: boolean
+  cart: CartContextType | null
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -15,6 +17,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<CustomerUser | AdminUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [cart, setCart] = useState<CartContextType | null>(null)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -22,6 +25,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         const res = await fetch("/api/auth/me")
         if (!res.ok) throw new Error("Failed to fetch user")
         const data = await res.json()
+        const saved = localStorage.getItem("cart")
+        if(saved){
+          const parsed = JSON.parse(saved)
+          setCart(parsed)
+        }
         setUser(data.user)
       } catch (err) {
         setUser(null)
@@ -35,7 +43,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
   
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider value={{ user, setUser, loading, cart }}>
       {children}
     </UserContext.Provider>
   )

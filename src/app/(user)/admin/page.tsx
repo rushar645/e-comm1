@@ -33,7 +33,7 @@ import { useRouter } from "next/navigation"
 
 type RecentOrder = {
   id: string
-  customer?: string
+  customer_id?: string
   customer_name?: string
   created_at?: string
   date?: string
@@ -73,7 +73,7 @@ const columns: ColumnDef<RecentOrder>[] = [
   {
     accessorKey: "customer",
     header: "Customer",
-    cell: ({ row }) => row.original.customer || row.original.customer_name || "—",
+    cell: ({ row }) => row.original.customer_id || row.original.customer_name || "—",
   },
   {
     accessorKey: "date",
@@ -107,14 +107,14 @@ const columns: ColumnDef<RecentOrder>[] = [
       )
     },
   },
-  {
-    accessorKey: "items",
-    header: "Items",
-    cell: ({ row }) =>
-      Array.isArray(row.original.items)
-        ? row.original.items.length
-        : row.original.items ?? "—",
-  },
+  // {
+  //   accessorKey: "items",
+  //   header: "Items",
+  //   cell: ({ row }) =>
+  //     Array.isArray(row.original.items)
+  //       ? row.original.items.length
+  //       : row.original.items ?? "—",
+  // },
   {
     id: "actions",
     cell: ({ row }) => (
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
     async function fetchStats() {
       setLoading(true)
       setError("")
-      try {
+      try { 
         const res = await fetch("/api/admin/dashboard")
         const json = await res.json()
         if (json.success) {

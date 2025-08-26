@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
             <Input
               placeholder={searchPlaceholder}
-              value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
+              // value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
               onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
               className="max-w-sm pl-8"
             />
@@ -91,7 +91,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell colSpan={columns.length} className="h-24 text-center truncate">
                   {loading? "Loading...": "No Results"}
                 </TableCell>
               </TableRow>

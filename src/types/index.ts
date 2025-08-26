@@ -1,3 +1,4 @@
+import { CustomSize } from "@/contexts/cart-context"
 import type React from "react"
 // ============================================================================
 // COMPLETE TYPE DEFINITIONS FOR DRESS DEXTERITY E-COMMERCE PROJECT
@@ -94,19 +95,20 @@ export interface Order {
   status: "pending" | "shipped" | "delivered" | "cancelled"
   paymentStatus: "paid" | "pending" | "failed"
   date: string
-  trackingNumber?: string
+  tracking_number?: string
 }
  
 export interface OrderItem {
   id: string
   sku:string
   productId: string
-  product_name: string
+  name: string
   price: number
   quantity: number
   color?: string
   size?: string
   image: string
+  custom_size?: CustomSize
 }
 
 export interface OrderStatus {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -68,7 +68,7 @@ export async function GET(
     const { data: orderItems, error: itemsError } = await supabase
       .from('order_items')
       .select(
-        'order_id, sku, image, name, color, size, quantity, price'
+        'order_id, sku, image, name, color, size, quantity, price, custom_size'
       )
       .in('order_id', orderIds)
 

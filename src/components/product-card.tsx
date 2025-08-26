@@ -49,7 +49,8 @@ export function ProductCard({
       price,
       imageSrc,
       color: colors?.[0] || "",
-      size: "M",
+      size: "",
+      customSize: null
     })
   }
 

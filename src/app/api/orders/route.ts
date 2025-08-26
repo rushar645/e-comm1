@@ -2,15 +2,34 @@ import { type NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { createServerClient } from "@/lib/supabase"
 
+
+const numericString = z
+  .string()
+  .trim()
+  .regex(/^\d+(\.\d+)?$/, "Must be a numeric value")
+  .refine((v) => parseFloat(v) >= 0, "Must be ≥ 0");
+
+const CustomSizeSchema = z.object({
+  unit: z.enum(["inch", "cm"]),
+  mori: numericString,
+  waist: numericString,
+  chest: numericString,
+  armhole: numericString,
+  shoulder: numericString,
+  dressLength: numericString,
+  sleeveLength: numericString,
+});
+
 const orderItemSchema = z.object({
   product_id: z.string().uuid(),
-  product_name: z.string(),
-  product_sku: z.string(),
-  product_price: z.number().positive(),
+  name: z.string(),
+  sku: z.string(),
+  price: z.number().positive(),
   quantity: z.number().int().positive(),
   color: z.string().optional(),
   size: z.string().optional(),
-  product_image: z.string().optional(),
+  image: z.string().optional(),
+  custom_size: CustomSizeSchema.optional()
 })
 
 const orderSchema = z.object({

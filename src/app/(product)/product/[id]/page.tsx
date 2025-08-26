@@ -15,7 +15,7 @@ import ProductLoading from "@/components/product-loading-skeleton"
 import { Rating } from "@/components/ui/rating"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { TypographyH1, TypographyP, TypographySmall, TypographyH2 } from "@/components/ui/typography"
-import { useCart } from "@/contexts/cart-context"
+import { CustomSize, useCart } from "@/contexts/cart-context"
 import { useWishlist } from "@/contexts/wishlist-context"
 import { toast } from "@/components/ui/use-toast"
 import SizeGuideModal from "@/components/size-guide-modal" 
@@ -26,6 +26,7 @@ import { Product } from "@/types"
 
 export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
+  const [customSize, setCustomSize] = useState<CustomSize | null>(null)
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [product, setProduct] = useState<Product>()
@@ -96,6 +97,7 @@ export default function ProductPage() {
       color: selectedColor || product.colors[0] || "",
       size: selectedSize,
       category: product.category,
+      customSize: customSize
     })
   }
 
@@ -121,6 +123,7 @@ export default function ProductPage() {
       color: selectedColor || product.colors?.[0] || "",
       size: selectedSize,
       category: product.category,
+      customSize: customSize
     })
 
     // Navigate to checkout page
@@ -145,6 +148,10 @@ export default function ProductPage() {
 
   const handleSizeSelect = (size: string) => {
     setSelectedSize(size)
+  }
+
+  const handleCustomSizeSelect = (size: CustomSize) => {
+    setCustomSize(size)
   }
 
   const sizeGuideToggle = () =>{
@@ -237,6 +244,7 @@ export default function ProductPage() {
                 sizes={product.sizes}
                 selectedSize={selectedSize}
                 onChange={handleSizeSelect}
+                handleCustomSize={handleCustomSizeSelect}
               />
               {!selectedSize && <p className="text-xs text-red-500 mt-1">Please select a size</p>}
             </div>
