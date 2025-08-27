@@ -222,9 +222,9 @@ export default function AccountPage() {
                 <CardContent className="p-6">
                   <div className="flex flex-col items-center text-center mb-6">
                     <div className="relative group mb-4">
-                      <Avatar className="h-20 w-20">
+                      <Avatar className="h-20 w-20 bg-amber-800">
                         <AvatarImage src={formData.avatar || "/placeholder.svg"} alt={formData.name} />
-                        <AvatarFallback className="text-lg">
+                        <AvatarFallback className="text-xl font-semibold text-white">
                           {formData.name
                             .split(" ")
                             .map((n) => n[0])
@@ -499,12 +499,12 @@ export default function AccountPage() {
                     <CardHeader className="flex flex-row items-center justify-between">
                       <div>
                         <CardTitle>Saved Addresses</CardTitle>
-                        <CardDescription>Manage your delivery addresses</CardDescription>
+                        <CardDescription className="py-2">{addresses.length>0 ?"All your delivery addresses" : "No address found"}</CardDescription>
                       </div>
-                      <Button>
+                      {/* <Button>
                         <MapPin className="h-4 w-4 mr-2" />
                         Add New Address
-                      </Button>
+                      </Button> */}
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

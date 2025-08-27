@@ -48,7 +48,7 @@ export default function HomePageProducts() {
       <section className="container mx-auto py-12 px-4">
         <div className="text-center">
           <h2 className="text-4xl font-serif text-[#3A3A3A]">New Arrivals</h2>
-          <p className="text-[#5A5A5A]">Explore Our Latest Collection in 3D</p>
+          <p className="text-[#5A5A5A]">Fresh Style, Just for You</p>
         </div>
         <Carousel3D products={data.new_arrivals} />
       </section>

@@ -22,6 +22,7 @@ import {
   Users,
   Ticket,
   PlusCircle,
+  FileText,
 } from "lucide-react"
 import { DataTable } from "@/components/admin/data-table"
 import type { ColumnDef } from "@tanstack/react-table"
@@ -219,13 +220,13 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/admin/customers">
+        <Link href="/admin/cms">
           <Card className="hover:shadow-md transition-shadow cursor-pointer">
             <CardContent className="flex items-center p-4">
-              <Users className="h-8 w-8 text-[#8B4513] mr-3" />
+              <FileText className="h-8 w-8 text-[#8B4513] mr-3" />
               <div>
-                <p className="text-sm font-medium">Customers</p>
-                <p className="text-xs text-muted-foreground">Manage customers</p>
+                <p className="text-sm font-medium">Banners</p>
+                <p className="text-xs text-muted-foreground">Manage Banners</p>
               </div>
             </CardContent>
           </Card>

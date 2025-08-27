@@ -2,6 +2,7 @@
 import { Product } from "@/types"
 import { ProductCard } from "./product-card"
 import { ProductCardSkeleton } from "@/components/ui/skeleton"
+import { Link } from "lucide-react"
 
 // interface Product {
 //   id: number | string
@@ -35,6 +36,7 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
       {products.map((product) => (
         <ProductCard key={product.id} id={product.id} name={product.name} price={product.price} numericPrice={product.price} colors={product.colors} fabric={product.material} imageSrc={product.imageSrc} sku={product.sku}/>
       ))}
+      
     </div>
   )
 }

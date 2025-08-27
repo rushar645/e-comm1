@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 
 export default function OrderDetailPage({
   params,
-}: {
+}: { 
   params: Promise<{ id: string }>
 }) {
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)

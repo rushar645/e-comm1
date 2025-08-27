@@ -94,12 +94,11 @@ const columns: ColumnDef<Order>[] = [
                 : "border-red-500 text-red-600"
           }
         >
-          {status?.charAt(0).toUpperCase() + status?.slice(1)}
+          {status.charAt(0).toUpperCase() + status.slice(1)}
         </Badge>
       )
     },
   },
-  ,
   {
     id: "actions",
     cell: ({ row }) => (

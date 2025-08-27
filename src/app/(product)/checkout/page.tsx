@@ -143,7 +143,7 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <Select>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger size="big">
                         <SelectValue placeholder="State" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">

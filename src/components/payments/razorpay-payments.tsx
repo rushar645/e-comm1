@@ -46,17 +46,17 @@ export async function createRazorpayOrder(options: RazorpayOrderOptions) {
 }
 
 // Verify Razorpay payment signature
-// export function verifyRazorpaySignature(orderId: string, paymentId: string, signature: string): boolean {
-//   try {
-//     const crypto = require("crypto")
-//     const expectedSignature = crypto
-//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-//       .update(`${orderId}|${paymentId}`)
-//       .digest("hex")
+export function verifyRazorpaySignature(orderId: string, paymentId: string, signature: string): boolean {
+  try {
+    const crypto = require("crypto")
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${orderId}|${paymentId}`)
+      .digest("hex")
 
-//     return expectedSignature === signature
-//   } catch (error) {
-//     console.error("Error verifying Razorpay signature:", error)
-//     return false
-//   }
-// }
+    return expectedSignature === signature
+  } catch (error) {
+    console.error("Error verifying Razorpay signature:", error)
+    return false
+  }
+}

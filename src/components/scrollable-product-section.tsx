@@ -1,9 +1,10 @@
 "use client"
 
 import { useRef } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { ProductCard } from "@/components/product-card"
 import { Product } from "@/types"
+import Link from "next/link"
 
 
 
@@ -53,6 +54,16 @@ export function ScrollableProductSection({
             />
           </div>
         ))}
+        <div className="h-92 aspect-[9/16] flex flex-col items-center justify-center rounded-lg  transition-colors cursor-pointer">
+          <Link href={`/category/${products[0].category}`} className="h-full flex flex-col justify-center items-center gap-5 text-white">
+            <h2 className="flex items-center gap-2 text-2xl font-medium">
+              Explore More
+            </h2>
+            <div className="bg-white h-12 w-12 rounded-4xl p-3">
+              <ArrowRight className="h-full w-full text-black" />
+            </div>
+          </Link>
+        </div>
       </div>
 
       <button

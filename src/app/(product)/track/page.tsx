@@ -200,7 +200,7 @@ export default function TrackOrderPage() {
             <CardContent>
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <Label htmlFor="tracking">Tracking Number</Label>
+                  <Label htmlFor="tracking" className="pb-2">Tracking Number</Label>
                   <Input
                     id="tracking"
                     placeholder="Enter your tracking number (e.g., TRK123456789)"
