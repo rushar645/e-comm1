@@ -61,7 +61,7 @@ export default function AccountPage() {
   const [formData, setFormData] = useState(defaultFormData)
   const [wishlistItems, setWishlistItems] = useState<WishListItem[]>(defaultWishList)
   const [orderHistory, setOrderHistory] = useState<Order[]>([])
-  const [addresses, setAdresses] = useState<Address[]>([])
+  const [addresses, setAddresses] = useState<Address[]>([])
   
   const { toast } = useToast()
   const router = useRouter();
@@ -124,7 +124,7 @@ export default function AccountPage() {
         const data = res.data.data;
 
         if (res.status == 200){
-          setAdresses(data)
+          setAddresses(data)
         }
       }
       catch(e){
@@ -513,16 +513,16 @@ export default function AccountPage() {
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-2">
                                 <h3 className="font-semibold">{address.type}</h3>
-                                {address.isDefault && <Badge variant="secondary">Default</Badge>}
+                                {address.is_default && <Badge variant="secondary" className="text-amber-800 border-amber-700 border-2">Default</Badge>}
                               </div>
-                              <div className="flex gap-2">
+                              {/* <div className="flex gap-2">
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-4 w-4" />
                                 </Button>
                                 <Button variant="outline" size="sm">
                                   <X className="h-4 w-4" />
                                 </Button>
-                              </div>
+                              </div> */}
                             </div>
                             <div className="space-y-1 text-sm">
                               <p className="font-medium">{address.name}</p>

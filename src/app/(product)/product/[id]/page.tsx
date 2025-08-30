@@ -90,6 +90,7 @@ export default function ProductPage() {
     }
 
     addItem({
+      id:product.id,
       sku: product.sku,
       name: product.name,
       price: product.price,
@@ -99,6 +100,7 @@ export default function ProductPage() {
       category: product.category,
       customSize: customSize
     })
+    console.log("Custom Size hai", customSize)
   }
 
   const handleBuyNow = () => {
@@ -116,6 +118,7 @@ export default function ProductPage() {
     }
 
     addItem({
+      id:product.id,
       sku: product.sku,
       name: product.name,
       price: product.price,

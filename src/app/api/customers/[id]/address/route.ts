@@ -4,18 +4,19 @@ import { createServerClient } from "@/lib/supabase";
 
 
 const addressSchema = z.object({
-  customer_id: z.string(),
-  type: z.enum(["home", "work", "other"]),
+  // customer_id: z.string(),
+  type: z.enum(["home", "work", "other"]).default("home"),
   name: z.string().min(1),
   phone: z.string().min(10),
   city: z.string(),
   state: z.string(),
   pincode: z.string(),
-  is_default: z.boolean(),
+  address: z.string(),
+  is_default: z.boolean().default(false),
 });
 
 
-export async function GET(req:NextRequest, { params }: {params: Promise<{id:string}>} ) {
+export async function GET(_req:NextRequest, { params }: {params: Promise<{id:string}>} ) {
   const supabase = createServerClient(); 
   const {id} = await params
 
@@ -75,7 +76,9 @@ export async function DELETE(req: NextRequest) {
   return NextResponse.json({ success: true });
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, { params }: {params: Promise<{id:string}>}) {
+
+  const{id} = await params;
   try {
     const body = await req.json();
     const validated = addressSchema.parse(body);
@@ -85,6 +88,7 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabase
       .from("customer_addresses")
       .insert({
+        customer_id:id,
         ...validated,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),

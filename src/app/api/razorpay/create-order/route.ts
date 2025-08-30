@@ -24,9 +24,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { amount, currency = "INR", notes } = body
+    const { amount, currency = "INR" } = body
     const receipt = `order_${Date.now()}`
-
     if (!amount) {
       return NextResponse.json({ success: false, message: "Amount and receipt are required" }, { status: 400 })
     }
@@ -39,7 +38,6 @@ export async function POST(request: NextRequest) {
       notes: {
         user_id: user.id,
         user_email: user.email || "",
-        ...notes,
       },
     })
 
@@ -58,7 +56,6 @@ export async function POST(request: NextRequest) {
       currency: currency,
       status: "created",
       receipt: receipt,
-      notes: notes,
     })
 
     if (dbError) {
@@ -68,7 +65,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      order: result.order,
+      amount:amount*100,
+      id: result.order?.id,
       keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     })
   } catch (error) {

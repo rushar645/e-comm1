@@ -6,7 +6,7 @@ import api from "@/lib/axios"
 import { toast } from "@/components/ui/use-toast"
 
 export interface CartItem {
-  id?: number
+  id: string
   sku: string
   name: string
   price: number 
@@ -133,7 +133,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Actions
   const addItem = (item: Omit<CartItem, "quantity"> & { quantity?: number }) => {
-    let flag = 0
+    let _flag = 0
     setItems((prev) => {
       const existing = prev.find(
         (p) =>
@@ -148,7 +148,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           description: `${item.name} is already in your cart`,
         })
       } else {
-        flag = 1
+        _flag = 1
         updated = [...prev, { ...item, quantity: item.quantity || 1 }]
       }
       

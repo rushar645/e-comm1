@@ -37,16 +37,16 @@ const columns: ColumnDef<Order>[] = [
       </Link>
     ),
   },
-  {
-    accessorKey: "customer.name",
-    header: "Customer",
-    cell: ({ row }) => (
-      <div>
-        <div>{row.original.customer_id}</div>
-        {/* <div className="text-xs text-gray-500">{row.original.customer.email}</div> */}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "customer.name",
+  //   header: "Customer",
+  //   cell: ({ row }) => (
+  //     <div>
+  //       <div>{row.original.customer_id}</div>
+  //       {/* <div className="text-xs text-gray-500">{row.original.customer.email}</div> */}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "created_at",
     header: "Date",
@@ -121,7 +121,7 @@ export default function OrdersPage() {
     async function loadOrders() {
       setLoading(true)
       try {
-        const data = await fetchOrders({ page: 1, limit: 10, status: "pending" })
+        const data = await fetchOrders({ page: 1, limit: 10 })
         setOrders(data.data) // `data.data` because your API returns { success, data, pagination }
       } catch (err) {
         console.error(err)
@@ -167,21 +167,19 @@ export default function OrdersPage() {
   const { user } = useUser();
   const router = useRouter();
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (!loading)
+      if (user?.role == "customer" || !user)
+        router.push("/admin/login")
 
-    if(user?.role == "customer" || !user)
-      router.push("/admin/login")
-
-  },[router,user])
-
-  if (loading) return <p>Loading...</p>
-
-  else if(user?.role == "customer" || !user){
-    return(
+  }, [router, user])
+  
+  if (user?.role == "customer" || !user) {
+    return (
       <div></div>
     )
   }
-  else if(user?.role == "admin")
+  else if (user?.role == "admin")
   return (
     <div className="space-y-6">
       <div>

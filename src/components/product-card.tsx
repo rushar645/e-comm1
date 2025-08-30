@@ -44,6 +44,7 @@ export function ProductCard({
     console.log(category)
     if(imageSrc)
     addItem({
+      id,
       sku,
       name,
       price,

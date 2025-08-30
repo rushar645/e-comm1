@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import { createServerClient } from "@/lib/supabase"
+// import { id } from "date-fns/locale";
 
 
 const numericString = z
@@ -21,19 +22,19 @@ const CustomSizeSchema = z.object({
 });
 
 const orderItemSchema = z.object({
-  product_id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string(),
   sku: z.string(),
   price: z.number().positive(),
   quantity: z.number().int().positive(),
   color: z.string().optional(),
   size: z.string().optional(),
-  image: z.string().optional(),
-  custom_size: CustomSizeSchema.optional()
+  imageSrc: z.string().optional(),
+  customSize: CustomSizeSchema.optional()
 })
 
 const orderSchema = z.object({
-  customer_id: z.string().uuid().optional(),
+  customer_id: z.uuid(),
   shipping_id: z.uuid(),
   items: z.array(orderItemSchema).min(1),
   subtotal: z.number().positive(),
@@ -41,6 +42,7 @@ const orderSchema = z.object({
   discount: z.number().min(0).default(0),
   total: z.number().positive(),
   coupon_code: z.string().optional(),
+  payment_id: z.string()
 })
 
 export async function GET(request: NextRequest) {
@@ -114,6 +116,7 @@ export async function POST(request: NextRequest) {
         total: validatedData.total,
         coupon_code: validatedData.coupon_code,
         status:"pending",
+        payment_status:"paid",
         tracking_number:""
       })
       .select()
@@ -125,8 +128,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert order items
-    const orderItems = validatedData.items.map((item) => ({
-      ...item,
+    // console.log("Items areee", body)
+    const orderItems = validatedData.items.map(({id, imageSrc, ...rest}) => ({
+      product_id:id,
+      image:imageSrc,
+      ...rest,
       order_id: order.id,
     }))
 
@@ -134,6 +140,7 @@ export async function POST(request: NextRequest) {
 
     if (itemsError) {
       console.error("Order items creation error:", itemsError)
+      console.log("Data Recievesd",orderItems)
       // Rollback order creation
       await supabase.from("orders").delete().eq("id", order.id)
       return NextResponse.json({ error: "Failed to create order items" }, { status: 500 })
@@ -142,7 +149,7 @@ export async function POST(request: NextRequest) {
     // Update product stock
     for (const item of validatedData.items) {
       await supabase.rpc("decrement_stock", {
-        product_id: item.product_id,
+        product_id: item.id,
         quantity: item.quantity,
       })
     }
@@ -163,6 +170,7 @@ export async function POST(request: NextRequest) {
     )
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.log(error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 

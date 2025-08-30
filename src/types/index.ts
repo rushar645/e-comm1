@@ -74,40 +74,32 @@ export interface ProductSort {
 // ============================================================================
 
 export interface Order {
-  id: string
-  customer: {
-    name: string
-    email: string
-    phone: string
-  }
-  shippingAdd: {
-    address: string
-    city: string
-    state: string
-    pincode: string
-  }
+  id?: string
+  customer_id: string
+  shipping_id: string
   items: OrderItem[]
   subtotal: number
-  shipping: number
-  tax: number
-  discount: number
+  shipping?: number
+  tax?: number
+  discount?: number
   total: number
   status: "pending" | "shipped" | "delivered" | "cancelled"
-  paymentStatus: "paid" | "pending" | "failed"
-  date: string
+  paymentStatus?: "paid" | "pending" | "failed"
+  date?: string
   tracking_number?: string
 }
  
 export interface OrderItem {
   id: string
   sku:string
-  productId: string
+  productId?: string
   name: string
   price: number
   quantity: number
   color?: string
   size?: string
-  image: string
+  imageSrc: string
+  image?:string
   custom_size?: CustomSize
 }
 
@@ -193,7 +185,7 @@ export interface Address {
   city: string
   state: string
   pincode: string
-  isDefault: boolean
+  is_default: boolean
 }
 
 // ============================================================================
