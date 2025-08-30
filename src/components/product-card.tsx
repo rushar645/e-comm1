@@ -38,22 +38,22 @@ export function ProductCard({
   const { addItem } = useCart()
   const { addItem: addToWishlist, isInWishlist, removeItem: removeFromWishlist } = useWishlist()
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    console.log(category)
-    if(imageSrc)
-    addItem({
-      id,
-      sku,
-      name,
-      price,
-      imageSrc,
-      color: colors?.[0] || "",
-      size: "",
-      customSize: null
-    })
-  }
+  // const handleAddToCart = (e: React.MouseEvent) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  //   console.log(category)
+  //   if(imageSrc)
+  //   addItem({
+  //     id,
+  //     sku,
+  //     name,
+  //     price,
+  //     imageSrc,
+  //     color: colors?.[0] || "",
+  //     size: "",
+  //     customSize: null
+  //   })
+  // }
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -101,24 +101,24 @@ export function ProductCard({
 
           {/* Add to cart overlay - Hidden on mobile, shown on hover for desktop */}
           <div className="absolute inset-0 bg-black/20 opacity-0 md:group-hover:opacity-100 flex transition-all duration-300 items-center justify-center">
-            <Button
+            {/* <Button
               className="bg-white text-brand-gray hover:bg-brand-light shadow-md text-xs px-3 py-2 hidden md:flex"
               onClick={handleAddToCart}
             >
               <ShoppingCart className="size-3 mr-1" />
               Add to Cart
-            </Button>
+            </Button> */}
           </div>
 
           {/* Mobile Add to Cart Button */}
           <div className="md:hidden absolute bottom-2 left-2 right-2">
-            <Button
+            {/* <Button
               className="w-full bg-[#ffffff4f] hover:bg-brand-brown/90 text-white text-xs py-2"
               onClick={handleAddToCart}
             >
               <ShoppingCart className="size-3 mr-1" />
               Add to Cart
-            </Button>
+            </Button> */}
           </div>
         </div>
 

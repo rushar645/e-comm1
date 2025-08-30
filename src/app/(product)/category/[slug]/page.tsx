@@ -82,14 +82,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const availableFilters = {
     priceRange: { min: 0, max: 10000 },
     colors: [
-      { name: "Red", value: "#FF5733" },
-      { name: "Blue", value: "#3498DB" },
-      { name: "Green", value: "#2ECC71" },
-      { name: "Purple", value: "#9B59B6" },
-      { name: "Yellow", value: "#F1C40F" },
-      { name: "Black", value: "#000000" },
-      { name: "White", value: "#FFFFFF" },
-      { name: "Pink", value: "#FF69B4" },
+      { name: "red", value: "#FF5733" },
+      { name: "blue", value: "#3498DB" },
+      { name: "green", value: "#2ECC71" },
+      { name: "purple", value: "#9B59B6" },
+      { name: "yellow", value: "#F1C40F" },
+      { name: "black", value: "#000000" },
+      { name: "white", value: "#FFFFFF" },
+      { name: "pink", value: "#FF69B4" },
     ],
     fabrics: ["Cotton", "Linen", "Polyester", "Denim", "Chiffon", "Satin", "GGT", "Cotto Slub","Chanderi","Butter Cotton","Poplin", "Cotton Voil", "Poly Crepe", "Organza", "Poly Spendex", "Modal", "Reyon", "Nylon", "Net", "Dobby", "Velvet", "Taffta", "Viscose", "Polysaint"],
   }
@@ -117,7 +117,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       filtered = filtered.filter((product) => product.material && filters.fabrics.includes(product.material))
     }
     setFilteredProducts(filtered)
-    // console.log("The product data   da", filteredProducts)
+    console.log("The product data   da", filteredProducts)
 
     let count = 0
     if (
