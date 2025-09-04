@@ -34,6 +34,7 @@ export async function GET(_request: NextRequest) {
           .from("products")
           .select("*")
           .eq("category", cat.slug)
+          .eq("status", "active")
           .order("units_sold", { ascending: false })
           .limit(8)
       )
@@ -58,6 +59,7 @@ export async function GET(_request: NextRequest) {
       .from("products")
       .select("*")
       .eq("new_arrival", true)
+      .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(5)
 

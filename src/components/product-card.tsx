@@ -17,6 +17,7 @@ interface ProductCardProps {
   showRating?: boolean
   category?: string
   numericPrice?: number
+  status?:string
   colors?: string[]
   fabric?: string
   sku:string
@@ -31,6 +32,7 @@ export function ProductCard({
   showRating = false,
   category = "all",
   numericPrice,
+  status="active",
   colors,
   fabric,
   sku
@@ -124,7 +126,7 @@ export function ProductCard({
 
         <div className="p-3 bg-brand-light">
           <h3 className="text-sm font-medium text-brand-gray text-center line-clamp-1">{name}</h3>
-          <p className="text-sm text-brand-orange text-center font-medium mt-1">₹{numericPrice}</p>
+          {status!=="out-of-stock" && <p className="text-sm text-brand-orange text-center font-medium mt-1">₹{numericPrice}</p>}
 
           {showRating && (
             <div className="flex items-center justify-center mt-1">

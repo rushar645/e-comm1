@@ -9,6 +9,14 @@ import img3 from "@/images/homepage/3.png"
 import img4 from "@/images/homepage/4.png"
 import HomePageProducts from "@/components/homepage-products"
 
+import test1 from "@/images/Profile/1.png"
+import test2 from "@/images/Profile/2.png"
+import test3 from "@/images/Profile/3.png"
+import test4 from "@/images/Profile/4.png"
+import test5 from "@/images/Profile/5.png"
+import test6 from "@/images/Profile/6.png"
+
+
 export const dynamic = "force-dynamic"
 
 
@@ -85,32 +93,32 @@ export default function Home() {
           <div className="flex px-2 pt-12 overflow-x-scroll scrollbar-hide md:grid md:grid-cols-3 gap-8">
             <TestimonialCard
               name="Riya Malhotra"
-              _imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc={test1}
               testimonial="Love this sustainable approach to fashion. The quality is amazing and the designs are timeless."
             />
             <TestimonialCard
               name="Aisha Verma"
-              _imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc={test5}
               testimonial="Absolutely love the sustainable designs! The fabric quality is amazing and the styles are so versatile."
             />
             <TestimonialCard
               name="Meera Iyer"
-              _imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc={test2}
               testimonial="The dresses are stunning! Perfect for special occasions and everyday wear. Will definitely shop again."
             />
             <TestimonialCard
               name="Tanisha Sharma"
-              _imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc={test3}
               testimonial="Beautiful collection! The fabric feels premium and the fit is just perfect."
             />
             <TestimonialCard
               name="Deepali Tyagi"
-              _imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc={test4}
               testimonial="Great experience! Fast delivery and the dress looked even better in person."
             />
             <TestimonialCard
               name="Suman Dharawi"
-              _imageSrc="/placeholder.svg?height=40&width=40"
+              _imageSrc={test6}
               testimonial="Lovely designs at such affordable prices. I’ve already recommended to friends."
             />
 

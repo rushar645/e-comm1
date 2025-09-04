@@ -6,6 +6,7 @@ const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   description: z.string().optional(),
   price: z.number().positive("Price must be positive"),
+  mrp:z.number(),
   sku: z.string().min(1, "SKU is required"),
   category: z.string().min(1, "Category is required"),
   stock: z.number().int().min(0, "Stock must be non-negative"),

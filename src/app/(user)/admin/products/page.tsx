@@ -56,7 +56,7 @@ export default function ProductsPage() {
   const { user } = useUser()
   const router = useRouter()
 
-  // ✅ Fetch products via Axios
+  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -105,17 +105,16 @@ export default function ProductsPage() {
   }
 
 
-
-  // const handleStatusChange = async (id: string, status: Product["status"]) => {
-  //   try {
-  //     await api.put(`/api/products/${id}`, { status }) // you’ll need this API route
-  //     setProducts((prev) =>
-  //       prev.map((p) => (p.id === id ? { ...p, status } : p))
-  //     )
-  //   } catch (err) {
-  //     console.error("Status update failed:", err)
-  //   }
-  // }
+  const handleStatusChange = async (id: string, status: Product["status"]) => {
+    try {
+      await api.put(`/api/products/${id}`, { status }) // you’ll need this API route
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, status } : p))
+      )
+    } catch (err) {
+      console.error("Status update failed:", err)
+    }
+  }
 
   const filteredProducts = products.filter((product) => {
     if (selectedCategory && product.category !== selectedCategory) return false
@@ -209,7 +208,7 @@ export default function ProductsPage() {
                 </Badge>
               </Button>
             </DropdownMenuTrigger>
-            {/* <DropdownMenuContent>
+            <DropdownMenuContent className="bg-white">
               <DropdownMenuItem
                 onClick={() => handleStatusChange(row.original.id, "active")}
               >
@@ -227,7 +226,7 @@ export default function ProductsPage() {
               >
                 Out of Stock
               </DropdownMenuItem>
-            </DropdownMenuContent> */}
+            </DropdownMenuContent>
           </DropdownMenu>
         )
       },

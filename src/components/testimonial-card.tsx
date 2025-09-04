@@ -1,9 +1,9 @@
-// import Image from "next/image"
+import Image, { StaticImageData } from "next/image"
 import { Star } from "lucide-react"
 
 interface TestimonialCardProps {
   name: string
-  _imageSrc: string
+  _imageSrc: StaticImageData
   testimonial: string
 }
 
@@ -11,9 +11,9 @@ export function TestimonialCard({ name, _imageSrc, testimonial }: TestimonialCar
   return (
     <div className="text-center sm:min-w-[25vw] min-w-[40vw]">
       <div className="flex justify-center mb-2">
-        {/* <div className="w-12 h-12 bg-[#F0D0B5] rounded-full flex items-center justify-center">
-          <Image src={imageSrc || "/placeholder.svg"} width={40} height={40} alt={name} className="rounded-full" />
-        </div> */}
+        <div className="w-14 h-14 bg-[#F0D0B5] rounded-full flex items-center justify-center">
+          <Image src={_imageSrc || "/placeholder.svg"} width={60} height={60} alt={name} className="rounded-full" />
+        </div>
       </div>
       <h3 className="font-medium text-[#3A3A3A]">{name}</h3>
       <div className="flex justify-center my-2">

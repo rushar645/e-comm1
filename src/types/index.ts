@@ -13,6 +13,7 @@ export interface Product {
   name: string
   description: string
   price: number
+  mrp?: number
   sku: string
   category: string
   stock: number
