@@ -1,7 +1,7 @@
 import Razorpay from "razorpay"
 import crypto from "crypto"
 
-if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET || !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
   throw new Error("Razorpay credentials are not configured")
 }
 
