@@ -95,9 +95,9 @@ const Footer = () => {
             <div>
               <h3 className="font-bold md:text-lg text-[#3A3A3A] mb-4">Contact Us</h3>
               <ul className="space-y-2">
-                <li className="text-sm text-[#5A5A5A]">Number: +919599067795</li>
+            
                 <li className="text-sm text-[#5A5A5A]">Mail: info@dressdexterity.com</li>
-                <li className="text-sm text-[#5A5A5A]">Location: B-74, Sector-88, Noida 210305</li>
+               
               </ul>
             </div>
             <div>
